@@ -1,0 +1,68 @@
+@startuml
+title User Flow Sequence Diagram (Auth & Management System)
+
+actor User
+participant "Auth Service" as Auth
+participant "Management Service" as Mgmt
+database "MongoDB" as DB
+queue "Kafka" as Kafka
+database "Redis" as Cache
+
+' === 1. User saytni ochadi ===
+User -> Auth : Open Website
+Auth --> User : Show Login Page
+
+' === 2. Agar user ro‘yxatdan o‘tmagan bo‘lsa ===
+User -> Auth : Navigate to Register Page
+Auth --> User : Show Register Page
+
+' === 3. User ro‘yxatdan o‘tadi ===
+User -> Auth : Register (username, email, password)
+Auth -> DB : Save new user
+Auth -> Kafka : Publish "UserRegistered" event
+Auth --> User : Return registration success + token
+
+' === 4. User login qiladi ===
+User -> Auth : Login (email, password)
+Auth -> DB : Verify credentials
+Auth -> Cache : Store JWT/session
+Auth --> User : Return JWT token
+
+' === 5. User management service sahifasiga kiradi ===
+User -> Mgmt : Access dashboard (JWT)
+Mgmt -> Auth : Validate token
+Auth --> Mgmt : Token valid
+Mgmt --> User : Show dashboard
+
+' === 6. User project yaratadi ===
+User -> Mgmt : Create new project
+Mgmt -> DB : Save project data
+Mgmt --> User : Return project info
+
+' === 7. User board yaratadi ===
+User -> Mgmt : Create new board (projectId)
+Mgmt -> DB : Save board data
+Mgmt --> User : Return board info
+
+' === 8. User boardga member qo‘shadi ===
+User -> Mgmt : Add member (userId)
+Mgmt -> DB : Save member relation
+Mgmt -> Kafka : Publish "MemberAdded" event
+Mgmt --> User : Return member info
+
+' === 9. User memberga rol va permission belgilaydi ===
+User -> Mgmt : Set role & permissions
+Mgmt -> DB : Update member permissions
+Mgmt --> User : Confirm update
+
+' === 10. User boardga column qo‘shadi ===
+User -> Mgmt : Create column (boardId)
+Mgmt -> DB : Save column data
+Mgmt --> User : Return column info
+
+' === 11. User boardga ticket qo‘shadi ===
+User -> Mgmt : Create ticket (columnId, title, description)
+Mgmt -> DB : Save ticket data
+Mgmt --> User : Return ticket info
+
+@enduml

@@ -1,0 +1,21 @@
+@startuml
+title Auth & Management Microservices Architecture
+
+actor User
+
+component "Auth Service" as Auth
+component "Management Service" as Management
+queue "Kafka" as Kafka
+database "MongoDB" as Mongo
+database "Redis" as Redis
+
+' Aloqalar
+User --> Auth : Login / Register
+Auth --> Mongo : User data
+Auth --> Redis : OTP / Token cache
+Auth --> Kafka : Publish "UserRegistered"
+
+Kafka --> Management : Consume "UserRegistered"
+Management --> Mongo : Employee data
+
+@enduml
