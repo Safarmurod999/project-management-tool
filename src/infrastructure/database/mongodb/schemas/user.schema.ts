@@ -1,15 +1,9 @@
-import { Schema } from "mongoose";
-import { UserDocument } from "../models";
-
-export const UserSchema = new Schema<UserDocument>(
+import { Schema } from 'mongoose';
+export const UserSchema = new Schema(
   {
-    _name: { type: String, required: true },
-    _email: { type: String, required: true, unique: true },
-    _password: { type: String, required: true },
-    _createdAt: { type: Date, required: true },
-    _updatedAt: { type: Date, required: false, default: null },
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
   },
-  {
-    versionKey: false,
-  }
+  { timestamps: true },
 );

@@ -1,5 +1,5 @@
 import { Inject, Module, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { ConfigModule } from "@nestjs/config";
+import { ConfigModule } from '@nestjs/config';
 import { MongoDbConfigImpl } from 'src/config';
 import { Database } from 'src/infrastructure/database/database';
 import { MongoDb } from 'src/infrastructure/database/mongodb/mongo';
@@ -9,20 +9,24 @@ import { DatabaseSymbols } from 'src/infrastructure/dependency-injection/databas
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true
+      isGlobal: true,
     }),
   ],
   controllers: [],
   providers: [
     {
       provide: ConfigSymbols.MongoDbConfig,
-      useFactory: () => new MongoDbConfigImpl(),
+      useClass: MongoDbConfigImpl,
     },
     {
       provide: DatabaseSymbols.MongoDb,
-      useClass: MongoDb,
+      useFactory: (config: MongoDbConfigImpl) => {
+        return new MongoDb(config);
+      },
+      inject: [ConfigSymbols.MongoDbConfig],
     },
   ],
+  exports: [DatabaseSymbols.MongoDb],
 })
 export class MongoDbModule implements OnModuleInit, OnModuleDestroy {
   constructor(

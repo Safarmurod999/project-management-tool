@@ -1,73 +1,49 @@
-import { Inject, Injectable } from "@nestjs/common";
-import mongoose, { Connection } from "mongoose";
-import { Database } from "../database";
-import { MongoDbConfig } from "src/config";
-import { ConfigSymbols } from "src/infrastructure/dependency-injection";
+import { Connection, createConnection, Model } from 'mongoose';
+import { UserSchema } from './schemas';
+import { UserDocument } from './models';
+import { Database } from '../database';
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigSymbols } from 'src/infrastructure/dependency-injection';
+import { MongoDbConfig } from 'src/config';
 
 @Injectable()
 export class MongoDb implements Database {
-    private _client: Connection | null = null;
-    private isConnected = false;
+  private _client: Connection | null = null;
 
-    constructor(
-        @Inject(ConfigSymbols.MongoDbConfig)
-        private readonly config: MongoDbConfig
-    ) {}
+  constructor(
+    @Inject(ConfigSymbols.MongoDbConfig)
+    private readonly config: MongoDbConfig,
+  ) {}
 
-    public async connect(): Promise<void> {
-        if (this.isConnected) {
-            return;
-        }
-        
-        const uri = `mongodb+srv://${this.config.getUsername()}:${this.config.getPassword()}@${this.config.getHost()}?authSource=admin`;
+  public async connect(): Promise<void> {
+    if (this._client) return;
 
-        try {
-            await mongoose.connect(uri, {
-                maxPoolSize: 10,
-                minPoolSize: 2,
-                connectTimeoutMS: 5000,
-                serverSelectionTimeoutMS: 5000
-            });
+    const uri = `mongodb+srv://${this.config.getUsername()}:${this.config.getPassword()}@${this.config.getHost()}?authSource=admin`;
 
-            this._client = mongoose.connection;
-            this.isConnected = true;
+    this._client = createConnection(uri, {
+      maxPoolSize: 10,
+      minPoolSize: 2,
+      connectTimeoutMS: 5000,
+      serverSelectionTimeoutMS: 5000,
+    });
 
-            // Events
-            this._client.on("connected", () => {
-                console.log("[MongoDB] Connected.");
-            });
+    console.log('[MongoDB] Connected.');
+  }
 
-            this._client.on("disconnected", () => {
-                this.isConnected = false;
-                console.log("[MongoDB] Disconnected.");
-            });
+  public async disconnect(): Promise<void> {
+    if (!this._client) return;
+    await this._client.close();
+    this._client = null;
+    console.log('[MongoDB] Disconnected.');
+  }
 
-            this._client.on("error", (err) => {
-                console.error("[MongoDB] Error:", err);
-            });
+  public getClient(): Connection {
+    if (!this._client) throw new Error('MongoDB not connected');
+    return this._client;
+  }
 
-        } catch (error) {
-            console.error("[MongoDB] Initial connection failed:", error);
-
-            // retry strategy
-            setTimeout(() => {
-                console.log("[MongoDB] Retrying connection...");
-                this.connect();
-            }, 3000);
-        }
-    }
-
-    public async disconnect(): Promise<void> {
-        if (!this._client) return;
-
-        await this._client.close();
-        this.isConnected = false;
-    }
-
-    public getClient(): Connection {
-        if (!this._client) {
-            throw new Error("MongoDB client is not initialized. Call connect() first.");
-        }
-        return this._client;
-    }
+  public userModel(): Model<UserDocument> {
+    if (!this._client) throw new Error('MongoDB not connected');
+    return this._client.model<UserDocument>('User', UserSchema);
+  }
 }
