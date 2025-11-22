@@ -1,14 +1,27 @@
 import { Module } from '@nestjs/common';
-import { UserController } from 'src/adapters';
-import { CreateUserUsecaseImpl } from 'src/application/usecases/user/create-user/create-user.usecase';
+import {
+  CreateUserPresenterImpl,
+  FindUserByEmailPresenterImpl,
+  FindUserByIdPresenterImpl,
+  UpdateUserPresenterImpl,
+  UserController,
+} from 'src/adapters';
 import { UserFactoryImpl } from 'src/domain';
-import { UserRepositoryImpl } from 'src/domain/users/repository';
+import { UserRepositoryImpl } from 'src/domain';
 import {
   FactorySymbols,
+  PresenterSymbols,
   RepositorySymbols,
   UsecaseSymbols,
 } from 'src/infrastructure/dependency-injection';
 import { MongoDbModule } from '../mongodb/mongodb.module';
+import {
+  CreateUserUsecaseImpl,
+  DeleteUserUsecaseImpl,
+  FindUserByEmailUsecaseImpl,
+  FindUserByIdUsecaseImpl,
+  UpdateUserUsecaseImpl,
+} from 'src/application';
 
 @Module({
   imports: [MongoDbModule],
@@ -26,6 +39,38 @@ import { MongoDbModule } from '../mongodb/mongodb.module';
       provide: UsecaseSymbols.CreateUserUsecase,
       useClass: CreateUserUsecaseImpl,
     },
+    {
+      provide: PresenterSymbols.CreateUserPresenter,
+      useClass: CreateUserPresenterImpl,
+    },
+    {
+      provide: UsecaseSymbols.FindUserByIdUsecase,
+      useClass: FindUserByIdUsecaseImpl,
+    },
+    {
+      provide: PresenterSymbols.FindUserByIdPresenter,
+      useClass: FindUserByIdPresenterImpl,
+    },
+    {
+      provide: UsecaseSymbols.FindUserByEmailUsecase,
+      useClass: FindUserByEmailUsecaseImpl,
+    },
+    {
+      provide: PresenterSymbols.FindUserByEmailPresenter,
+      useClass: FindUserByEmailPresenterImpl,
+    },
+    {
+      provide: UsecaseSymbols.UpdateUserUsecase,
+      useClass: UpdateUserUsecaseImpl,
+    },
+    {
+      provide: PresenterSymbols.UpdateUserPresenter,
+      useClass: UpdateUserPresenterImpl,
+    },
+    {
+      provide: UsecaseSymbols.DeleteUserUsecase,
+      useClass: DeleteUserUsecaseImpl,
+    }
   ],
 })
 export class UserModule {}

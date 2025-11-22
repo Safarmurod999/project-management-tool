@@ -1,0 +1,18 @@
+import { User, UserStruct } from 'src/domain';
+
+export interface FindUserByEmailPresenter {
+  present(user: User): UserStruct;
+}
+
+export class FindUserByEmailPresenterImpl implements FindUserByEmailPresenter {
+  present(user: User): UserStruct {
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      password: user.password,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
+  }
+}

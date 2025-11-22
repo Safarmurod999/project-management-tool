@@ -18,7 +18,7 @@ export class MongoDb implements Database {
   public async connect(): Promise<void> {
     if (this._client) return;
 
-    const uri = `mongodb+srv://${this.config.getUsername()}:${this.config.getPassword()}@${this.config.getHost()}?authSource=admin`;
+    const uri = `mongodb+srv://${this.config.getUsername()}:${this.config.getPassword()}@${this.config.getHost()}/${this.config.getDbName()}?authSource=admin`;
 
     this._client = createConnection(uri, {
       maxPoolSize: 10,

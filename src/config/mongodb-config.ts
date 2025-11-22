@@ -4,7 +4,7 @@ import { AbstractConfig } from "./abstract-config";
 export interface MongoDbConfig {
 	getHost(): string;
 	getPort(): number;
-	getName(): string;
+	getDbName(): string;
 	getUsername(): string;
 	getPassword(): string;
 }
@@ -13,7 +13,7 @@ export interface MongoDbConfig {
 export class MongoDbConfigImpl extends AbstractConfig implements MongoDbConfig {
 	private readonly host: string;
 	private readonly port: number;
-	private readonly name: string;
+	private readonly dbName: string;
 	private readonly username: string;
 	private readonly password: string;
 
@@ -22,7 +22,7 @@ export class MongoDbConfigImpl extends AbstractConfig implements MongoDbConfig {
 
 		this.host = process.env.DATABASE_HOST || "";
 		this.port = Number(process.env.DATABASE_PORT || null);
-		this.name = process.env.DATABASE_NAME || "";
+		this.dbName = process.env.DATABASE_NAME || "";
 		this.username = process.env.DATABASE_USERNAME || "";
 		this.password = process.env.DATABASE_PASSWORD || "";
 
@@ -37,8 +37,8 @@ export class MongoDbConfigImpl extends AbstractConfig implements MongoDbConfig {
 		return this.port;
 	}
 
-	public getName(): string {
-		return this.name;
+	public getDbName(): string {
+		return this.dbName;
 	}
 
 	public getUsername(): string {
@@ -56,7 +56,7 @@ export class MongoDbConfigImpl extends AbstractConfig implements MongoDbConfig {
 		if(!this.port) {
 			this.throwEnvError("DATABASE_PORT")
 		}
-		if(!this.name) {
+		if(!this.dbName) {
 			this.throwEnvError("DATABASE_NAME")
 		}
 	}
