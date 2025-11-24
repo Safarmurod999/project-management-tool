@@ -1,11 +1,16 @@
 import { Inject, Module, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { MongoDbConfigImpl, RedisConfigImpl } from 'src/config';
+import { EmailClientImpl } from 'src/adapters';
+import { EmailClientConfigImpl, MongoDbConfigImpl, RedisConfigImpl } from 'src/config';
 import { Cache } from 'src/infrastructure/cache/cache';
 import { RedisCache } from 'src/infrastructure/cache/redis/cache';
 import { Database } from 'src/infrastructure/database/database';
 import { MongoDb } from 'src/infrastructure/database/mongodb/mongo';
-import { CacheSymbols, ConfigSymbols } from 'src/infrastructure/dependency-injection';
+import {
+  CacheSymbols,
+  ClientSymbols,
+  ConfigSymbols,
+} from 'src/infrastructure/dependency-injection';
 import { DatabaseSymbols } from 'src/infrastructure/dependency-injection/databases/symbol';
 
 @Module({
@@ -35,8 +40,16 @@ import { DatabaseSymbols } from 'src/infrastructure/dependency-injection/databas
       provide: CacheSymbols.RedisCache,
       useClass: RedisCache,
     },
+    {
+      provide: ConfigSymbols.EmailClient,
+      useClass: EmailClientConfigImpl,
+    },
+    {
+      provide: ClientSymbols.EmailClient,
+      useClass: EmailClientImpl,
+    },
   ],
-  exports: [DatabaseSymbols.MongoDb, CacheSymbols.RedisCache],
+  exports: [DatabaseSymbols.MongoDb, CacheSymbols.RedisCache, ClientSymbols.EmailClient, ConfigSymbols.EmailClient],
 })
 export class MainConfigModule implements OnModuleInit, OnModuleDestroy {
   constructor(

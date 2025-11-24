@@ -1,20 +1,18 @@
 import { Module } from '@nestjs/common';
-import { EmailClientConfigImpl, OtpConfigImpl } from 'src/config';
+import { OtpConfigImpl } from 'src/config';
 import {
   OtpController,
   OtpPresenterImpl,
 } from 'src/adapters';
 import { OtpFactoryImpl, OtpRepositoryImpl } from 'src/domain';
 import {
-  ClientSymbols,
   ConfigSymbols,
   FactorySymbols,
   PresenterSymbols,
   RepositorySymbols,
   UsecaseSymbols,
 } from 'src/infrastructure/dependency-injection';
-import { SendOtpUsecaseImpl } from 'src/application';
-import { EmailClientImpl } from 'src/adapters';
+import { SendOtpUsecaseImpl, VerifyOtpUsecaseImpl } from 'src/application';
 import { MainConfigModule } from '../config/config.module';
 
 @Module({
@@ -34,20 +32,16 @@ import { MainConfigModule } from '../config/config.module';
       useClass: OtpRepositoryImpl,
     },
     {
-      provide: ConfigSymbols.EmailClient,
-      useClass: EmailClientConfigImpl,
-    },
-    {
-      provide: ClientSymbols.EmailClient,
-      useClass: EmailClientImpl,
-    },
-    {
       provide: UsecaseSymbols.SendOtpUsecase,
       useClass: SendOtpUsecaseImpl,
     },
     {
       provide: PresenterSymbols.OtpPresenter,
       useClass: OtpPresenterImpl,
+    },
+    {
+      provide: UsecaseSymbols.VerifyOtpUsecase,
+      useClass: VerifyOtpUsecaseImpl,
     }
   ],
 })
