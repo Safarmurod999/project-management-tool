@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
-import { MongoDbModule, RedisModule, UserModule } from './infrastructure/modules';
-import {CommonModule} from "./infrastructure/modules/common/common.module";
+import { MongoDbModule, RedisModule, UserModule, CommonModule } from './infrastructure/modules';
 
 @Module({
   imports: [MongoDbModule, RedisModule, UserModule, CommonModule],
