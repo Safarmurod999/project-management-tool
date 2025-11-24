@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { MongoDbModule, RedisModule, UserModule } from './infrastructure/modules';
+import { MongoDbModule, RedisModule, UserModule, CommonModule } from './infrastructure/modules';
 
 @Module({
-  imports: [MongoDbModule, RedisModule, UserModule],
+  imports: [MongoDbModule, RedisModule, UserModule, CommonModule],
 })
 export class AppModule {}
