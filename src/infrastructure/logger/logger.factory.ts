@@ -11,7 +11,7 @@ export function createLogger() {
         ),
         transports: [
             new winston.transports.Console()
-            // add file / remote transports as needed
+            // add file
         ],
     });
 }

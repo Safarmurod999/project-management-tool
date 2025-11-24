@@ -1,7 +1,7 @@
 import winston from "winston";
 import { Module } from '@nestjs/common';
 import { createLogger, LoggerAdapter } from "../../logger";
-import { CommonSymbols } from "../../dependency-injection/common/symbols";
+import { CommonSymbols } from "src/infrastructure/dependency-injection/common/symbol";
 
 @Module({
     providers: [
