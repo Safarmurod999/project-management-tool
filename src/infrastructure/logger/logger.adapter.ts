@@ -1,7 +1,7 @@
 import winston from 'winston';
-import { ILogger } from './logger.interface';
+import { Logger } from './logger.interface';
 
-export class LoggerAdapter implements ILogger {
+export class LoggerAdapter implements Logger {
     constructor(
         private readonly logger: winston.Logger,
         private readonly context: Record<string, any> = {}
@@ -23,7 +23,7 @@ export class LoggerAdapter implements ILogger {
         this.logger.error(message, { ...this.context, ...meta });
     }
 
-    child(meta: Record<string, any> = {}): ILogger {
+    child(meta: Record<string, any> = {}): Logger {
         return new LoggerAdapter(this.logger, { ...this.context, ...meta });
     }
 }

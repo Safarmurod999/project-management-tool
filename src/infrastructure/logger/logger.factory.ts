@@ -1,4 +1,4 @@
-import winston from 'winston';
+import * as winston from 'winston';
 
 export function createLogger() {
     return winston.createLogger({
