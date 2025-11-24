@@ -1,4 +1,3 @@
-export * from "./mongodb/mongodb.module";
-export * from "./redis/redis.module";
-    
-export * from "./users/user.module"
+export * from "./config/config.module";    
+export * from "./users/user.module";
+export * from "./otp/otp.module";

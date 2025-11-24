@@ -1,1 +1,2 @@
-export * from "./modules/mongodb/mongodb.module";
+export * from "./dependency-injection";
+export * from "./modules";
