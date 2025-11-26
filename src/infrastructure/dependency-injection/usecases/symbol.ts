@@ -6,4 +6,6 @@ export const UsecaseSymbols = {
   DeleteUserUsecase: Symbol.for('DeleteUserUsecase'),
   SendOtpUsecase: Symbol.for('SendOtpUsecase'),
   VerifyOtpUsecase: Symbol.for('VerifyOtpUsecase'),
+  RegisterUserUsecase: Symbol.for('RegisterUserUsecase'),
+  VerifyUserUsecase: Symbol.for('VerifyUserUsecase'),
 };

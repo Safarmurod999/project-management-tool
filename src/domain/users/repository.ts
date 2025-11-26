@@ -8,14 +8,14 @@ import { FactorySymbols } from 'src/infrastructure/dependency-injection';
 import { UserFactory, UserStruct } from './factory';
 import { UserException } from './exception';
 
-export type UserCreateParams = Omit<UserStruct, 'id' | 'createdAt' | 'updatedAt'>;
+export type UserCreateParams = Omit<UserStruct, 'id' | 'createdAt' | 'updatedAt' | 'isVerified'>;
 export type UserUpdateParams = Omit<UserStruct, 'createdAt' | 'updatedAt'>;
 
 export interface UserRepository {
   create(user: UserCreateParams): Promise<User>;
   findById(id: string): Promise<User>;
   findByEmail(email: string): Promise<User>;
-  update(user: UserUpdateParams): Promise<User>;
+  update(user: Partial<UserUpdateParams> & { id: string }): Promise<User>;
   delete(id: string): Promise<string>;
 }
 
@@ -55,6 +55,7 @@ export class UserRepositoryImpl implements UserRepository {
     userData.name = user.name ?? userData.name;
     userData.email = user.email ?? userData.email;
     userData.password = user.password ?? userData.password;
+    userData.isVerified = user.isVerified ?? userData.isVerified;
     userData.updatedAt = new Date();
 
     await userData.save();
@@ -76,6 +77,7 @@ export class UserRepositoryImpl implements UserRepository {
       name: model.name,
       email: model.email,
       password: model.password,
+      isVerified: model.isVerified,
       createdAt: model.createdAt,
       updatedAt: model.updatedAt,
     });

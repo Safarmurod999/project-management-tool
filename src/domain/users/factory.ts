@@ -5,6 +5,7 @@ export interface UserStruct {
     name: string;
     email: string;
     password: string;
+    isVerified: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -20,6 +21,7 @@ export class UserFactoryImpl implements UserFactory {
             data.name,
             data.email,
             data.password,
+            data.isVerified,
             data.createdAt,
             data.updatedAt,
         );

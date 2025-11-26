@@ -20,6 +20,7 @@ describe('UpdateUserUsecaseImpl', () => {
       name: 'New Name',
       email: 'new@example.com',
       password: 'newpass',
+      isVerified: true,
     };
 
     const updatedUser = {
@@ -27,6 +28,7 @@ describe('UpdateUserUsecaseImpl', () => {
       name: params.name,
       email: params.email,
       password: params.password,
+      isVerified: params.isVerified,
     };
 
     userRepository.update.mockResolvedValue(updatedUser as unknown as any);

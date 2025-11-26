@@ -3,4 +3,5 @@ export const ConfigSymbols = {
     RedisConfig: Symbol.for("RedisConfig"),
     OtpConfig: Symbol.for("OtpConfig"),
     EmailClient: Symbol.for("EmailClient"),
+    AuthConfig: Symbol.for("AuthConfig"),
 }

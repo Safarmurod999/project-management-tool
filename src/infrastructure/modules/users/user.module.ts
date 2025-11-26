@@ -24,7 +24,7 @@ import {
 import { MainConfigModule } from '../config/config.module';
 
 @Module({
-  imports: [MainConfigModule],
+  // imports: [MainConfigModule],
   controllers: [UserController],
   providers: [
     {
@@ -70,7 +70,16 @@ import { MainConfigModule } from '../config/config.module';
     {
       provide: UsecaseSymbols.DeleteUserUsecase,
       useClass: DeleteUserUsecaseImpl,
-    }
+    },
+  ],
+  exports: [
+    FactorySymbols.UserFactory,
+    RepositorySymbols.UserRepository,
+    UsecaseSymbols.CreateUserUsecase,
+    UsecaseSymbols.FindUserByIdUsecase,
+    UsecaseSymbols.FindUserByEmailUsecase,
+    UsecaseSymbols.UpdateUserUsecase,
+    UsecaseSymbols.DeleteUserUsecase,
   ],
 })
 export class UserModule {}

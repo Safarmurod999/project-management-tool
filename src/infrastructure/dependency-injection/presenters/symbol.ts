@@ -5,4 +5,5 @@ export const PresenterSymbols = {
   UpdateUserPresenter: Symbol('UpdateUserPresenter'),
   DeleteUserPresenter: Symbol('DeleteUserPresenter'),
   OtpPresenter: Symbol('OtpPresenter'),
+  RegisterUserPresenter: Symbol('RegisterUserPresenter'),
 };
