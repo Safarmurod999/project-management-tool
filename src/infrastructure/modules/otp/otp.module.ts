@@ -17,7 +17,7 @@ import { MainConfigModule } from '../config/config.module';
 
 @Module({
   controllers: [OtpController],
-  imports: [MainConfigModule],
+  // imports: [MainConfigModule],
   providers: [
     {
       provide: ConfigSymbols.OtpConfig,
@@ -44,5 +44,6 @@ import { MainConfigModule } from '../config/config.module';
       useClass: VerifyOtpUsecaseImpl,
     }
   ],
+  exports: [ConfigSymbols.OtpConfig, RepositorySymbols.OtpRepository, UsecaseSymbols.SendOtpUsecase, UsecaseSymbols.VerifyOtpUsecase],
 })
 export class OtpModule {}

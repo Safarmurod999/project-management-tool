@@ -6,3 +6,4 @@ export * from "./usecases/symbol";
 export * from "./presenters/symbol";
 export * from "./cache/symbol";
 export * from "./clients/symbol";
+export * from "./services/symbol";

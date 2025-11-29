@@ -4,6 +4,7 @@ export class User {
         private readonly _name: string,
         private readonly _email: string,
         private readonly _password: string,
+        private readonly _isVerified: boolean = false,
         private readonly _createdAt: Date,
         private readonly _updatedAt: Date,
     ){}
@@ -22,6 +23,10 @@ export class User {
 
     public get password(): string {
         return this._password;
+    }
+
+    public get isVerified(): boolean {
+        return this._isVerified;
     }
 
     public get createdAt(): Date {

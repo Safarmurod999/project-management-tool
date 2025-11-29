@@ -91,12 +91,13 @@ export class UserController {
   }
 
   @Put(':id')
-  async update(@Body() dto: CreateUserDto, @Param('id') id: string) {
+  async update(@Body() dto: CreateUserDto & { isVerified: boolean }, @Param('id') id: string) {
     const user = await this.updateUserUsecase.execute({
       id,
       name: dto.name,
       email: dto.email,
       password: dto.password,
+      isVerified: dto.isVerified
     });
     return {
       status: HttpStatus.OK,
