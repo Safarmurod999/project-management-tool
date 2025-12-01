@@ -23,10 +23,13 @@
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/jwt": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
+    "@types/nodemailer": "^7.0.4",
     "bcrypt": "^6.0.0",
     "ioredis": "^5.8.2",
     "mongoose": "^8.20.0",
+    "nodemailer": "^7.0.10",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "winston": "^3.18.3"
@@ -69,6 +72,9 @@
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "moduleNameMapper": {
+      "^src/(.*)$": "<rootDir>/$1"
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"

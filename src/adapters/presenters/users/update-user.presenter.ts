@@ -11,6 +11,7 @@ export class UpdateUserPresenterImpl implements UpdateUserPresenter {
       name: user.name,
       email: user.email,
       password: user.password,
+      isVerified: user.isVerified,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };

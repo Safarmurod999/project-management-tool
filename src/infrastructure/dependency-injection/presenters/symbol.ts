@@ -4,4 +4,6 @@ export const PresenterSymbols = {
   FindUserByEmailPresenter: Symbol('FindUserByEmailPresenter'),
   UpdateUserPresenter: Symbol('UpdateUserPresenter'),
   DeleteUserPresenter: Symbol('DeleteUserPresenter'),
+  OtpPresenter: Symbol('OtpPresenter'),
+  RegisterUserPresenter: Symbol('RegisterUserPresenter'),
 };

@@ -14,7 +14,6 @@ import {
   RepositorySymbols,
   UsecaseSymbols,
 } from 'src/infrastructure/dependency-injection';
-import { MongoDbModule } from '../mongodb/mongodb.module';
 import {
   CreateUserUsecaseImpl,
   DeleteUserUsecaseImpl,
@@ -22,9 +21,10 @@ import {
   FindUserByIdUsecaseImpl,
   UpdateUserUsecaseImpl,
 } from 'src/application';
+import { MainConfigModule } from '../config/config.module';
 
 @Module({
-  imports: [MongoDbModule],
+  // imports: [MainConfigModule],
   controllers: [UserController],
   providers: [
     {
@@ -70,7 +70,16 @@ import {
     {
       provide: UsecaseSymbols.DeleteUserUsecase,
       useClass: DeleteUserUsecaseImpl,
-    }
+    },
+  ],
+  exports: [
+    FactorySymbols.UserFactory,
+    RepositorySymbols.UserRepository,
+    UsecaseSymbols.CreateUserUsecase,
+    UsecaseSymbols.FindUserByIdUsecase,
+    UsecaseSymbols.FindUserByEmailUsecase,
+    UsecaseSymbols.UpdateUserUsecase,
+    UsecaseSymbols.DeleteUserUsecase,
   ],
 })
 export class UserModule {}

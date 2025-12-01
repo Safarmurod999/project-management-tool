@@ -4,4 +4,8 @@ export const UsecaseSymbols = {
   FindUserByEmailUsecase: Symbol.for('FindUserByEmailUsecase'),
   UpdateUserUsecase: Symbol.for('UpdateUserUsecase'),
   DeleteUserUsecase: Symbol.for('DeleteUserUsecase'),
+  SendOtpUsecase: Symbol.for('SendOtpUsecase'),
+  VerifyOtpUsecase: Symbol.for('VerifyOtpUsecase'),
+  RegisterUserUsecase: Symbol.for('RegisterUserUsecase'),
+  VerifyUserUsecase: Symbol.for('VerifyUserUsecase'),
 };
