@@ -4,9 +4,10 @@ import {
   UserModule,
   OtpModule,
   AuthModule,
+    CommonModule
 } from './infrastructure/modules';
 
 @Module({
-  imports: [MainConfigModule, UserModule, OtpModule, AuthModule],
+  imports: [MainConfigModule, UserModule, OtpModule, AuthModule, CommonModule],
 })
 export class AppModule {}
