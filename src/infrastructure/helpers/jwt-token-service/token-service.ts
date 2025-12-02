@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { TokenService } from '../token-service';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from 'jsonwebtoken';
+import { TokenService } from '../token-service';
 
 @Injectable()
 export class TokenServiceImpl implements TokenService {
@@ -16,17 +16,19 @@ export class TokenServiceImpl implements TokenService {
   }
 
   public getExpiresAt(token: string): Date {
-    const decoded = this.jwt.decode(token, { json: true }) as JwtPayload | null;
+    const decoded = this.jwt.decode(token, { json: true });
 
-    if (!decoded || typeof decoded !== 'object') {
+    if (!decoded || typeof decoded !== 'object' || decoded === null) {
       throw new Error('Error occurred while decoding the token');
     }
 
-    if (!decoded.exp) {
+    const jwtPayload = decoded as JwtPayload;
+    
+    if (!jwtPayload.exp) {
       throw new Error('Token expiration information not found');
     }
 
-    return new Date(decoded?.exp * 1000);
+    return new Date(jwtPayload.exp * 1000);
   }
 
   public isValidToken(token: string, secret: string): boolean {
@@ -41,6 +43,12 @@ export class TokenServiceImpl implements TokenService {
   public parseToken<Payload extends object>(
     token: string,
   ): (Payload & JwtPayload) | null {
-    return this.jwt.decode(token, { json: true }) as Payload & JwtPayload;
+    const decoded = this.jwt.decode(token, { json: true });
+    
+    if (!decoded || typeof decoded !== 'object' || decoded === null) {
+      return null;
+    }
+    
+    return decoded as Payload & JwtPayload;
   }
 }

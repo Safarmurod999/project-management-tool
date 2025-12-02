@@ -56,7 +56,7 @@ export class UserRepositoryImpl implements UserRepository {
     userData.email = user.email ?? userData.email;
     userData.password = user.password ?? userData.password;
     userData.isVerified = user.isVerified ?? userData.isVerified;
-    userData.updatedAt = new Date();
+    userData.updatedAt = new Date() as Date;
 
     await userData.save();
     return this.toEntity(userData);

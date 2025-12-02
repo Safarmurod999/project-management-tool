@@ -36,12 +36,12 @@ export class EmailClientImpl implements EmailClient {
   public async sendEmail(
     options: EmailClientSendParams,
   ): Promise<nodemailer.SentMessageInfo> {
-      const mailOptions = {
+      const mailOptions: nodemailer.SendMailOptions = {
         from: this.config.getEmail(),
         to: options.email,
         subject: options.subject,
         html: options.html,
-      } as nodemailer.SendMailOptions;
+      };
       const result = await this.transporter.sendMail(mailOptions) as nodemailer.SentMessageInfo;
 
       this.transporter.close();
