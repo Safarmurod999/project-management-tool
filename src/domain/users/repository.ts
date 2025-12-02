@@ -79,7 +79,7 @@ export class UserRepositoryImpl implements UserRepository {
       password: model.password,
       isVerified: model.isVerified,
       createdAt: model.createdAt,
-      updatedAt: model.updatedAt ?? new Date(),
+      updatedAt: model.updatedAt,
     });
   }
 }

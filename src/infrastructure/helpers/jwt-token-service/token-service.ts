@@ -7,8 +7,8 @@ import { JwtPayload } from 'jsonwebtoken';
 export class TokenServiceImpl implements TokenService {
   constructor(private readonly jwt: JwtService) {}
 
-  public generateToken(
-    payload: Record<string, any>,
+  public generateToken<Payload extends object>(
+    payload: Payload,
     secret: string,
     expiresIn: number,
   ): string {
@@ -16,19 +16,17 @@ export class TokenServiceImpl implements TokenService {
   }
 
   public getExpiresAt(token: string): Date {
-    const decoded = this.jwt.decode(token) as JwtPayload | null;
+    const decoded = this.jwt.decode(token, { json: true }) as JwtPayload | null;
 
     if (!decoded || typeof decoded !== 'object') {
-      throw new Error(
-        'Error occurred while decoding the token',
-      );
+      throw new Error('Error occurred while decoding the token');
     }
 
     if (!decoded.exp) {
       throw new Error('Token expiration information not found');
     }
 
-    return new Date(decoded.exp * 1000);
+    return new Date(decoded?.exp * 1000);
   }
 
   public isValidToken(token: string, secret: string): boolean {

@@ -7,7 +7,7 @@ export interface UserStruct {
     password: string;
     isVerified: boolean;
     createdAt: Date;
-    updatedAt: Date;
+    updatedAt: Date | null;
 }
 
 export interface UserFactory {

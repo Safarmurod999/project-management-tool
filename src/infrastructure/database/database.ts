@@ -3,7 +3,7 @@ import { UserDocument } from "./mongodb/models";
 
 export interface Database {
     getClient(): Connection;
-    connect(): Promise<void>;
+    connect(): void;
     disconnect(): Promise<void>;
 
     userModel(): Model<UserDocument>;

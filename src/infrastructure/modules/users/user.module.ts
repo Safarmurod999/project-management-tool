@@ -21,10 +21,8 @@ import {
   FindUserByIdUsecaseImpl,
   UpdateUserUsecaseImpl,
 } from 'src/application';
-import { MainConfigModule } from '../config/config.module';
 
 @Module({
-  // imports: [MainConfigModule],
   controllers: [UserController],
   providers: [
     {
