@@ -15,15 +15,15 @@ describe('SendOtpUsecaseImpl', () => {
   beforeEach(() => {
     mockConfig = {
       getOtpValidTime: jest.fn().mockReturnValue(5 * 60 * 1000), // 5 minutes
-    } as any;
+    } as unknown as jest.Mocked<OtpConfig>;
 
     mockRepository = {
       create: jest.fn(),
-    } as any;
+    } as unknown as jest.Mocked<OtpRepository>;
 
     mockEmailClient = {
       sendEmail: jest.fn(),
-    } as any;
+    } as unknown as jest.Mocked<EmailClient>;
 
     usecase = new SendOtpUsecaseImpl(
       mockConfig,

@@ -1,5 +1,5 @@
 import { FindUserByEmailUsecaseImpl } from './find-user-by-email.usecase';
-import { UserRepository } from 'src/domain';
+import { User, UserRepository } from 'src/domain';
 import { FindUserByEmailUsecaseParams } from './types';
 
 describe('FindUserByEmailUsecaseImpl', () => {
@@ -9,7 +9,7 @@ describe('FindUserByEmailUsecaseImpl', () => {
   beforeEach(() => {
     userRepository = {
       findByEmail: jest.fn(),
-    } as any;
+    } as unknown as jest.Mocked<UserRepository>;
 
     usecase = new FindUserByEmailUsecaseImpl(userRepository);
   });
@@ -26,7 +26,7 @@ describe('FindUserByEmailUsecaseImpl', () => {
       password: 'hashed-password',
     };
 
-    userRepository.findByEmail.mockResolvedValue(foundUser as unknown as any);
+    userRepository.findByEmail.mockResolvedValue(foundUser as unknown as User);
 
     const result = await usecase.execute(params);
 

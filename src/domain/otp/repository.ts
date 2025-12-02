@@ -15,6 +15,15 @@ export interface OtpRepository {
     update(otp: Otp): Promise<void>;
 }
 
+interface OtpJsonData {
+  _id: string;
+  _receiver: string;
+  _otpCode: string;
+  _attempts: number;
+  _isVerified: boolean;
+  _expiresAt: Date;
+}
+
 @Injectable()
 export class OtpRepositoryImpl implements OtpRepository {
     constructor(
@@ -34,7 +43,7 @@ export class OtpRepositoryImpl implements OtpRepository {
         if (!otpStringData) {
             throw OtpException.NotFoundByKey(key);
         }
-        let otpParsedData = JSON.parse(otpStringData);
+        let otpParsedData = JSON.parse(otpStringData) as OtpJsonData;
 
         let otp = this.otpFactory.create({
             id: otpParsedData._id,
@@ -43,7 +52,7 @@ export class OtpRepositoryImpl implements OtpRepository {
             isVerified: otpParsedData._isVerified,
             attempts: otpParsedData._attempts,
             expiresAt: otpParsedData._expiresAt
-        });
+        }) as Otp;
 
         return otp;
     }
@@ -51,7 +60,7 @@ export class OtpRepositoryImpl implements OtpRepository {
     async create(params: Omit<OtpStruct, 'id' | 'attempts' | 'isVerified'>): Promise<Otp> {
         const otpTtl = this.otpConfig.getOtpCacheTtl();
 
-        const otp = this.otpFactory.create({ id: randomUUID(), attempts: 0, isVerified: false, ...params });
+        const otp = this.otpFactory.create({ id: randomUUID(), attempts: 0, isVerified: false, ...params }) as Otp;
 
         const otpKey = this.makeKey(otp.id);
 

@@ -6,7 +6,7 @@ export class User {
         private readonly _password: string,
         private readonly _isVerified: boolean = false,
         private readonly _createdAt: Date,
-        private readonly _updatedAt: Date,
+        private readonly _updatedAt: Date | null = null,
     ){}
 
     public get id(): string {
@@ -33,7 +33,7 @@ export class User {
         return this._createdAt;
     }
 
-    public get updatedAt(): Date {
+    public get updatedAt(): Date | null {
         return this._updatedAt;
     }
 }

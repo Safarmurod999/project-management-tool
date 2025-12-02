@@ -1,5 +1,5 @@
 import { FindUserByIdUsecaseImpl } from './find-user-by-id.usecase';
-import { UserRepository } from 'src/domain';
+import { User, UserRepository } from 'src/domain';
 import { FindUserByIdUsecaseParams } from './types';
 
 describe('FindUserByIdUsecaseImpl', () => {
@@ -9,7 +9,7 @@ describe('FindUserByIdUsecaseImpl', () => {
   beforeEach(() => {
     userRepository = {
       findById: jest.fn(),
-    } as any;
+    } as unknown as jest.Mocked<UserRepository>;
 
     usecase = new FindUserByIdUsecaseImpl(userRepository);
   });
@@ -24,7 +24,7 @@ describe('FindUserByIdUsecaseImpl', () => {
       password: 'hashedpass',
     };
 
-    userRepository.findById.mockResolvedValue(expectedUser as unknown as any);
+    userRepository.findById.mockResolvedValue(expectedUser as unknown as User);
 
     const result = await usecase.execute(params);
 

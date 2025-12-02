@@ -15,7 +15,7 @@ export class MongoDb implements Database {
     private readonly config: MongoDbConfig,
   ) {}
 
-  public async connect(): Promise<void> {
+  public connect(): void {
     if (this._client) return;
 
     const uri = `mongodb+srv://${this.config.getUsername()}:${this.config.getPassword()}@${this.config.getHost()}/${this.config.getDbName()}?authSource=admin`;

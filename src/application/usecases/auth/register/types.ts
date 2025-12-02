@@ -6,7 +6,7 @@ export interface RegisterUserUsecaseParams {
   password: string;
 }
 
-export interface RegisterUserUsecaseResult extends User {}
+export type RegisterUserUsecaseResult = User;
 
 export interface RegisterUserUsecase {
   execute(params: RegisterUserUsecaseParams): Promise<RegisterUserUsecaseResult>;

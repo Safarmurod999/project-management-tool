@@ -47,7 +47,7 @@ export class RedisCache implements Cache {
 
     }
 
-    public async disconnect(): Promise<void> {
+    public disconnect(): void {
         this._client.disconnect();
     }
 }

@@ -13,12 +13,11 @@ describe('VerifyOtpUsecaseImpl (pure unit test)', () => {
     otpRepository = {
       get: jest.fn(),
       update: jest.fn(),
-    } as any;
+    } as unknown as jest.Mocked<OtpRepository>;
 
     otpConfig = {
       getMaxAttempts: jest.fn().mockReturnValue(3),
-    } as any;
-
+    } as unknown as jest.Mocked<OtpConfig>;
     usecase = new VerifyOtpUsecaseImpl(otpConfig, otpRepository);
   });
 
@@ -29,7 +28,7 @@ describe('VerifyOtpUsecaseImpl (pure unit test)', () => {
       verifyCode: () => data.verifyCode ?? true,
       increaseAttempts: jest.fn(),
       setVerified: jest.fn(),
-    }) as any;
+    }) as unknown as Otp;
 
   it('should throw ExpiredOtp if otp is expired', async () => {
     otpRepository.get.mockResolvedValue(mockOtp({ isExpired:() => true }));
@@ -41,7 +40,7 @@ describe('VerifyOtpUsecaseImpl (pure unit test)', () => {
 
   it('should throw AttemptsLimitExceeded when attempts exceed limit', async () => {
     otpRepository.get.mockResolvedValue(
-      mockOtp({ isExpired: false, isOutOfLimit: () => true } as any),
+      mockOtp({ isExpired: false, isOutOfLimit: () => true } as unknown as Otp),
     );
 
     await expect(
@@ -54,7 +53,7 @@ describe('VerifyOtpUsecaseImpl (pure unit test)', () => {
       isExpired: false,
       isOutOfLimit: false,
       verifyCode: false,
-    } as any);
+    } as unknown as Otp);
 
     otpRepository.get.mockResolvedValue(otp);
 
@@ -71,7 +70,7 @@ describe('VerifyOtpUsecaseImpl (pure unit test)', () => {
       isExpired: false,
       isOutOfLimit: false,
       verifyCode: true,
-    } as any);
+    } as unknown as Otp);
 
     otpRepository.get.mockResolvedValue(otp);
 

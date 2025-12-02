@@ -13,11 +13,9 @@ import {
   UsecaseSymbols,
 } from 'src/infrastructure/dependency-injection';
 import { SendOtpUsecaseImpl, VerifyOtpUsecaseImpl } from 'src/application';
-import { MainConfigModule } from '../config/config.module';
 
 @Module({
   controllers: [OtpController],
-  // imports: [MainConfigModule],
   providers: [
     {
       provide: ConfigSymbols.OtpConfig,
