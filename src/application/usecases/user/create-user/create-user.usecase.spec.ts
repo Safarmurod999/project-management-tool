@@ -1,5 +1,5 @@
 import { CreateUserUsecaseImpl } from './create-user.usecase';
-import { UserRepository } from 'src/domain';
+import { User, UserRepository } from 'src/domain';
 import { CreateUserUsecaseParams } from './types';
 
 describe('CreateUserUsecaseImpl', () => {
@@ -26,7 +26,7 @@ describe('CreateUserUsecaseImpl', () => {
       ...params,
     };
 
-    userRepository.create.mockResolvedValue(createdUser as unknown as any);
+    userRepository.create.mockResolvedValue(createdUser as unknown as User);
 
     const result = await usecase.execute(params);
 
