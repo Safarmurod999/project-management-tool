@@ -41,7 +41,7 @@ export class EmailClientImpl implements EmailClient {
         to: options.email,
         subject: options.subject,
         html: options.html,
-      };
+      } as nodemailer.SendMailOptions;
       const result = await this.transporter.sendMail(mailOptions) as nodemailer.SentMessageInfo;
 
       this.transporter.close();

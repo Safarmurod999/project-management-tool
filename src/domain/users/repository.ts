@@ -71,7 +71,7 @@ export class UserRepositoryImpl implements UserRepository {
     return this.database.userModel();
   }
 
-  private toEntity(model: any) {
+  private toEntity(model: UserDocument): User {
     return this.userFactory.create({
       id: model.id,
       name: model.name,
@@ -79,7 +79,7 @@ export class UserRepositoryImpl implements UserRepository {
       password: model.password,
       isVerified: model.isVerified,
       createdAt: model.createdAt,
-      updatedAt: model.updatedAt,
+      updatedAt: model.updatedAt ?? new Date(),
     });
   }
 }
