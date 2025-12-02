@@ -9,7 +9,7 @@ describe('CreateUserUsecaseImpl', () => {
   beforeEach(() => {
     userRepository = {
       create: jest.fn(),
-    } as any;
+    } as unknown as jest.Mocked<UserRepository>;
 
     usecase = new CreateUserUsecaseImpl(userRepository);
   });
