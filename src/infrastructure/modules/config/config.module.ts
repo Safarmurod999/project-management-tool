@@ -83,7 +83,7 @@ export class MainConfigModule implements OnModuleInit, OnModuleDestroy {
   ) {}
 
   async onModuleInit() {
-    await this.mongoDb.connect();
+    this.mongoDb.connect();
 
     await this.redisCache.connect();
   }
@@ -91,6 +91,6 @@ export class MainConfigModule implements OnModuleInit, OnModuleDestroy {
   async onModuleDestroy() {
     await this.mongoDb.disconnect();
 
-    await this.redisCache.disconnect();
+    this.redisCache.disconnect();
   }
 }

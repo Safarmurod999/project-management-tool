@@ -9,7 +9,7 @@ describe('DeleteUserusecaseImpl', () => {
   beforeEach(() => {
     userRepository = {
       delete: jest.fn(),
-    } as any;
+    } as unknown as jest.Mocked<UserRepository>;
 
     usecase = new DeleteUserUsecaseImpl(userRepository);
   });

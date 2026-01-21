@@ -1,5 +1,5 @@
 import { UpdateUserUsecaseImpl } from './update-user.usecase';
-import { UserRepository } from 'src/domain';
+import { User, UserRepository } from 'src/domain';
 import { UpdateUserUsecaseParams } from './types';
 
 describe('UpdateUserUsecaseImpl', () => {
@@ -9,7 +9,7 @@ describe('UpdateUserUsecaseImpl', () => {
   beforeEach(() => {
     userRepository = {
       update: jest.fn(),
-    } as any;
+    } as unknown as jest.Mocked<UserRepository>;
 
     usecase = new UpdateUserUsecaseImpl(userRepository);
   });
@@ -31,7 +31,7 @@ describe('UpdateUserUsecaseImpl', () => {
       isVerified: params.isVerified,
     };
 
-    userRepository.update.mockResolvedValue(updatedUser as unknown as any);
+    userRepository.update.mockResolvedValue(updatedUser as unknown as User);
 
     const result = await usecase.execute(params);
 
