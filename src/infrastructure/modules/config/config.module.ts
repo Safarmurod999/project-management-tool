@@ -6,6 +6,7 @@ import {
   OnModuleInit,
 } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { join } from 'node:path';
 import { EmailClientImpl } from 'src/adapters';
 import {
   AuthConfigImpl,
@@ -28,6 +29,7 @@ import { DatabaseSymbols } from 'src/infrastructure/dependency-injection/databas
 @Module({
   imports: [
     ConfigModule.forRoot({
+      envFilePath: join(process.cwd(), `.env.${process.env.NODE_ENV}`),
       isGlobal: true,
     }),
   ],

@@ -16,6 +16,7 @@ export class RegisterUserDto {
   email: string;
   name: string;
   password: string;
+  role: string;
 }
 
 export class VerifyUserDto {
@@ -25,11 +26,11 @@ export class VerifyUserDto {
 @Controller('auth')
 export class AuthController {
   constructor(
-    @Inject(UsecaseSymbols.RegisterUserUsecase)
+    @Inject(UsecaseSymbols.Auth.RegisterUserUsecase)
     private readonly registerUserUsecase: RegisterUserUsecase,
-    @Inject(UsecaseSymbols.VerifyUserUsecase)
+    @Inject(UsecaseSymbols.Auth.VerifyUserUsecase)
     private readonly verifyUserUsecase: VerifyUserUsecase,
-    @Inject(PresenterSymbols.RegisterUserPresenter)
+    @Inject(PresenterSymbols.Auth.RegisterUserPresenter)
     private readonly registerUserPresenter: RegisterUserPresenter,
   ) {}
 
@@ -39,6 +40,7 @@ export class AuthController {
       email: dto.email,
       name: dto.name,
       password: dto.password,
+      role: dto.role,
     });
 
     return {

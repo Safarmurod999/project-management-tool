@@ -20,6 +20,7 @@ describe('UpdateUserUsecaseImpl', () => {
       name: 'New Name',
       email: 'new@example.com',
       password: 'newpass',
+      role: 'role123',
       isVerified: true,
     };
 
@@ -28,6 +29,7 @@ describe('UpdateUserUsecaseImpl', () => {
       name: params.name,
       email: params.email,
       password: params.password,
+      role: params.role,
       isVerified: params.isVerified,
     };
 

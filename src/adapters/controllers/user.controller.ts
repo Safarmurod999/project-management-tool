@@ -29,32 +29,33 @@ export class CreateUserDto {
   name: string;
   email: string;
   password: string;
+  role: string;
 }
 
 @Controller('users')
 export class UserController {
   constructor(
-    @Inject(UsecaseSymbols.CreateUserUsecase)
+    @Inject(UsecaseSymbols.User.CreateUserUsecase)
     private readonly createUserUsecase: CreateUserUsecase,
-    @Inject(PresenterSymbols.CreateUserPresenter)
+    @Inject(PresenterSymbols.User.CreateUserPresenter)
     private readonly createUserPresenter: CreateUserPresenter,
 
-    @Inject(UsecaseSymbols.FindUserByIdUsecase)
+    @Inject(UsecaseSymbols.User.FindUserByIdUsecase)
     private readonly findUserByIdUsecase: FindUserByIdUsecase,
-    @Inject(PresenterSymbols.FindUserByIdPresenter)
+    @Inject(PresenterSymbols.User.FindUserByIdPresenter)
     private readonly findUserByIdPresenter: FindUserByIdPresenter,
 
-    @Inject(UsecaseSymbols.FindUserByEmailUsecase)
+    @Inject(UsecaseSymbols.User.FindUserByEmailUsecase)
     private readonly findUserByEmailUsecase: FindUserByEmailUsecase,
-    @Inject(PresenterSymbols.FindUserByEmailPresenter)
+    @Inject(PresenterSymbols.User.FindUserByEmailPresenter)
     private readonly findUserByEmailPresenter: FindUserByEmailPresenter,
 
-    @Inject(UsecaseSymbols.UpdateUserUsecase)
+    @Inject(UsecaseSymbols.User.UpdateUserUsecase)
     private readonly updateUserUsecase: UpdateUserUsecase,
-    @Inject(PresenterSymbols.UpdateUserPresenter)
+    @Inject(PresenterSymbols.User.UpdateUserPresenter)
     private readonly updateUserPresenter: UpdateUserPresenter,
 
-    @Inject(UsecaseSymbols.DeleteUserUsecase)
+    @Inject(UsecaseSymbols.User.DeleteUserUsecase)
     private readonly deleteUserUsecase: DeleteUserUsecase,
   ) {}
 
@@ -64,6 +65,7 @@ export class UserController {
       name: dto.name,
       email: dto.email,
       password: dto.password,
+      role: dto.role,
     });
 
     return {
@@ -97,6 +99,7 @@ export class UserController {
       name: dto.name,
       email: dto.email,
       password: dto.password,
+      role: dto.role,
       isVerified: dto.isVerified
     });
     return {

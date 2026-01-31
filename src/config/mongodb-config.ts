@@ -7,6 +7,7 @@ export interface MongoDbConfig {
 	getDbName(): string;
 	getUsername(): string;
 	getPassword(): string;
+	getMode(): string;
 }
 
 @Injectable()
@@ -16,6 +17,7 @@ export class MongoDbConfigImpl extends AbstractConfig implements MongoDbConfig {
 	private readonly dbName: string;
 	private readonly username: string;
 	private readonly password: string;
+	private readonly mode: string;
 
 	constructor() {
 		super();
@@ -25,6 +27,7 @@ export class MongoDbConfigImpl extends AbstractConfig implements MongoDbConfig {
 		this.dbName = process.env.DATABASE_NAME || "";
 		this.username = process.env.DATABASE_USERNAME || "";
 		this.password = process.env.DATABASE_PASSWORD || "";
+		this.mode = process.env.MODE || "development";
 
 		this.validateEnvs();
 	}
@@ -47,6 +50,10 @@ export class MongoDbConfigImpl extends AbstractConfig implements MongoDbConfig {
 
 	public getPassword(): string {
 		return this.password;
+	}
+
+	public getMode(): string {
+		return this.mode;
 	}
 
 	private validateEnvs(): void | never {

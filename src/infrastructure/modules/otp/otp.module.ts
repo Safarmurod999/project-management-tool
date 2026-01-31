@@ -30,18 +30,18 @@ import { SendOtpUsecaseImpl, VerifyOtpUsecaseImpl } from 'src/application';
       useClass: OtpRepositoryImpl,
     },
     {
-      provide: UsecaseSymbols.SendOtpUsecase,
+      provide: UsecaseSymbols.Otp.SendOtpUsecase,
       useClass: SendOtpUsecaseImpl,
     },
     {
-      provide: PresenterSymbols.OtpPresenter,
+      provide: PresenterSymbols.Otp.OtpPresenter,
       useClass: OtpPresenterImpl,
     },
     {
-      provide: UsecaseSymbols.VerifyOtpUsecase,
+      provide: UsecaseSymbols.Otp.VerifyOtpUsecase,
       useClass: VerifyOtpUsecaseImpl,
     }
   ],
-  exports: [ConfigSymbols.OtpConfig, RepositorySymbols.OtpRepository, UsecaseSymbols.SendOtpUsecase, UsecaseSymbols.VerifyOtpUsecase],
+  exports: [ConfigSymbols.OtpConfig, RepositorySymbols.OtpRepository, UsecaseSymbols.Otp.SendOtpUsecase, UsecaseSymbols.Otp.VerifyOtpUsecase],
 })
 export class OtpModule {}
