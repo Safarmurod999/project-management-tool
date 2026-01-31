@@ -26,11 +26,11 @@ export class VerifyOtpDto {
 @Controller('otp')
 export class OtpController {
   constructor(
-    @Inject(UsecaseSymbols.SendOtpUsecase)
+    @Inject(UsecaseSymbols.Otp.SendOtpUsecase)
     private readonly sendOtpUsecase: SendOtpUsecase,
-    @Inject(UsecaseSymbols.VerifyOtpUsecase)
+    @Inject(UsecaseSymbols.Otp.VerifyOtpUsecase)
     private readonly verifyOtpUsecase: VerifyOtpUsecase,
-    @Inject(PresenterSymbols.OtpPresenter)
+    @Inject(PresenterSymbols.Otp.OtpPresenter)
     private readonly otpPresenter: OtpPresenter,
   ) {}
 

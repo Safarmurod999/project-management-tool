@@ -1,5 +1,5 @@
 import { Connection, Model } from "mongoose";
-import { UserDocument } from "./mongodb/models";
+import { PermissionDocument, RoleDocument, UserDocument } from "./mongodb/models";
 
 export interface Database {
     getClient(): Connection;
@@ -7,4 +7,6 @@ export interface Database {
     disconnect(): Promise<void>;
 
     userModel(): Model<UserDocument>;
+    permissionModel(): Model<PermissionDocument>;
+    roleModel(): Model<RoleDocument>;
 }

@@ -3,6 +3,7 @@ import { User } from "src/domain";
 export interface CreateUserUsecaseParams {
   name: string;
   email: string;
+  role: string;
   password: string;
 }
 

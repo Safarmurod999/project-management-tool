@@ -19,6 +19,7 @@ describe('CreateUserUsecaseImpl', () => {
       name: 'John Doe',
       email: 'john@example.com',
       password: '123456',
+      role: '123456'
     };
 
     const createdUser = {
@@ -34,6 +35,7 @@ describe('CreateUserUsecaseImpl', () => {
       name: params.name,
       email: params.email,
       password: params.password,
+      role: params.role,
     });
 
     expect(result).toEqual(createdUser);

@@ -1,3 +1,5 @@
 export * from "./users";
-export * from "./otp/otp.presenter";
-export * from "./auth/register-user.presenter";
+export * from "./otp";
+export * from "./auth";
+export * from "./permissions";
+export * from "./roles";

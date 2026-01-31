@@ -31,15 +31,15 @@ import { JwtModule } from '@nestjs/jwt';
       useClass: TokenServiceImpl,
     },
     {
-      provide: UsecaseSymbols.RegisterUserUsecase,
+      provide: UsecaseSymbols.Auth.RegisterUserUsecase,
       useClass: RegisterUserUsecaseImpl,
     },
     {
-      provide: UsecaseSymbols.VerifyUserUsecase,
+      provide: UsecaseSymbols.Auth.VerifyUserUsecase,
       useClass: VerifyUserUsecaseImpl,
     },
     {
-      provide: PresenterSymbols.RegisterUserPresenter,
+      provide: PresenterSymbols.Auth.RegisterUserPresenter,
       useClass: RegisterUserPresenterImpl,
     },
   ],

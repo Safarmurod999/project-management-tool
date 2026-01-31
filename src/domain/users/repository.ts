@@ -3,46 +3,110 @@ import { Database } from 'src/infrastructure/database/database';
 import { Inject } from '@nestjs/common';
 import { DatabaseSymbols } from 'src/infrastructure/dependency-injection/databases/symbol';
 import { UserDocument } from 'src/infrastructure/database/mongodb/models';
-import { Model } from 'mongoose';
-import { FactorySymbols } from 'src/infrastructure/dependency-injection';
-import { UserFactory, UserStruct } from './factory';
+import { Model, Types } from 'mongoose';
 import { UserException } from './exception';
+import { UserMapper } from 'src/infrastructure/database/mongodb/mappers/user.mapper';
+import { UserStruct } from './factory';
 
-export type UserCreateParams = Omit<UserStruct, 'id' | 'createdAt' | 'updatedAt' | 'isVerified'>;
-export type UserUpdateParams = Omit<UserStruct, 'createdAt' | 'updatedAt'>;
+export type UserCreateParams = Omit<
+  UserStruct,
+  'id' | 'createdAt' | 'updatedAt' | 'isVerified' | 'role'
+> & { role: string };
+export type UserUpdateParams = Omit<
+  UserStruct,
+  'role' | 'createdAt' | 'updatedAt'
+> & { role: string };
+
+export interface UserGetQuery {
+  page?: number;
+  limit?: number;
+  name?: string;
+}
+
+export interface UserGetResponse {
+  data: User[];
+  page: number;
+  limit: number;
+  totalCount: number;
+}
 
 export interface UserRepository {
   create(user: UserCreateParams): Promise<User>;
+  find(params: UserGetQuery): Promise<UserGetResponse>;
   findById(id: string): Promise<User>;
   findByEmail(email: string): Promise<User>;
-  update(user: Partial<UserUpdateParams> & { id: string }): Promise<User>;
+  update(user: Partial<UserUpdateParams>): Promise<User>;
   delete(id: string): Promise<string>;
 }
 
 export class UserRepositoryImpl implements UserRepository {
   constructor(
-    @Inject(FactorySymbols.UserFactory)
-    private userFactory: UserFactory,
-
     @Inject(DatabaseSymbols.MongoDb)
     private database: Database,
   ) {}
 
   async create(user: UserCreateParams): Promise<User> {
-    const userData = await this.userModel.create(user);
-    return this.toEntity(userData);
+    const userData = await (
+      await this.userModel.create(user)
+    ).populate({
+      path: 'role',
+      populate: { path: 'permissions' },
+    });
+    return UserMapper.toDomain(userData);
+  }
+
+  async find(params: UserGetQuery): Promise<UserGetResponse> {
+    const { page = 1, limit = 10, name } = params;
+
+    const filter: Record<string, any> = {};
+
+    const totalCount = await this.userModel.countDocuments();
+
+    if (name) {
+      filter.name = { $regex: name, $options: 'i' };
+    }
+
+    const userDataList = await this.userModel
+      .find(filter)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .populate({
+        path: 'role',
+        populate: { path: 'permissions' },
+      })
+      .exec();
+
+    return {
+      data: userDataList.map((userData) => UserMapper.toDomain(userData)),
+      totalCount: totalCount,
+      page,
+      limit,
+    };
   }
 
   async findById(id: string): Promise<User> {
-    const userData = await this.userModel.findById(id).exec();
+    const userData = await this.userModel
+      .findById(id)
+      .populate({
+        path: 'role',
+        populate: { path: 'permissions' },
+      })
+      .exec();
+
     if (!userData) throw UserException.UserNotFound(id);
-    return this.toEntity(userData);
+    return UserMapper.toDomain(userData);
   }
 
   async findByEmail(email: string): Promise<User> {
-    const userData = await this.userModel.findOne({ email: email }).exec();
+    const userData = await this.userModel
+      .findOne({ email: email })
+      .populate({
+        path: 'role',
+        populate: { path: 'permissions' },
+      })
+      .exec();
     if (!userData) throw UserException.UserNotFound(email);
-    return this.toEntity(userData);
+    return UserMapper.toDomain(userData);
   }
 
   async update(user: UserUpdateParams): Promise<User> {
@@ -55,11 +119,12 @@ export class UserRepositoryImpl implements UserRepository {
     userData.name = user.name ?? userData.name;
     userData.email = user.email ?? userData.email;
     userData.password = user.password ?? userData.password;
+    userData.role = new Types.ObjectId(user.role) ?? userData.role;
     userData.isVerified = user.isVerified ?? userData.isVerified;
     userData.updatedAt = new Date() as Date;
 
     await userData.save();
-    return this.toEntity(userData);
+    return UserMapper.toDomain(userData);
   }
 
   async delete(id: string): Promise<string> {
@@ -69,17 +134,5 @@ export class UserRepositoryImpl implements UserRepository {
 
   private get userModel(): Model<UserDocument> {
     return this.database.userModel();
-  }
-
-  private toEntity(model: UserDocument): User {
-    return this.userFactory.create({
-      id: model.id,
-      name: model.name,
-      email: model.email,
-      password: model.password,
-      isVerified: model.isVerified,
-      createdAt: model.createdAt,
-      updatedAt: model.updatedAt,
-    });
   }
 }

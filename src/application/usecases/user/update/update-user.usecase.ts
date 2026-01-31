@@ -1,21 +1,24 @@
 import { Inject } from '@nestjs/common';
 import { User, UserRepository } from 'src/domain';
 import { RepositorySymbols } from 'src/infrastructure/dependency-injection/repositories/symbol';
-import { CreateUserUsecase, CreateUserUsecaseParams } from './types';
+import { UpdateUserUsecase, UpdateUserUsecaseParams } from './types';
 
-export class CreateUserUsecaseImpl implements CreateUserUsecase {
+export class UpdateUserUsecaseImpl implements UpdateUserUsecase {
   constructor(
     @Inject(RepositorySymbols.UserRepository)
     private userRepository: UserRepository,
   ) {}
 
-  async execute(params: CreateUserUsecaseParams): Promise<User> {
+  async execute(params: UpdateUserUsecaseParams): Promise<User> {
     const newUser = {
+      id: params.id,
       name: params.name,
       email: params.email,
       password: params.password,
+      role: params.role,
+      isVerified: params.isVerified,
     };
 
-    return await this.userRepository.create(newUser);
+    return this.userRepository.update(newUser);
   }
 }
