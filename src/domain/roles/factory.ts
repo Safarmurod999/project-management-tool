@@ -1,14 +1,15 @@
+import { RoleCode, RoleStatus } from "src/infrastructure/common/enum";
 import { Permission, PermissionStruct } from "../permissions";
 import { Role } from "./entity";
 
 export interface RoleStruct {
   id: string;
-  name: string;
+  name: RoleCode;
   description?: string;
   permissions: PermissionStruct[];
   createdAt: Date;
   updatedAt: Date | null;
-  isActive?: boolean;
+  status?: RoleStatus;
 }
 
 export interface RoleFactory {
@@ -19,11 +20,10 @@ export class RoleFactoryImpl implements RoleFactory {
   create(data: RoleStruct): Role {
     const permissions = data.permissions.map(p => new Permission(
       p.id,
-      p.name,
-      p.description,
+      p.code,
       p.createdAt,
       p.updatedAt,
-      p.isActive,
+      p.status,
     ))
     return new Role(
       data.id,
@@ -32,7 +32,7 @@ export class RoleFactoryImpl implements RoleFactory {
       data.createdAt,
       data.updatedAt,
       data.description,
-      data.isActive
+      data.status
     );
   }
 }

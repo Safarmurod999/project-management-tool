@@ -1,10 +1,11 @@
 import { User } from "src/domain";
+import { RoleCode } from "src/infrastructure/common/enum";
 
 export interface RegisterUserUsecaseParams {
   name: string;
   email: string;
   password: string;
-  role: string;
+  role: RoleCode;
 }
 
 export type RegisterUserUsecaseResult = User;

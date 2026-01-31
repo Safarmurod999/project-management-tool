@@ -1,12 +1,12 @@
 import { Document } from "mongoose";
-import { PermissionDocument } from "./permission.model";
 import { Types } from "mongoose";
+import { RoleCode, RoleStatus } from "src/infrastructure/common/enum";
 
 export interface RoleDocument extends Document {
-  name: string;
+  name: RoleCode;
   description: string;
   permissions: Types.ObjectId[];
-  isActive?: boolean;
+  status?: RoleStatus;
   createdAt: Date;
   updatedAt: Date | null;
 }

@@ -17,6 +17,7 @@ export class UpdateUserUsecaseImpl implements UpdateUserUsecase {
       password: params.password,
       role: params.role,
       isVerified: params.isVerified,
+      status: params.status,
     };
 
     return this.userRepository.update(newUser);

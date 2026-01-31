@@ -4,12 +4,10 @@ import { RoleMapper } from "./roles.mapper";
 
 export class UserMapper {
   static toDomain(raw: UserDocument): User {
-    // Agar role populate qilinmagan bo'lsa, populate qilish kerak
-    let role;
+    let role;    
     if (typeof raw.role === 'object' && raw.role !== null) {
       role = RoleMapper.toDomain(raw.role as unknown as RoleDocument);
     } else {
-      // Bu holatda, role faqat ID bo'ladi, lekin repositoryda populate qilinadi
       throw new Error('Role should be populated');
     }
 
@@ -21,7 +19,8 @@ export class UserMapper {
       role,
       raw.isVerified,
       raw.createdAt,
-      raw.updatedAt
+      raw.updatedAt,
+      raw.status
     );
   }
 
@@ -32,6 +31,7 @@ export class UserMapper {
       name: user.name,
       role: user.role.id,
       isVerified: user.isVerified,
+      status: user.status,
     };
   }
 }

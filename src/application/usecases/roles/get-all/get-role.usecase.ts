@@ -1,5 +1,5 @@
 import { Inject } from '@nestjs/common';
-import { Role, RoleRepository } from 'src/domain';
+import { RoleRepository } from 'src/domain';
 import { RepositorySymbols } from 'src/infrastructure/dependency-injection/repositories/symbol';
 import { GetRolesUsecase, GetRolesUsecaseParams, GetRolesUsecaseResult } from './types';
 

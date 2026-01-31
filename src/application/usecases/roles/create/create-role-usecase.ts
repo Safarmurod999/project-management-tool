@@ -14,7 +14,7 @@ export class CreateRoleUsecaseImpl implements CreateRoleUsecase {
       name: params.name,
       permissions: params.permissions,
       description: params.description,
-      isActive: params.isActive,
+      status: params.status,
     };
 
     return await this.roleRepository.create(newRole);

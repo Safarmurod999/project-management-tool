@@ -5,6 +5,7 @@ export const PresenterSymbols = {
     FindUserByEmailPresenter: Symbol('FindUserByEmailPresenter'),
     UpdateUserPresenter: Symbol('UpdateUserPresenter'),
     DeleteUserPresenter: Symbol('DeleteUserPresenter'),
+    GetUsersPresenter: Symbol('GetUsersPresenter'),
   },
   Otp: {
     OtpPresenter: Symbol('OtpPresenter'),

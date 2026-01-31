@@ -44,7 +44,7 @@ export class TokenServiceImpl implements TokenService {
     token: string,
   ): (Payload & JwtPayload) | null {
     const decoded = this.jwt.decode(token, { json: true });
-    
+
     if (!decoded || typeof decoded !== 'object' || decoded === null) {
       return null;
     }

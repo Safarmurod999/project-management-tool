@@ -1,7 +1,10 @@
 import { Inject } from '@nestjs/common';
 import { Permission, PermissionRepository } from 'src/domain';
 import { RepositorySymbols } from 'src/infrastructure/dependency-injection/repositories/symbol';
-import { UpdatePermissionUsecase, UpdatePermissionUsecaseParams } from './types';
+import {
+  UpdatePermissionUsecase,
+  UpdatePermissionUsecaseParams,
+} from './types';
 
 export class UpdatePermissionUsecaseImpl implements UpdatePermissionUsecase {
   constructor(
@@ -12,9 +15,8 @@ export class UpdatePermissionUsecaseImpl implements UpdatePermissionUsecase {
   async execute(params: UpdatePermissionUsecaseParams): Promise<Permission> {
     const permission = {
       id: params.id,
-      name: params.name,
-      description: params.description,
-      isActive: params.isActive,
+      code: params.code,
+      status: params.status,
     };
 
     return await this.permissionRepository.update(permission);

@@ -9,6 +9,8 @@ export interface GetRolesUsecaseParams {
 export interface GetRolesUsecaseResult {
   data: Role[];
   totalCount: number;
+  page: number;
+  limit: number;
 }
 
 export interface GetRolesUsecase {

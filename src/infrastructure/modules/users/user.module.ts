@@ -5,8 +5,13 @@ import {
   FindUserByIdPresenterImpl,
   UpdateUserPresenterImpl,
   UserController,
+  GetUsersPresenterImpl,
 } from 'src/adapters';
-import { PermissionFactoryImpl, RoleFactoryImpl, UserFactoryImpl } from 'src/domain';
+import {
+  PermissionFactoryImpl,
+  RoleFactoryImpl,
+  UserFactoryImpl,
+} from 'src/domain';
 import { UserRepositoryImpl } from 'src/domain';
 import {
   FactorySymbols,
@@ -19,6 +24,7 @@ import {
   DeleteUserUsecaseImpl,
   FindUserByEmailUsecaseImpl,
   FindUserByIdUsecaseImpl,
+  GetUsersUsecaseImpl,
   UpdateUserUsecaseImpl,
 } from 'src/application';
 
@@ -76,7 +82,15 @@ import {
     {
       provide: FactorySymbols.PermissionFactory,
       useClass: PermissionFactoryImpl,
-    }
+    },
+    {
+      provide: PresenterSymbols.User.GetUsersPresenter,
+      useClass: GetUsersPresenterImpl,
+    },
+    {
+      provide: UsecaseSymbols.User.GetUsersUsecase,
+      useClass: GetUsersUsecaseImpl,
+    },
   ],
   exports: [
     FactorySymbols.UserFactory,

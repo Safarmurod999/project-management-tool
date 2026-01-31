@@ -1,4 +1,5 @@
 import { Schema } from 'mongoose';
+import { UserStatus } from 'src/infrastructure/common/enum';
 export const UserSchema = new Schema(
   {
     name: { type: String, required: true },
@@ -9,7 +10,12 @@ export const UserSchema = new Schema(
       ref: 'Role',
       required: true,
     },
-    isVerified: { type: Boolean, default: false }
+    isVerified: { type: Boolean, default: false },
+    status: {
+      type: String,
+      enum: Object.values(UserStatus),
+      default: UserStatus.ACTIVE,
+    },
   },
   { timestamps: true },
 );
