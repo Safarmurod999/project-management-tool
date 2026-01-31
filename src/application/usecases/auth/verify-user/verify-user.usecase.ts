@@ -42,13 +42,18 @@ export class VerifyUserUsecaseImpl implements VerifyUserUsecase {
       isVerified: true,
     });
 
+    const user = await this.userRepository.findById(params.id);
+
     const tokens = {
       access_token: this.tokenService.generateToken(
-        { userId: params.id },
+        {
+          userId: params.id,
+          role: user.role.name,
+          permissions: user.role.permissions.map((p) => p.code),
+        },
         this.authConfig.getAccessSecret(),
         this.authConfig.getAccessSecretExpiresIn(),
       ),
-
       refresh_token: this.tokenService.generateToken(
         { userId: params.id },
         this.authConfig.getRefreshSecret(),

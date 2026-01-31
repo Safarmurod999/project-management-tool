@@ -1,5 +1,5 @@
 import { Inject } from '@nestjs/common';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { Permission } from './entity';
 import { Database } from 'src/infrastructure/database/database';
 import { DatabaseSymbols } from 'src/infrastructure/dependency-injection/databases/symbol';
@@ -8,8 +8,14 @@ import { FactorySymbols } from 'src/infrastructure/dependency-injection';
 import { PermissionFactory, PermissionStruct } from './factory';
 import { PermissionException } from './exception';
 
-export type PermissionCreateParams = Omit<PermissionStruct, 'id' | 'createdAt' | 'updatedAt'>;
-export type PermissionUpdateParams = Omit<PermissionStruct, 'createdAt' | 'updatedAt'>;
+export type PermissionCreateParams = Omit<
+  PermissionStruct,
+  'id' | 'createdAt' | 'updatedAt'
+>;
+export type PermissionUpdateParams = Omit<
+  PermissionStruct,
+  'createdAt' | 'updatedAt'
+>;
 
 export interface PermissionsGetQuery {
   page?: number;
@@ -20,6 +26,8 @@ export interface PermissionsGetQuery {
 export interface PermissionGetResponse {
   data: Permission[];
   totalCount: number;
+  page: number;
+  limit: number;
 }
 
 export interface PermissionRepository {
@@ -55,18 +63,14 @@ export class PermissionRepositoryImpl implements PermissionRepository {
   }
 
   async getAll(params: PermissionsGetQuery): Promise<PermissionGetResponse> {
-    const {
-            page  = 1,
-            limit = 10,
-            name,
-          } = params;
+    const { page = 1, limit = 10, name } = params;
 
     const totalCount = await this.permissionModel.countDocuments();
 
     const filter: Record<string, any> = {};
 
     if (name) {
-      filter.name = {$regex: name, $options: 'i'};
+      filter.name = { $regex: name, $options: 'i' };
     }
 
     const permissionDataList = await this.permissionModel
@@ -76,10 +80,12 @@ export class PermissionRepositoryImpl implements PermissionRepository {
       .exec();
 
     return {
-      data: permissionDataList.map(permissionData =>
+      data: permissionDataList.map((permissionData) =>
         this.toEntity(permissionData),
       ),
       totalCount,
+      page,
+      limit,
     };
   }
 
@@ -88,15 +94,11 @@ export class PermissionRepositoryImpl implements PermissionRepository {
 
     if (!permissionData) {
       throw PermissionException.PermissionNotFound(user.id);
-    };
+    }
 
-    console.log(permissionData);
-    
-
-    permissionData.name = user.name ?? permissionData.name;
-    permissionData.description = user.description ?? permissionData.description;
+    permissionData.code = user.code ?? permissionData.code;
     permissionData.updatedAt = new Date() as Date;
-    permissionData.isActive = user.isActive ?? permissionData.isActive;
+    permissionData.status = user.status ?? permissionData.status;
 
     await permissionData.save();
     return this.toEntity(permissionData);
@@ -114,9 +116,8 @@ export class PermissionRepositoryImpl implements PermissionRepository {
   private toEntity(model: PermissionDocument): Permission {
     return this.permissionFactory.create({
       id: model.id,
-      name: model.name,
-      description: model.description || '',
-      isActive: model.isActive,
+      code: model.code,
+      status: model.status,
       createdAt: model.createdAt,
       updatedAt: model.updatedAt,
     });

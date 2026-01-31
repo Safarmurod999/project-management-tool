@@ -8,11 +8,10 @@ export class FindPermissionByIdPresenterImpl implements FindPermissionByIdPresen
   present(permission: Permission): PermissionStruct {
     return {
       id: permission.id,
-      name: permission.name,
-      description: permission.description,
+      code: permission.code,
       createdAt: permission.createdAt,
       updatedAt: permission.updatedAt,
-      isActive: permission.isActive,
+      status: permission.status,
     };
   }
 }

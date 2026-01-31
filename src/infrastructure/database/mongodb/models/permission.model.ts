@@ -1,9 +1,9 @@
-import { Document } from "mongoose";
+import { Document } from 'mongoose';
+import { PermissionCode, PermissionStatus } from 'src/infrastructure/common/enum';
 
 export interface PermissionDocument extends Document {
-  name: string;
-  description: string;
-  isActive?: boolean;
+  code: PermissionCode;
+  status: PermissionStatus;
   createdAt: Date;
   updatedAt: Date | null;
 }

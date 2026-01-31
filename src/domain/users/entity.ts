@@ -1,3 +1,4 @@
+import { UserStatus } from "src/infrastructure/common/enum";
 import { Role } from "../roles";
 
 export class User {
@@ -10,6 +11,7 @@ export class User {
         private readonly _isVerified: boolean = false,
         private readonly _createdAt: Date,
         private readonly _updatedAt: Date | null = null,
+        private readonly _status: UserStatus = UserStatus.ACTIVE,
     ){}
 
     public get id(): string {
@@ -42,5 +44,9 @@ export class User {
 
     public get updatedAt(): Date | null {
         return this._updatedAt;
+    }
+
+    public get status(): UserStatus {
+        return this._status;
     }
 }

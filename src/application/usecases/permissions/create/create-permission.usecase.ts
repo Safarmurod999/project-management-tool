@@ -11,9 +11,8 @@ export class CreatePermissionUsecaseImpl implements CreatePermissionUsecase {
 
   async execute(params: CreatePermissionUsecaseParams): Promise<Permission> {
     const newPermission = {
-      name: params.name,
-      description: params.description,
-      isActive: params.isActive,
+      code: params.code,
+      status: params.status,
     };
 
     return await this.permissionRepository.create(newPermission);

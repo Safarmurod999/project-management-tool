@@ -1,12 +1,12 @@
 import { User, UserStruct } from 'src/domain';
 
-export interface UpdateUserPresenter {
-  present(user: User): UserStruct;
+export interface GetUsersPresenter {
+  present(users: User[]): UserStruct[];
 }
 
-export class UpdateUserPresenterImpl implements UpdateUserPresenter {
-  present(user: User): UserStruct {
-    return {
+export class GetUsersPresenterImpl implements GetUsersPresenter {
+  present(users: User[]): UserStruct[] {
+    return users.map((user) => ({
       id: user.id,
       name: user.name,
       email: user.email,
@@ -14,7 +14,7 @@ export class UpdateUserPresenterImpl implements UpdateUserPresenter {
         id: user.role.id,
         name: user.role.name,
         status: user.role.status,
-        permissions: user.role.permissions.map((p) => ({
+        permissions: user.role.permissions.map(p => ({
           id: p.id,
           code: p.code,
           createdAt: p.createdAt,
@@ -29,6 +29,6 @@ export class UpdateUserPresenterImpl implements UpdateUserPresenter {
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
       status: user.status,
-    };
+    }));
   }
 }

@@ -7,23 +7,35 @@ import {
   Inject,
   Param,
   Post,
-  Put, Query,
+  Put,
+  Query,
+  Res,
+  UseGuards,
 } from '@nestjs/common';
 import {
-  CreateRoleUsecase, DeleteRoleUsecase, FindRoleByIdUsecase, GetRolesUsecase,
+  CreateRoleUsecase,
+  DeleteRoleUsecase,
+  FindRoleByIdUsecase,
+  GetRolesUsecase,
   UpdateRoleUsecase,
 } from 'src/application';
 import { PresenterSymbols } from 'src/infrastructure/dependency-injection/presenters/symbol';
 import { UsecaseSymbols } from 'src/infrastructure/dependency-injection/usecases/symbol';
 import {
-  CreateRolePresenter, FindRoleByIdPresenter, GetRolesPresenter,
+  CreateRolePresenter,
+  FindRoleByIdPresenter,
+  GetRolesPresenter,
 } from '../presenters';
+import { RoleCode, RoleStatus } from 'src/infrastructure/common/enum';
+import { Response } from 'express';
+import { Permissions, Roles } from 'src/infrastructure/decorators';
+import { RolesPermissionsGuard } from 'src/infrastructure/middlewares';
 
 export class CreateRoleDto {
-  name: string;
+  name: RoleCode;
   permissions: string[];
   description: string;
-  isActive?: boolean;
+  status?: RoleStatus;
 }
 
 export class GetRolesQuery {
@@ -33,6 +45,7 @@ export class GetRolesQuery {
 }
 
 @Controller('roles')
+@UseGuards(RolesPermissionsGuard)
 export class RoleController {
   constructor(
     @Inject(UsecaseSymbols.Role.CreateRoleUsecase)
@@ -60,65 +73,115 @@ export class RoleController {
   ) {}
 
   @Post()
-  async create(@Body() dto: CreateRoleDto) {
-    const role = await this.createRoleUsecase.execute({
-      name: dto.name,
-      permissions: dto.permissions,
-      description: dto.description,
-    });
+  @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN)
+  @Permissions('user:create')
+  async create(@Res() res: Response, @Body() dto: CreateRoleDto) {
+    try {
+      const role = await this.createRoleUsecase.execute({
+        name: dto.name,
+        permissions: dto.permissions,
+        description: dto.description,
+        status: dto.status,
+      });
 
-    return {
-      status: HttpStatus.CREATED,
-      data: this.createRolePresenter.present(role),
-    };
+      res.status(HttpStatus.CREATED).send({
+        status: HttpStatus.CREATED,
+        data: this.createRolePresenter.present(role),
+      });
+    } catch (error) {
+      res.status(error.statusCode).send({
+        success: false,
+        status: error.statusCode,
+        message: error.message,
+      });
+    }
   }
 
   @Get()
-  async getAll(@Query() query: GetRolesQuery) {
-    const roles = await this.getRolesUsecase.execute({
-      page: query.page ? Number(query.page) : undefined,
-      limit: query.limit ? Number(query.limit) : undefined,
-      name: query.name,
-    });
+  async getAll(@Res() res: Response, @Query() query: GetRolesQuery) {
+    try {
+      const roles = await this.getRolesUsecase.execute({
+        page: query.page ? Number(query.page) : undefined,
+        limit: query.limit ? Number(query.limit) : undefined,
+        name: query.name,
+      });
 
-    return {
-      status: HttpStatus.OK,
-      data: this.getRolesPresenter.present(roles.data),
-      filter: query,
-      totalCount: roles.totalCount,
-    };
+      res.status(HttpStatus.OK).send({
+        status: HttpStatus.OK,
+        data: this.getRolesPresenter.present(roles.data),
+        filter: query,
+        totalCount: roles.totalCount,
+        page: roles.page,
+        limit: roles.limit,
+      });
+    } catch (error) {
+      res.status(error.statusCode).send({
+        status: error.statusCode || HttpStatus.BAD_REQUEST,
+        success: false,
+        message: error.message,
+      });
+    }
   }
 
   @Get(':id')
-  async findById(@Param('id') id: string) {
-    const role = await this.findRoleByIdUsecase.execute({ id });
+  async findById(@Res() res: Response, @Param('id') id: string) {
+    try {
+      const role = await this.findRoleByIdUsecase.execute({ id });
 
-    return {
-      status: HttpStatus.OK,
-      data: this.findRoleByIdPresenter.present(role),
-    };
+      res.status(HttpStatus.OK).send({
+        status: HttpStatus.OK,
+        data: this.findRoleByIdPresenter.present(role),
+      });
+    } catch (error) {
+      res.status(error.statusCode).send({
+        status: error.statusCode || HttpStatus.BAD_REQUEST,
+        success: false,
+        message: error.message,
+      });
+    }
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() dto: CreateRoleDto) {
-    const role = await this.updateRoleUsecase.execute({
-      id: id,
-      name: dto.name,
-      permissions: dto.permissions,
-      description: dto.description,
-    });
-    return {
-      status: HttpStatus.OK,
-      data: this.updateRolePresenter.present(role),
-    };
+  async update(
+    @Res() res: Response,
+    @Param('id') id: string,
+    @Body() dto: CreateRoleDto,
+  ) {
+    try {
+      const role = await this.updateRoleUsecase.execute({
+        id: id,
+        name: dto.name,
+        permissions: dto.permissions,
+        description: dto.description,
+        status: dto.status,
+      });
+      res.status(HttpStatus.OK).send({
+        status: HttpStatus.OK,
+        data: this.updateRolePresenter.present(role),
+      });
+    } catch (error) {
+      res.status(error.statusCode).send({
+        status: error.statusCode || HttpStatus.BAD_REQUEST,
+        success: false,
+        message: error.message,
+      });
+    }
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
-    const deletedId = await this.deleteRoleUsecase.execute({ id });
-    return {
-      status: HttpStatus.OK,
-      data: { id: deletedId },
-    };
+  async delete(@Res() res: Response, @Param('id') id: string) {
+    try {
+      const deletedId = await this.deleteRoleUsecase.execute({ id });
+      res.status(HttpStatus.OK).send({
+        status: HttpStatus.OK,
+        data: { id: deletedId },
+      });
+    } catch (error) {
+      res.status(error.statusCode).send({
+        status: error.statusCode || HttpStatus.BAD_REQUEST,
+        success: false,
+        message: error.message,
+      });
+    }
   }
 }

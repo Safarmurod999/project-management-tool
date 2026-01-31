@@ -15,6 +15,7 @@ export class CreateUserUsecaseImpl implements CreateUserUsecase {
       email: params.email,
       password: params.password,
       role: params.role,
+      status: params.status,
     };
 
     return await this.userRepository.create(newUser);

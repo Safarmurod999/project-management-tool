@@ -76,6 +76,9 @@ export class UserRepositoryImpl implements UserRepository {
       })
       .exec();
 
+      console.log(userDataList);
+      
+
     return {
       data: userDataList.map((userData) => UserMapper.toDomain(userData)),
       totalCount: totalCount,
@@ -110,20 +113,35 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async update(user: UserUpdateParams): Promise<User> {
-    const userData = await this.userModel.findById(user.id);
+    const userData = await this.userModel
+      .findById(user.id)
+      .populate({
+        path: 'role',
+        populate: { path: 'permissions' },
+      });
 
     if (!userData) {
       throw UserException.UserNotFound(user.id);
     }
 
+    console.log(userData);
+    
     userData.name = user.name ?? userData.name;
     userData.email = user.email ?? userData.email;
     userData.password = user.password ?? userData.password;
-    userData.role = new Types.ObjectId(user.role) ?? userData.role;
+    userData.role = user.role
+      ? new Types.ObjectId(user.role)
+      : userData.role._id;
     userData.isVerified = user.isVerified ?? userData.isVerified;
     userData.updatedAt = new Date() as Date;
+    userData.status = user.status ?? userData.status;
 
     await userData.save();
+
+    await userData.populate({
+      path: 'role',
+      populate: { path: 'permissions' },
+    });
     return UserMapper.toDomain(userData);
   }
 

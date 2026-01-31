@@ -13,23 +13,13 @@ import {
   RegisterUserUsecaseImpl,
   VerifyUserUsecaseImpl,
 } from 'src/application';
-import { JwtModule } from '@nestjs/jwt';
-
 @Module({
   controllers: [AuthController],
   imports: [
     OtpModule,
     UserModule,
-    JwtModule.register({
-      secret: 'your-secret',
-      signOptions: { expiresIn: '1h' },
-    }),
   ],
   providers: [
-    {
-      provide: ServiceSymbols.TokenService,
-      useClass: TokenServiceImpl,
-    },
     {
       provide: UsecaseSymbols.Auth.RegisterUserUsecase,
       useClass: RegisterUserUsecaseImpl,

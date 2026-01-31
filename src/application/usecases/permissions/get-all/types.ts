@@ -9,6 +9,8 @@ export interface GetPermissionsUsecaseParams {
 export interface GetPermissionsUsecaseResult {
   data: Permission[];
   totalCount: number;
+  page: number;
+  limit: number;
 }
 
 export interface GetPermissionsUsecase {

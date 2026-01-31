@@ -15,7 +15,7 @@ export class UpdateRoleUsecaseImpl implements UpdateRoleUsecase {
       name: params.name,
       permissions: params.permissions,
       description: params.description,
-      isActive: params.isActive,
+      status: params.status,
     };
 
     return await this.roleRepository.update(role);

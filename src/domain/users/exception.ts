@@ -1,18 +1,21 @@
 export class UserException extends Error {
-  constructor(message: string) {
+  public readonly statusCode: number;
+
+  constructor(message: string, statusCode: number = 400) {
     super(message);
     this.name = 'UserException';
+    this.statusCode = statusCode;
   }
 
   public static UserNotFound(userId: string): UserException {
-    return new UserException(`User with ID ${userId} not found.`);
+    return new UserException(`User with ID ${userId} not found.`, 404);
   }
 
   public static InvalidUserData(reason: string): UserException {
-    return new UserException(`Invalid user data: ${reason}`);
+    return new UserException(`Invalid user data: ${reason}`, 400);
   }
 
   public static UnauthorizedAccess(action: string): UserException {
-    return new UserException(`Unauthorized access attempt to ${action}.`);
+    return new UserException(`Unauthorized access attempt to ${action}.`, 401);
   }
 }

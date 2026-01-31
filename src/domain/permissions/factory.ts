@@ -1,10 +1,10 @@
+import { PermissionCode, PermissionStatus } from "src/infrastructure/common/enum";
 import { Permission } from "./entity";
 
 export interface PermissionStruct {
     id: string;
-    name: string;
-    description: string;
-    isActive?: boolean;
+    code: PermissionCode;
+    status?: PermissionStatus;
     createdAt: Date;
     updatedAt: Date | null;
 }
@@ -17,11 +17,10 @@ export class PermissionFactoryImpl implements PermissionFactory {
     create(data: PermissionStruct): Permission {
         return new Permission(
             data.id,
-            data.name,
-            data.description,
+            data.code,
             data.createdAt,
             data.updatedAt,
-            data.isActive,
+            data.status as PermissionStatus || PermissionStatus.ACTIVE,
         );
     }
 }

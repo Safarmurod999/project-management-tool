@@ -1,5 +1,6 @@
 import { Document, Types } from "mongoose";
 import { RoleDocument } from "./role.model";
+import { UserStatus } from "src/infrastructure/common/enum";
 
 export interface UserDocument extends Document {
   name: string;
@@ -9,4 +10,5 @@ export interface UserDocument extends Document {
   isVerified: boolean;
   createdAt: Date;
   updatedAt: Date | null;
+  status: UserStatus;
 }

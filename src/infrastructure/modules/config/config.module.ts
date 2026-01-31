@@ -6,6 +6,7 @@ import {
   OnModuleInit,
 } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 import { join } from 'node:path';
 import { EmailClientImpl } from 'src/adapters';
 import {
@@ -22,8 +23,10 @@ import {
   CacheSymbols,
   ClientSymbols,
   ConfigSymbols,
+  ServiceSymbols,
 } from 'src/infrastructure/dependency-injection';
 import { DatabaseSymbols } from 'src/infrastructure/dependency-injection/databases/symbol';
+import { TokenServiceImpl } from 'src/infrastructure/helpers';
 
 @Global()
 @Module({
@@ -31,6 +34,10 @@ import { DatabaseSymbols } from 'src/infrastructure/dependency-injection/databas
     ConfigModule.forRoot({
       envFilePath: join(process.cwd(), `.env.${process.env.NODE_ENV}`),
       isGlobal: true,
+    }),
+    JwtModule.register({
+      secret: 'your-secret',
+      signOptions: { expiresIn: '1h' },
     }),
   ],
   controllers: [],
@@ -66,6 +73,10 @@ import { DatabaseSymbols } from 'src/infrastructure/dependency-injection/databas
       provide: ConfigSymbols.AuthConfig,
       useClass: AuthConfigImpl,
     },
+    {
+      provide: ServiceSymbols.TokenService,
+      useClass: TokenServiceImpl,
+    },
   ],
   exports: [
     DatabaseSymbols.MongoDb,
@@ -73,6 +84,7 @@ import { DatabaseSymbols } from 'src/infrastructure/dependency-injection/databas
     ClientSymbols.EmailClient,
     ConfigSymbols.EmailClient,
     ConfigSymbols.AuthConfig,
+    ServiceSymbols.TokenService,
   ],
 })
 export class MainConfigModule implements OnModuleInit, OnModuleDestroy {

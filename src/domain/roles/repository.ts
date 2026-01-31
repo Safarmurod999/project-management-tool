@@ -92,7 +92,7 @@ export class RoleRepositoryImpl implements RoleRepository {
     roleData.description = user.description ?? roleData.description;
     roleData.permissions = user.permissions ? user.permissions.map(perm => new Types.ObjectId(perm)) : roleData.permissions;
     roleData.updatedAt = new Date() as Date;
-    roleData.isActive = user.isActive ?? roleData.isActive;
+    roleData.status = user.status ?? roleData.status;
 
     await roleData.save();
     return RoleMapper.toDomain(roleData);

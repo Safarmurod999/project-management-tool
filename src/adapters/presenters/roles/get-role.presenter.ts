@@ -12,16 +12,15 @@ export class GetRolesPresenterImpl implements GetRolesPresenter {
         name: role.name,
         permissions: role.permissions.map(p => ({
           id: p.id,
-          name: p.name,
-          description: p.description,
+          code: p.code,
           createdAt: p.createdAt,
           updatedAt: p.updatedAt,
-          isActive: p.isActive,
+          status: p.status,
         })),
         description: role.description,
         createdAt: role.createdAt,
         updatedAt: role.updatedAt,
-        isActive: role.isActive,
+        status: role.status,
       }
     ));
   }

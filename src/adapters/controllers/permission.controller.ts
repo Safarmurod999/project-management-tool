@@ -7,22 +7,33 @@ import {
   Inject,
   Param,
   Post,
-  Put, Query,
+  Put,
+  Query,
+  Res,
 } from '@nestjs/common';
 import {
-  CreatePermissionUsecase, DeletePermissionUsecase, FindPermissionByIdUsecase, GetPermissionsUsecase,
+  CreatePermissionUsecase,
+  DeletePermissionUsecase,
+  FindPermissionByIdUsecase,
+  GetPermissionsUsecase,
   UpdatePermissionUsecase,
 } from 'src/application';
 import { PresenterSymbols } from 'src/infrastructure/dependency-injection/presenters/symbol';
 import { UsecaseSymbols } from 'src/infrastructure/dependency-injection/usecases/symbol';
 import {
-  CreatePermissionPresenter, FindPermissionByIdPresenter, GetPermissionsPresenter,
+  CreatePermissionPresenter,
+  FindPermissionByIdPresenter,
+  GetPermissionsPresenter,
 } from '../presenters';
+import {
+  PermissionCode,
+  PermissionStatus,
+} from 'src/infrastructure/common/enum';
+import { Response } from 'express';
 
 export class CreatePermissionDto {
-  name: string;
-  description: string;
-  isActive?: boolean;
+  code: PermissionCode;
+  status?: PermissionStatus;
 }
 
 export class GetPermissionsQuery {
@@ -53,69 +64,115 @@ export class PermissionController {
     private readonly updatePermissionUsecase: UpdatePermissionUsecase,
     @Inject(PresenterSymbols.Permission.UpdatePermissionPresenter)
     private readonly updatePermissionPresenter: CreatePermissionPresenter,
-    
+
     @Inject(UsecaseSymbols.Permission.DeletePermissionUsecase)
     private readonly deletePermissionUsecase: DeletePermissionUsecase,
   ) {}
 
   @Post()
-  async create(@Body() dto: CreatePermissionDto) {
-    const permission = await this.createPermissionUsecase.execute({
-      name: dto.name,
-      description: dto.description,
-    });
+  async create(@Res() res: Response, @Body() dto: CreatePermissionDto) {
+    try {
+      const permission = await this.createPermissionUsecase.execute({
+        code: dto.code,
+        status: dto.status,
+      });
 
-    return {
-      status: HttpStatus.CREATED,
-      data: this.createPermissionPresenter.present(permission),
-    };
+      res.status(HttpStatus.CREATED).send({
+        status: HttpStatus.CREATED,
+        data: this.createPermissionPresenter.present(permission),
+      });
+    } catch (error) {
+      res.status(error.statusCode).send({
+        status: error.statusCode || HttpStatus.BAD_REQUEST,
+        success: false,
+        message: error.message,
+      });
+    }
   }
 
   @Get()
-  async getAll(@Query() query: GetPermissionsQuery) {
-    const permissions = await this.getPermissionsUsecase.execute({
-      page: query.page ? Number(query.page) : undefined,
-      limit: query.limit ? Number(query.limit) : undefined,
-      name: query.name,
-    });
+  async getAll(@Res() res: Response, @Query() query: GetPermissionsQuery) {
+    try {
+      const permissions = await this.getPermissionsUsecase.execute({
+        page: query.page ? Number(query.page) : undefined,
+        limit: query.limit ? Number(query.limit) : undefined,
+        name: query.name,
+      });
 
-    return {
-      status: HttpStatus.OK,
-      data: this.getPermissionsPresenter.present(permissions.data),
-      filter: query,
-      totalCount: permissions.totalCount,
-    };
+      res.status(HttpStatus.OK).send({
+        status: HttpStatus.OK,
+        data: this.getPermissionsPresenter.present(permissions.data),
+        filter: query,
+        totalCount: permissions.totalCount,
+        page: permissions.page,
+        limit: permissions.limit,
+      });
+    } catch (error) {
+      res.status(error.statusCode).send({
+        status: error.statusCode || HttpStatus.BAD_REQUEST,
+        success: false,
+        message: error.message,
+      });
+    }
   }
 
   @Get(':id')
-  async findById(@Param('id') id: string) {
-    const permission = await this.findPermissionByIdUsecase.execute({ id });
+  async findById(@Res() res: Response, @Param('id') id: string) {
+    try {
+      const permission = await this.findPermissionByIdUsecase.execute({ id });
 
-    return {
-      status: HttpStatus.OK,
-      data: this.findPermissionByIdPresenter.present(permission),
-    };
+      res.status(HttpStatus.OK).send({
+        status: HttpStatus.OK,
+        data: this.findPermissionByIdPresenter.present(permission),
+      });
+    } catch (error) {
+      res.status(error.statusCode).send({
+        status: error.statusCode || HttpStatus.BAD_REQUEST,
+        success: false,
+        message: error.message,
+      });
+    }
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() dto: CreatePermissionDto) {
-    const permission = await this.updatePermissionUsecase.execute({
-      id: id,
-      name: dto.name,
-      description: dto.description,
-    });
-    return {
-      status: HttpStatus.OK,
-      data: this.updatePermissionPresenter.present(permission),
-    };
+  async update(
+    @Res() res: Response,
+    @Param('id') id: string,
+    @Body() dto: CreatePermissionDto,
+  ) {
+    try {
+      const permission = await this.updatePermissionUsecase.execute({
+        id: id,
+        code: dto.code,
+        status: dto.status,
+      });
+      res.status(HttpStatus.OK).send({
+        status: HttpStatus.OK,
+        data: this.updatePermissionPresenter.present(permission),
+      });
+    } catch (error) {
+      res.status(error.statusCode).send({
+        status: error.statusCode || HttpStatus.BAD_REQUEST,
+        success: false,
+        message: error.message,
+      });
+    }
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
-    const deletedId = await this.deletePermissionUsecase.execute({ id });
-    return {
-      status: HttpStatus.OK,
-      data: { id: deletedId },
-    };
+  async delete(@Res() res: Response, @Param('id') id: string) {
+    try {
+      const deletedId = await this.deletePermissionUsecase.execute({ id });
+      res.status(HttpStatus.OK).send({
+        status: HttpStatus.OK,
+        data: { id: deletedId },
+      });
+    } catch (error) {
+      res.status(error.statusCode).send({
+        status: error.statusCode || HttpStatus.BAD_REQUEST,
+        success: false,
+        message: error.message,
+      });
+    }
   }
 }

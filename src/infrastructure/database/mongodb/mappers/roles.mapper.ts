@@ -21,7 +21,7 @@ export class RoleMapper {
       raw.createdAt,
       raw.updatedAt,
       raw.description,
-      raw.isActive,
+      raw.status,
     );
   }
 
@@ -30,7 +30,7 @@ export class RoleMapper {
       name: role.name,
       description: role.description,
       permissions: role.permissions.map(perm => perm.id),
-      isActive: role.isActive,
+      status: role.status,
     };
   }
 }

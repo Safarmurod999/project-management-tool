@@ -1,4 +1,5 @@
 import { User } from "src/domain";
+import { UserStatus } from "src/infrastructure/common/enum";
 
 export interface UpdateUserUsecaseParams {
   id: string;
@@ -7,6 +8,7 @@ export interface UpdateUserUsecaseParams {
   role: string;
   password: string;
   isVerified: boolean;
+  status: UserStatus;
 }
 
 export interface UpdateUserUsecase {
