@@ -32,10 +32,10 @@ export class TokenServiceImpl implements TokenService {
   }
 
   public isValidToken(token: string, secret: string): boolean {
-    try {
+    try {            
       this.jwt.verify(token, { secret });
       return true;
-    } catch {
+    } catch (e) {      
       return false;
     }
   }

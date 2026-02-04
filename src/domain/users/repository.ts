@@ -74,10 +74,7 @@ export class UserRepositoryImpl implements UserRepository {
         path: 'role',
         populate: { path: 'permissions' },
       })
-      .exec();
-
-      console.log(userDataList);
-      
+      .exec();      
 
     return {
       data: userDataList.map((userData) => UserMapper.toDomain(userData)),

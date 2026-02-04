@@ -34,12 +34,14 @@ export class RolesPermissionsGuard implements CanActivate {
     const token = authHeader.split(' ')[1];
 
     let payload;
+
     try {
       if (!this.tokenService.isValidToken(token, process.env.ACCESS_SECRET!)) {
         throw new UnauthorizedException();
       }
 
       payload = this.tokenService.parseToken<{ userId: string }>(token);
+      
     } catch {
       return false;
     }
@@ -51,7 +53,6 @@ export class RolesPermissionsGuard implements CanActivate {
     };
 
     if (requiredRoles && !requiredRoles.includes(request.user.role)) {
-
       return false;
     }
     if (

@@ -28,6 +28,9 @@ export enum PermissionCode {
   TEAM_GET   = 'team:get',
   TEAM_EDIT = 'team:edit',
   TEAM_DELETE = 'team:delete',
+
+  // DOCS
+  DOCS_CREATE = 'docs:create',
 }
 
 export enum RoleCode {
@@ -35,6 +38,7 @@ export enum RoleCode {
   ADMIN       = 'admin',
   MANAGER     = 'manager',
   USER        = 'user',
+  TEST        = 'test',
 }
 
 export enum UserStatus {
