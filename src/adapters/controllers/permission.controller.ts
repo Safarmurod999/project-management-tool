@@ -10,6 +10,7 @@ import {
   Put,
   Query,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import {
   CreatePermissionUsecase,
@@ -28,8 +29,11 @@ import {
 import {
   PermissionCode,
   PermissionStatus,
+  RoleCode,
 } from 'src/infrastructure/common/enum';
 import { Response } from 'express';
+import { RolesPermissionsGuard } from 'src/infrastructure/middlewares/role-guard.middleware';
+import { Permissions, Roles } from 'src/infrastructure/decorators';
 
 export class CreatePermissionDto {
   code: PermissionCode;
@@ -43,6 +47,7 @@ export class GetPermissionsQuery {
 }
 
 @Controller('permissions')
+@UseGuards(RolesPermissionsGuard)
 export class PermissionController {
   constructor(
     @Inject(UsecaseSymbols.Permission.CreatePermissionUsecase)
@@ -70,6 +75,8 @@ export class PermissionController {
   ) {}
 
   @Post()
+  @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN)
+  @Permissions(PermissionCode.PERMISSION_CREATE)
   async create(@Res() res: Response, @Body() dto: CreatePermissionDto) {
     try {
       const permission = await this.createPermissionUsecase.execute({
@@ -91,6 +98,8 @@ export class PermissionController {
   }
 
   @Get()
+  @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN)
+  @Permissions(PermissionCode.PERMISSION_GET)
   async getAll(@Res() res: Response, @Query() query: GetPermissionsQuery) {
     try {
       const permissions = await this.getPermissionsUsecase.execute({
@@ -117,6 +126,8 @@ export class PermissionController {
   }
 
   @Get(':id')
+  @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN)
+  @Permissions(PermissionCode.PERMISSION_GET)
   async findById(@Res() res: Response, @Param('id') id: string) {
     try {
       const permission = await this.findPermissionByIdUsecase.execute({ id });
@@ -135,6 +146,8 @@ export class PermissionController {
   }
 
   @Put(':id')
+  @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN)
+  @Permissions(PermissionCode.PERMISSION_EDIT)
   async update(
     @Res() res: Response,
     @Param('id') id: string,
@@ -160,6 +173,8 @@ export class PermissionController {
   }
 
   @Delete(':id')
+  @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN)
+  @Permissions(PermissionCode.PERMISSION_DELETE)
   async delete(@Res() res: Response, @Param('id') id: string) {
     try {
       const deletedId = await this.deletePermissionUsecase.execute({ id });

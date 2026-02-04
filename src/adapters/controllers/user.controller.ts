@@ -49,6 +49,7 @@ export class GetUsersQuery {
 }
 
 @Controller('users')
+@UseGuards(RolesPermissionsGuard)
 export class UserController {
   constructor(
     @Inject(UsecaseSymbols.User.CreateUserUsecase)
@@ -81,7 +82,6 @@ export class UserController {
   ) {}
 
   @Post()
-  @UseGuards(RolesPermissionsGuard)
   @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN)
   @Permissions('user:create')
   async create(@Res() res: Response, @Body() dto: CreateUserDto) {
@@ -108,7 +108,6 @@ export class UserController {
   }
 
   @Get()
-  @UseGuards(RolesPermissionsGuard)
   @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
   @Permissions('user:get')
   async getAll(@Res() res: Response, @Query() query: GetUsersQuery) {
@@ -137,7 +136,6 @@ export class UserController {
   }
 
   @Get(':id')
-  @UseGuards(RolesPermissionsGuard)
   @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN)
   @Permissions('user:get')
   async findById(@Res() res: Response, @Param('id') id: string) {
@@ -157,7 +155,6 @@ export class UserController {
   }
 
   @Get('email/:email')
-  @UseGuards(RolesPermissionsGuard)
   @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN)
   @Permissions('user:get')
   async findByEmail(@Res() res: Response, @Param('email') email: string) {
@@ -177,7 +174,6 @@ export class UserController {
   }
 
   @Put(':id')
-  @UseGuards(RolesPermissionsGuard)
   @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN)
   @Permissions('user:edit')
   async update(
@@ -209,7 +205,6 @@ export class UserController {
   }
 
   @Delete(':id')
-  @UseGuards(RolesPermissionsGuard)
   @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN)
   @Permissions('user:delete')
   async delete(@Res() res: Response, @Param('id') id: string) {

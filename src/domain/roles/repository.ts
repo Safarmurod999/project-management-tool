@@ -62,7 +62,7 @@ export class RoleRepositoryImpl implements RoleRepository {
       .find(filter)
       .skip((page - 1) * limit)
       .limit(limit)
-      .populate('permissions')
+      .populate('permissions')      
       .exec();
 
     return {
@@ -99,7 +99,7 @@ export class RoleRepositoryImpl implements RoleRepository {
   }
 
   async delete(id: string): Promise<string> {
-    await this.roleModel.findByIdAndDelete(id).populate('permissions').exec();
+    await this.roleModel.findByIdAndDelete(id).exec();
     return id;
   }
 
