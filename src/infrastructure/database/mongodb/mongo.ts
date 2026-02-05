@@ -1,6 +1,6 @@
 import { Connection, createConnection, Model } from 'mongoose';
-import { UserSchema, PermissionSchema, RoleSchema } from './schemas';
-import { UserDocument, PermissionDocument, RoleDocument } from './models';
+import { UserSchema, PermissionSchema, RoleSchema, TeamSchema } from './schemas';
+import { UserDocument, PermissionDocument, RoleDocument, TeamDocument } from './models';
 import { Database } from '../database';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigSymbols } from 'src/infrastructure/dependency-injection';
@@ -42,6 +42,7 @@ export class MongoDb implements Database {
     this._client.model<UserDocument>('User', UserSchema);
     this._client.model<PermissionDocument>('Permission', PermissionSchema);
     this._client.model<RoleDocument>('Role', RoleSchema);
+    this._client.model<TeamDocument>('Team', TeamSchema);
 
     console.log('[MongoDB] Connected.');
   }
@@ -70,7 +71,11 @@ export class MongoDb implements Database {
 
   public roleModel(): Model<RoleDocument> {
     if (!this._client) throw new Error('MongoDB not connected');
-
     return this._client.model<RoleDocument>('Role');
+  }
+
+  public teamModel(): Model<TeamDocument> {
+    if (!this._client) throw new Error('MongoDB not connected');
+    return this._client.model<TeamDocument>('Team');
   }
 }
