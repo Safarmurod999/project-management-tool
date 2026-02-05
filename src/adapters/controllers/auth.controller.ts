@@ -157,4 +157,29 @@ export class AuthController {
       });
     }
   }
+
+  @Post('logout')
+  async logout(@Req() req: Request, @Res() res: Response) {
+    try {
+
+      res.cookie('refresh_token', '', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+        maxAge: 0,
+      });
+
+      res.status(HttpStatus.OK).send({
+        success: true,
+        status: HttpStatus.OK,
+        message: 'Logged out successfully',
+      });
+    } catch (error) {
+      res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
+        success: false,
+        status: error.statusCode || HttpStatus.BAD_REQUEST,
+        message: error.message || 'Failed to logout',
+      });
+    }
+  }
 }
