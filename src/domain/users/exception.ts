@@ -18,4 +18,12 @@ export class UserException extends Error {
   public static UnauthorizedAccess(action: string): UserException {
     return new UserException(`Unauthorized access attempt to ${action}.`, 401);
   }
+
+  public static IncorrectPassword(): UserException {
+    return new UserException(`The provided password is incorrect.`, 401);
+  }
+
+  public static UnverifiedUser(): UserException {
+    return new UserException(`User email is not verified.`, 403);
+  }
 }

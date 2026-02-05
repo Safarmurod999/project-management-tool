@@ -6,13 +6,19 @@ import {
   Param,
   Patch,
   Post,
+  Req,
   Res,
 } from '@nestjs/common';
-import { Response } from 'express';
-import { RegisterUserUsecase, VerifyUserUsecase } from 'src/application';
+import { Request, Response } from 'express';
+import {
+  LoginUserUsecase,
+  RefreshTokenUsecase,
+  RegisterUserUsecase,
+  VerifyUserUsecase,
+} from 'src/application';
 import { PresenterSymbols } from 'src/infrastructure';
 import { UsecaseSymbols } from 'src/infrastructure/dependency-injection/usecases/symbol';
-import { RegisterUserPresenter } from '../presenters';
+import { RegisterUserPresenter } from 'src/adapters/presenters';
 import { RoleCode } from 'src/infrastructure/common/enum';
 
 export class RegisterUserDto {
@@ -20,6 +26,11 @@ export class RegisterUserDto {
   name: string;
   password: string;
   role: RoleCode;
+}
+
+export class LoginUserDto {
+  email: string;
+  password: string;
 }
 
 export class VerifyUserDto {
@@ -35,6 +46,10 @@ export class AuthController {
     private readonly verifyUserUsecase: VerifyUserUsecase,
     @Inject(PresenterSymbols.Auth.RegisterUserPresenter)
     private readonly registerUserPresenter: RegisterUserPresenter,
+    @Inject(UsecaseSymbols.Auth.LoginUserUsecase)
+    private readonly loginUserUsecase: LoginUserUsecase,
+    @Inject(UsecaseSymbols.Auth.RefreshTokenUsecase)
+    private readonly refreshTokenUsecase: RefreshTokenUsecase,
   ) {}
 
   @Post('register')
@@ -72,17 +87,73 @@ export class AuthController {
         id,
         token: dto.token,
       });
+      res.cookie('refresh_token', result.refresh_token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
 
-      res.status(HttpStatus.OK).send({
+      res.status(HttpStatus.CREATED).send({
         success: true,
-        status: HttpStatus.OK,
-        data: result,
+        status: HttpStatus.CREATED,
+        data: result.access_token,
       });
     } catch (error) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         message: error.message || 'Failed to verify user',
+      });
+    }
+  }
+
+  @Post('login')
+  async login(@Res() res: Response, @Body() dto: LoginUserDto) {
+    try {
+      const result = await this.loginUserUsecase.execute({
+        email: dto.email,
+        password: dto.password,
+      });
+
+      res.cookie('refresh_token', result.refresh_token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
+      res.status(HttpStatus.CREATED).send({
+        success: true,
+        status: HttpStatus.CREATED,
+        data: result.access_token,
+      });
+    } catch (error) {
+      res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
+        success: false,
+        status: error.statusCode || HttpStatus.BAD_REQUEST,
+        message: error.message || 'Failed to login user',
+      });
+    }
+  }
+
+  @Post('refresh-token')
+  async refreshToken(@Req() req: Request, @Res() res: Response) {    
+    try {
+      const refreshToken = req.cookies['refresh_token'];    
+
+    const result = await this.refreshTokenUsecase.execute(refreshToken);
+
+    res.send({
+      success: true,
+      status: HttpStatus.OK,
+      data: result
+    });
+    } catch (error) {
+      res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
+        success: false,
+        status: error.statusCode || HttpStatus.BAD_REQUEST,
+        message: error.message || 'Failed to refresh token',
       });
     }
   }
