@@ -14,6 +14,8 @@ export const UsecaseSymbols = {
   Auth: {
     RegisterUserUsecase: Symbol.for('RegisterUserUsecase'),
     VerifyUserUsecase: Symbol.for('VerifyUserUsecase'),
+    LoginUserUsecase: Symbol.for('LoginUserUsecase'),
+    RefreshTokenUsecase: Symbol.for('RefreshTokenUsecase'),
   },
   Permission: {
     CreatePermissionUsecase: Symbol.for('CreatePermissionUsecase'),

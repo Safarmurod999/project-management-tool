@@ -4,9 +4,9 @@ import { Role } from "../roles";
 export class User {
     constructor(
         private readonly _id: string,
-        private readonly _name: string,
         private readonly _email: string,
         private readonly _password: string,
+        private readonly _name: string,
         private readonly _role: Role,
         private readonly _isVerified: boolean = false,
         private readonly _createdAt: Date,
