@@ -1,6 +1,7 @@
 import { UpdateUserUsecaseImpl } from './update-user.usecase';
 import { User, UserRepository } from 'src/domain';
 import { UpdateUserUsecaseParams } from './types';
+import { UserStatus } from 'src/infrastructure/common/enum';
 
 describe('UpdateUserUsecaseImpl', () => {
   let userRepository: jest.Mocked<UserRepository>;
@@ -22,6 +23,7 @@ describe('UpdateUserUsecaseImpl', () => {
       password: 'newpass',
       role: 'role123',
       isVerified: true,
+      status: UserStatus.ACTIVE,
     };
 
     const updatedUser = {
@@ -31,6 +33,7 @@ describe('UpdateUserUsecaseImpl', () => {
       password: params.password,
       role: params.role,
       isVerified: params.isVerified,
+      status: params.status,
     };
 
     userRepository.update.mockResolvedValue(updatedUser as unknown as User);
