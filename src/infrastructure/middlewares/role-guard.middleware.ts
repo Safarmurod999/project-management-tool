@@ -7,7 +7,8 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { TokenService } from '../helpers/token-service';
-import { ServiceSymbols } from '../dependency-injection';
+import { ServiceSymbols, RepositorySymbols } from '../dependency-injection';
+import { UserRepository, RolePermissionRepository } from 'src/domain';
 
 @Injectable()
 export class RolesPermissionsGuard implements CanActivate {
@@ -15,9 +16,13 @@ export class RolesPermissionsGuard implements CanActivate {
     private reflector: Reflector,
     @Inject(ServiceSymbols.TokenService)
     private tokenService: TokenService,
+    @Inject(RepositorySymbols.UserRepository)
+    private userRepository: UserRepository,
+    @Inject(RepositorySymbols.RolePermissionRepository)
+    private rolePermissionRepository: RolePermissionRepository,
   ) {}
 
-  canActivate(context: ExecutionContext): boolean {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const requiredRoles = this.reflector.get<string[]>(
       'roles',
       context.getHandler(),
@@ -46,21 +51,39 @@ export class RolesPermissionsGuard implements CanActivate {
       return false;
     }
 
-    request.user = {
-      id: payload.userId,
-      role: 'super_admin',
-      permissions: payload.permissions,
-    };
+    // Fetch user from database with populated role
+    try {
+      const user = await this.userRepository.findById(payload.userId);
 
-    if (requiredRoles && !requiredRoles.includes(request.user.role)) {
+      if (!user) {
+        return false;
+      }      
+
+      // Fetch permissions for user's role
+      const permissions = await this.rolePermissionRepository.getPermissionsByRoleId(
+        user.role.id,
+      );      
+            
+      request.user = {
+        id: user.id,
+        email: user.email,
+        role: user.role.code,
+        permissions: permissions.map((p) => p.code),
+      };
+
+      if (requiredRoles && !requiredRoles.includes(request.user.role)) {
+        return false;
+      }
+      
+      if (
+        requiredPermissions &&
+        !request.user.permissions.some((p) => requiredPermissions.includes(p))
+      )
+        return false;
+
+      return true;
+    } catch {
       return false;
     }
-    if (
-      requiredPermissions &&
-      !request.user.permissions.some((p) => requiredPermissions.includes(p))
-    )
-      return false;
-
-    return true;
   }
 }

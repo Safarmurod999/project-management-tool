@@ -3,9 +3,10 @@ import { RoleCode, RoleStatus } from "src/infrastructure/common/enum";
 
 export interface UpdateRoleUsecaseParams {
   id: string;
-  name: RoleCode;
+  name: string;
+  code: RoleCode;
   permissions: string[];
-  description: string;
+  description?: string;
   status?: RoleStatus;
 }
 

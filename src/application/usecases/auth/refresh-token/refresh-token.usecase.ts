@@ -40,8 +40,8 @@ export class RefreshTokenUsecaseImpl implements RefreshTokenUsecase {
     const newAccessToken = this.tokenService.generateToken(
       {
         userId: user.id,
-        role: user.role.name,
-        permissions: user.role.permissions.map(p => p.code),
+        email: user.email,
+        roleId: user.role.id,
       },
       this.authConfig.getAccessSecret(),
       this.authConfig.getAccessSecretExpiresIn(),

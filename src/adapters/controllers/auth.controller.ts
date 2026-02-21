@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpStatus,
   Inject,
   Param,
@@ -8,6 +9,7 @@ import {
   Post,
   Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import {
@@ -15,17 +17,18 @@ import {
   RefreshTokenUsecase,
   RegisterUserUsecase,
   VerifyUserUsecase,
+  GetMeUsecase,
 } from 'src/application';
 import { PresenterSymbols } from 'src/infrastructure';
 import { UsecaseSymbols } from 'src/infrastructure/dependency-injection/usecases/symbol';
 import { RegisterUserPresenter } from 'src/adapters/presenters';
 import { RoleCode } from 'src/infrastructure/common/enum';
+import { RolesPermissionsGuard } from 'src/infrastructure/middlewares/role-guard.middleware';
 
 export class RegisterUserDto {
   email: string;
   name: string;
   password: string;
-  role: RoleCode;
 }
 
 export class LoginUserDto {
@@ -50,6 +53,8 @@ export class AuthController {
     private readonly loginUserUsecase: LoginUserUsecase,
     @Inject(UsecaseSymbols.Auth.RefreshTokenUsecase)
     private readonly refreshTokenUsecase: RefreshTokenUsecase,
+    @Inject(UsecaseSymbols.Auth.GetMeUsecase)
+    private readonly getMeUsecase: GetMeUsecase,
   ) {}
 
   @Post('register')
@@ -59,7 +64,6 @@ export class AuthController {
         email: dto.email,
         name: dto.name,
         password: dto.password,
-        role: dto.role,
       });
 
       res.status(HttpStatus.CREATED).send({
@@ -179,6 +183,36 @@ export class AuthController {
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         message: error.message || 'Failed to logout',
+      });
+    }
+  }
+
+  @Get('me')
+  @UseGuards(RolesPermissionsGuard)
+  async getMe(@Req() req: Request, @Res() res: Response) {
+    try {
+      const userId = req.user?.id;
+
+      if (!userId) {
+        return res.status(HttpStatus.UNAUTHORIZED).send({
+          success: false,
+          status: HttpStatus.UNAUTHORIZED,
+          message: 'User not authenticated',
+        });
+      }
+
+      const result = await this.getMeUsecase.execute({ userId });
+
+      res.status(HttpStatus.OK).send({
+        success: true,
+        status: HttpStatus.OK,
+        data: result,
+      });
+    } catch (error) {
+      res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
+        success: false,
+        status: error.statusCode || HttpStatus.BAD_REQUEST,
+        message: error.message || 'Failed to get user data',
       });
     }
   }

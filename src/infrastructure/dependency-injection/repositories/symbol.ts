@@ -3,4 +3,5 @@ export const RepositorySymbols = {
     OtpRepository: Symbol.for('OtpRepository'),
     PermissionRepository: Symbol.for('PermissionRepository'),
     RoleRepository: Symbol.for('RoleRepository'),
+    RolePermissionRepository: Symbol.for('RolePermissionRepository'),
 }

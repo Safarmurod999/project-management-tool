@@ -1,7 +1,6 @@
 import { Team } from "./entity";
 import { User } from "../users";
 import { Role } from "../roles";
-import { Permission } from "../permissions";
 import { TeamStatus, UserStatus } from "src/infrastructure/common/enum";
 import { RoleStruct } from "../roles";
 
@@ -35,23 +34,13 @@ export interface TeamFactory {
 export class TeamFactoryImpl implements TeamFactory {
   create(data: TeamStruct): Team {
     const members = data.members.map((m) => {
-      const permissions = m.role.permissions.map(
-        (p) =>
-          new Permission(
-            p.id,
-            p.code,
-            p.createdAt,
-            p.updatedAt,
-            p.status,
-          ),
-      );
-
       const role = new Role(
         m.role.id,
         m.role.name,
-        permissions,
+        m.role.code,
         m.role.createdAt,
         m.role.updatedAt,
+        m.role.description,
         m.role.status,
       );
 

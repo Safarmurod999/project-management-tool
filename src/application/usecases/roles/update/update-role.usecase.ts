@@ -13,6 +13,7 @@ export class UpdateRoleUsecaseImpl implements UpdateRoleUsecase {
     const role = {
       id: params.id,
       name: params.name,
+      code: params.code,
       permissions: params.permissions,
       description: params.description,
       status: params.status,

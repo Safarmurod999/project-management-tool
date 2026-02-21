@@ -48,8 +48,8 @@ export class VerifyUserUsecaseImpl implements VerifyUserUsecase {
       access_token: this.tokenService.generateToken(
         {
           userId: params.id,
-          role: user.role.name,
-          permissions: user.role.permissions.map((p) => p.code),
+          email: user.email,
+          roleId: user.role.id,
         },
         this.authConfig.getAccessSecret(),
         this.authConfig.getAccessSecretExpiresIn(),

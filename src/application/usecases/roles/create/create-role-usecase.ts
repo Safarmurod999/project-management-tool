@@ -12,6 +12,7 @@ export class CreateRoleUsecaseImpl implements CreateRoleUsecase {
   async execute(params: CreateRoleUsecaseParams): Promise<Role> {
     const newRole = {
       name: params.name,
+      code: params.code,
       permissions: params.permissions,
       description: params.description,
       status: params.status,

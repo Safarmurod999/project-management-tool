@@ -13,14 +13,9 @@ export class UpdateUserPresenterImpl implements UpdateUserPresenter {
       role: {
         id: user.role.id,
         name: user.role.name,
+        code: user.role.code,
+        description: user.role.description,
         status: user.role.status,
-        permissions: user.role.permissions.map((p) => ({
-          id: p.id,
-          code: p.code,
-          createdAt: p.createdAt,
-          updatedAt: p.updatedAt,
-          status: p.status,
-        })),
         createdAt: user.role.createdAt,
         updatedAt: user.role.updatedAt,
       },

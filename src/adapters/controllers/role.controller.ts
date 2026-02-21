@@ -36,9 +36,10 @@ import { Permissions, Roles } from 'src/infrastructure/decorators';
 import { RolesPermissionsGuard } from 'src/infrastructure/middlewares';
 
 export class CreateRoleDto {
-  name: RoleCode;
+  name: string;
+  code: RoleCode;
   permissions: string[];
-  description: string;
+  description?: string;
   status?: RoleStatus;
 }
 
@@ -83,6 +84,7 @@ export class RoleController {
     try {
       const role = await this.createRoleUsecase.execute({
         name: dto.name,
+        code: dto.code,
         permissions: dto.permissions,
         description: dto.description,
         status: dto.status,
@@ -161,6 +163,7 @@ export class RoleController {
       const role = await this.updateRoleUsecase.execute({
         id: id,
         name: dto.name,
+        code: dto.code,
         permissions: dto.permissions,
         description: dto.description,
         status: dto.status,

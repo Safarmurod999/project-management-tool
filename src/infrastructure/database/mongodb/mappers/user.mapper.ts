@@ -4,11 +4,15 @@ import { RoleMapper } from "./roles.mapper";
 
 export class UserMapper {
   static toDomain(raw: UserDocument): User {
-    let role;    
+    let role;
+    
     if (typeof raw.role === 'object' && raw.role !== null) {
       role = RoleMapper.toDomain(raw.role as unknown as RoleDocument);
+    } else if (raw.role === null || raw.role === undefined) {
+      throw new Error(`Role should be populated. User: ${raw._id}`);
     } else {
-      throw new Error('Role should be populated');
+      // Handle case where role is stored as string ID (not populated)
+      throw new Error(`Role should be populated as an object, but received: ${typeof raw.role}. User: ${raw._id}`);
     }
 
     return new User(

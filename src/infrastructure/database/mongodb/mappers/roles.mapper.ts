@@ -1,23 +1,12 @@
-import { Permission, Role } from "src/domain";
-import { PermissionDocument, RoleDocument } from "../models";
-import { PermissionMapper } from "./permissions.mapper";
+import { Role } from "src/domain";
+import { RoleDocument } from "../models";
 
 export class RoleMapper {
   static toDomain(raw: RoleDocument): Role {
-    const permissions: Permission[] = [];
-
-    if (raw.permissions && Array.isArray(raw.permissions)) {
-      for (const perm of raw.permissions) {
-        if (typeof perm === 'object' && perm !== null) {
-          permissions.push(PermissionMapper.toDomain(perm as unknown as PermissionDocument));
-        }
-      }
-    }
-
     return new Role(
       raw._id.toString(),
       raw.name,
-      permissions,
+      raw.code,
       raw.createdAt,
       raw.updatedAt,
       raw.description,
@@ -28,8 +17,8 @@ export class RoleMapper {
   static toPersistence(role: Role): any {
     return {
       name: role.name,
+      code: role.code,
       description: role.description,
-      permissions: role.permissions.map(perm => perm.id),
       status: role.status,
     };
   }

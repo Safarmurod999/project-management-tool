@@ -5,7 +5,6 @@ export interface RegisterUserUsecaseParams {
   name: string;
   email: string;
   password: string;
-  role: RoleCode;
 }
 
 export type RegisterUserUsecaseResult = User;

@@ -48,32 +48,26 @@ export class UserRepositoryImpl implements UserRepository {
   async create(user: UserCreateParams): Promise<User> {
     const userData = await (
       await this.userModel.create(user)
-    ).populate({
-      path: 'role',
-      populate: { path: 'permissions' },
-    });
+    ).populate('role');
     return UserMapper.toDomain(userData);
   }
 
   async find(params: UserGetQuery): Promise<UserGetResponse> {
     const { page = 1, limit = 10, name } = params;
 
-    const filter: Record<string, any> = {};
-
-    const totalCount = await this.userModel.countDocuments();
+    const filter: Record<string, any> = { role: { $ne: null } };
 
     if (name) {
       filter.name = { $regex: name, $options: 'i' };
     }
 
+    const totalCount = await this.userModel.countDocuments(filter);
+
     const userDataList = await this.userModel
       .find(filter)
       .skip((page - 1) * limit)
       .limit(limit)
-      .populate({
-        path: 'role',
-        populate: { path: 'permissions' },
-      })
+      .populate('role')
       .exec();      
 
     return {
@@ -87,10 +81,7 @@ export class UserRepositoryImpl implements UserRepository {
   async findById(id: string): Promise<User> {
     const userData = await this.userModel
       .findById(id)
-      .populate({
-        path: 'role',
-        populate: { path: 'permissions' },
-      })
+      .populate('role')
       .exec();
 
     if (!userData) throw UserException.UserNotFound(id);
@@ -100,10 +91,7 @@ export class UserRepositoryImpl implements UserRepository {
   async findByEmail(email: string): Promise<User> {
     const userData = await this.userModel
       .findOne({ email: email })
-      .populate({
-        path: 'role',
-        populate: { path: 'permissions' },
-      })
+      .populate('role')
       .exec();
     if (!userData) throw UserException.UserNotFound(email);
     return UserMapper.toDomain(userData);
@@ -112,17 +100,12 @@ export class UserRepositoryImpl implements UserRepository {
   async update(user: UserUpdateParams): Promise<User> {
     const userData = await this.userModel
       .findById(user.id)
-      .populate({
-        path: 'role',
-        populate: { path: 'permissions' },
-      });
+      .populate('role');
 
     if (!userData) {
       throw UserException.UserNotFound(user.id);
     }
-
-    console.log(userData);
-    
+        
     userData.name = user.name ?? userData.name;
     userData.email = user.email ?? userData.email;
     userData.password = user.password ?? userData.password;
@@ -135,10 +118,7 @@ export class UserRepositoryImpl implements UserRepository {
 
     await userData.save();
 
-    await userData.populate({
-      path: 'role',
-      populate: { path: 'permissions' },
-    });
+    await userData.populate('role');
     return UserMapper.toDomain(userData);
   }
 

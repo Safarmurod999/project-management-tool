@@ -1,5 +1,5 @@
 import { Inject } from '@nestjs/common';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { Role } from './entity';
 import { Database } from 'src/infrastructure/database/database';
 import { DatabaseSymbols } from 'src/infrastructure/dependency-injection/databases/symbol';
@@ -7,9 +7,11 @@ import { RoleDocument } from 'src/infrastructure/database/mongodb/models';
 import { RoleStruct } from './factory';
 import { RoleException } from './exception';
 import { RoleMapper } from 'src/infrastructure/database/mongodb/mappers/roles.mapper';
+import { RolePermissionRepository } from '../role-permissions';
+import { RepositorySymbols } from 'src/infrastructure/dependency-injection/repositories/symbol';
 
-export type RoleCreateParams = Omit<RoleStruct, 'id' | 'createdAt' | 'updatedAt' | 'permissions'> & { permissions: string[] };
-export type RoleUpdateParams = Omit<RoleStruct, 'createdAt' | 'updatedAt' | 'permissions'> & { permissions: string[] };
+export type RoleCreateParams = Omit<RoleStruct, 'id' | 'createdAt' | 'updatedAt'> & { permissions?: string[] };
+export type RoleUpdateParams = Omit<RoleStruct, 'createdAt' | 'updatedAt'> & { permissions?: string[] };
 
 export interface RoleGetQuery {
   page?: number;
@@ -27,6 +29,7 @@ export interface RoleGetResponse {
 export interface RoleRepository {
   create(role: RoleCreateParams): Promise<Role>;
   find(params: RoleGetQuery): Promise<RoleGetResponse>;
+  findFirst(): Promise<Role>;
   findById(id: string): Promise<Role>;
   update(role: Partial<RoleUpdateParams> & { id: string }): Promise<Role>;
   delete(id: string): Promise<string>;
@@ -36,11 +39,23 @@ export class RoleRepositoryImpl implements RoleRepository {
   constructor(
     @Inject(DatabaseSymbols.MongoDb)
     private database: Database,
+    @Inject(RepositorySymbols.RolePermissionRepository)
+    private rolePermissionRepository: RolePermissionRepository,
   ) {}
 
-  async create(user: RoleCreateParams): Promise<Role> {
-    const roleData = await (await this.roleModel.create(user)).populate('permissions');
-    return RoleMapper.toDomain(roleData);
+  async create(role: RoleCreateParams): Promise<Role> {
+    const { permissions, ...roleData } = role;
+    const createdRole = await this.roleModel.create(roleData);
+    
+    // Assign permissions if provided
+    if (permissions && permissions.length > 0) {
+      await this.rolePermissionRepository.assignPermissionsToRole(
+        createdRole._id.toString(),
+        permissions,
+      );
+    }
+    
+    return RoleMapper.toDomain(createdRole);
   }
 
   async find(params: RoleGetQuery): Promise<RoleGetResponse> {
@@ -62,7 +77,6 @@ export class RoleRepositoryImpl implements RoleRepository {
       .find(filter)
       .skip((page - 1) * limit)
       .limit(limit)
-      .populate('permissions')      
       .exec();
 
     return {
@@ -75,26 +89,45 @@ export class RoleRepositoryImpl implements RoleRepository {
     };
   }
 
+  async findFirst(): Promise<Role> {
+    const roleData = await this.roleModel.findOne().exec();
+    if (!roleData) throw RoleException.RoleNotFound();
+    return RoleMapper.toDomain(roleData);
+  }
+
   async findById(id: string): Promise<Role> {
-    const roleData = await this.roleModel.findById(id).populate('permissions').exec();
+    const roleData = await this.roleModel.findById(id).exec();
     if (!roleData) throw RoleException.RoleNotFound(id);
     return RoleMapper.toDomain(roleData);
   }
 
-  async update(user: RoleUpdateParams): Promise<Role> {
-    const roleData = await this.roleModel.findById(user.id);
+  async update(role: RoleUpdateParams): Promise<Role> {
+    const { permissions, ...updateData } = role;
+    const roleData = await this.roleModel.findById(role.id);
 
     if (!roleData) {
-      throw RoleException.RoleNotFound(user.id);
+      throw RoleException.RoleNotFound(role.id);
     }
 
-    roleData.name = user.name ?? roleData.name;
-    roleData.description = user.description ?? roleData.description;
-    roleData.permissions = user.permissions ? user.permissions.map(perm => new Types.ObjectId(perm)) : roleData.permissions;
+    roleData.name = updateData.name ?? roleData.name;
+    roleData.code = updateData.code ?? roleData.code;
+    roleData.description = updateData.description ?? roleData.description;
     roleData.updatedAt = new Date() as Date;
-    roleData.status = user.status ?? roleData.status;
+    roleData.status = updateData.status ?? roleData.status;
 
     await roleData.save();
+    
+    // Update permissions if provided
+    if (permissions) {
+      await this.rolePermissionRepository.clearRolePermissions(role.id);
+      if (permissions.length > 0) {
+        await this.rolePermissionRepository.assignPermissionsToRole(
+          role.id,
+          permissions,
+        );
+      }
+    }
+    
     return RoleMapper.toDomain(roleData);
   }
 
