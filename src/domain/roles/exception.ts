@@ -4,8 +4,8 @@ export class RoleException extends Error {
     this.name = 'RoleException';
   }
 
-  public static RoleNotFound(roleId: string): RoleException {
-    return new RoleException(`Role with ID ${roleId} not found.`);
+  public static RoleNotFound(roleId?: string): RoleException {
+    return new RoleException(`Role${roleId ? ` with ID ${roleId}` : ''} not found.`);
   }
 
   public static InvalidRoleData(reason: string): RoleException {

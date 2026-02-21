@@ -2,9 +2,10 @@ import { Role } from "src/domain";
 import { RoleCode, RoleStatus } from "src/infrastructure/common/enum";
 
 export interface CreateRoleUsecaseParams {
-  name: RoleCode;
+  name: string;
+  code: RoleCode;
   permissions: string[];
-  description: string;
+  description?: string;
   status?: RoleStatus;
 }
 

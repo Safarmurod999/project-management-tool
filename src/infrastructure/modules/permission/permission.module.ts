@@ -3,7 +3,7 @@ import {
   FindPermissionByIdPresenterImpl,
   GetPermissionsPresenterImpl
 } from 'src/adapters/presenters';
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import {
   PresenterSymbols,
   UsecaseSymbols,
@@ -14,8 +14,11 @@ import { PermissionFactoryImpl } from 'src/domain';
 import { PermissionRepositoryImpl } from "src/domain";
 import { CreatePermissionUsecaseImpl, DeletePermissionUsecaseImpl, FindPermissionByIdUsecaseImpl, GetPermissionsUsecaseImpl, UpdatePermissionUsecaseImpl } from 'src/application';
 import { PermissionController } from 'src/adapters';
+import { RolesModule } from '../roles/roles.module';
+import { UserModule } from '../users/user.module';
 
 @Module({
+  imports: [forwardRef(() => RolesModule), forwardRef(() => UserModule)],
   controllers: [PermissionController],
   providers: [
     {

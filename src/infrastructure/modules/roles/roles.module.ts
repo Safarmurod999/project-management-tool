@@ -3,19 +3,21 @@ import {
   FindRoleByIdPresenterImpl,
   GetRolesPresenterImpl
 } from 'src/adapters/presenters';
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import {
   PresenterSymbols,
   UsecaseSymbols,
   RepositorySymbols,
   FactorySymbols
 } from 'src/infrastructure/dependency-injection';
-import { RoleFactoryImpl } from 'src/domain';
+import { RoleFactoryImpl, RolePermissionRepositoryImpl } from 'src/domain';
 import { RoleRepositoryImpl } from "src/domain";
 import { CreateRoleUsecaseImpl, DeleteRoleUsecaseImpl, FindRoleByIdUsecaseImpl, GetRolesUsecaseImpl, UpdateRoleUsecaseImpl } from 'src/application';
 import { RoleController } from 'src/adapters';
+import { UserModule } from '../users/user.module';
 
-@Module({
+@Module({  
+  imports: [forwardRef(() => UserModule)],
   controllers: [RoleController],
   providers: [
     {
@@ -25,6 +27,10 @@ import { RoleController } from 'src/adapters';
     {
       provide: RepositorySymbols.RoleRepository,
       useClass: RoleRepositoryImpl,
+    },
+    {
+      provide: RepositorySymbols.RolePermissionRepository,
+      useClass: RolePermissionRepositoryImpl,
     },
     {
       provide: UsecaseSymbols.Role.CreateRoleUsecase,
@@ -64,6 +70,8 @@ import { RoleController } from 'src/adapters';
     }
   ],
   exports: [
+    RepositorySymbols.RoleRepository,
+    RepositorySymbols.RolePermissionRepository,
     UsecaseSymbols.Role.CreateRoleUsecase,
     PresenterSymbols.Role.CreateRolePresenter,
     UsecaseSymbols.Role.GetRolesUsecase,

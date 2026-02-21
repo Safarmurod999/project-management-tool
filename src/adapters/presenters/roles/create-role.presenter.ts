@@ -9,13 +9,7 @@ export class CreateRolePresenterImpl implements CreateRolePresenter {
     return {
       id: role.id,
       name: role.name,
-      permissions: role.permissions.map(p => ({
-        id: p.id,
-        code: p.code,
-        createdAt: p.createdAt,
-        updatedAt: p.updatedAt,
-        status: p.status,
-      })),
+      code: role.code,
       description: role.description,
       createdAt: role.createdAt,
       updatedAt: role.updatedAt,

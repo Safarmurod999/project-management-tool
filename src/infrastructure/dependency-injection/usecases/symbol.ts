@@ -16,6 +16,7 @@ export const UsecaseSymbols = {
     VerifyUserUsecase: Symbol.for('VerifyUserUsecase'),
     LoginUserUsecase: Symbol.for('LoginUserUsecase'),
     RefreshTokenUsecase: Symbol.for('RefreshTokenUsecase'),
+    GetMeUsecase: Symbol.for('GetMeUsecase'),
   },
   Permission: {
     CreatePermissionUsecase: Symbol.for('CreatePermissionUsecase'),

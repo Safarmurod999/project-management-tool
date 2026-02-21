@@ -71,3 +71,8 @@ export enum TeamRole {
   ADMIN  = 'admin',
   MEMBER = 'member',
 }
+
+export enum TeamStatus {
+    ACTIVE = "active",
+    ARCHIVED = "archived",
+}

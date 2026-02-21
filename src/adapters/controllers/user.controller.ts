@@ -29,7 +29,7 @@ import {
   GetUsersPresenter,
   UpdateUserPresenter,
 } from '../presenters';
-import { RoleCode, UserStatus } from 'src/infrastructure/common/enum';
+import { PermissionCode, RoleCode, UserStatus } from 'src/infrastructure/common/enum';
 import { Response } from 'express';
 import { RolesPermissionsGuard } from 'src/infrastructure/middlewares';
 import { Permissions, Roles } from 'src/infrastructure/decorators';
@@ -83,7 +83,7 @@ export class UserController {
 
   @Post()
   @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN)
-  @Permissions('user:create')
+  @Permissions(PermissionCode.USER_CREATE)
   async create(@Res() res: Response, @Body() dto: CreateUserDto) {
     try {
       const user = await this.createUserUsecase.execute({
@@ -109,7 +109,7 @@ export class UserController {
 
   @Get()
   @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
-  @Permissions('user:get')
+  @Permissions(PermissionCode.USER_GET)
   async getAll(@Res() res: Response, @Query() query: GetUsersQuery) {
     try {
       const roles = await this.getUsersUsecase.execute({
@@ -137,7 +137,7 @@ export class UserController {
 
   @Get(':id')
   @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN)
-  @Permissions('user:get')
+  @Permissions(PermissionCode.USER_GET)
   async findById(@Res() res: Response, @Param('id') id: string) {
     try {
       const user = await this.findUserByIdUsecase.execute({ id });
@@ -156,7 +156,7 @@ export class UserController {
 
   @Get('email/:email')
   @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN)
-  @Permissions('user:get')
+  @Permissions(PermissionCode.USER_GET)
   async findByEmail(@Res() res: Response, @Param('email') email: string) {
     try {
       const user = await this.findUserByEmailUsecase.execute({ email });
@@ -175,11 +175,11 @@ export class UserController {
 
   @Put(':id')
   @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN)
-  @Permissions('user:edit')
+  @Permissions(PermissionCode.USER_EDIT)
   async update(
     @Res() res: Response,
-    @Body() dto: CreateUserDto & { isVerified: boolean },
     @Param('id') id: string,
+    @Body() dto: CreateUserDto & { isVerified: boolean },
   ) {
     try {
       const user = await this.updateUserUsecase.execute({
@@ -196,17 +196,17 @@ export class UserController {
         data: this.updateUserPresenter.present(user),
       });
     } catch (error) {
-      return {
+      res.status(error.statusCode).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         message: error.message,
-      };
+      });
     }
   }
 
   @Delete(':id')
   @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN)
-  @Permissions('user:delete')
+  @Permissions(PermissionCode.USER_DELETE)
   async delete(@Res() res: Response, @Param('id') id: string) {
     try {
       const deletedUserId = await this.deleteUserUsecase.execute({ id });

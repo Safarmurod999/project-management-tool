@@ -1,8 +1,10 @@
 import { RegisterUserPresenterImpl } from 'src/adapters/presenters';
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { AuthController } from 'src/adapters';
 import {
+  FactorySymbols,
   PresenterSymbols,
+  RepositorySymbols,
   UsecaseSymbols,
 } from 'src/infrastructure/dependency-injection';
 import { OtpModule } from 'src/infrastructure/modules/otp/otp.module';
@@ -12,11 +14,26 @@ import {
   RefreshTokenUsecaseImpl,
   RegisterUserUsecaseImpl,
   VerifyUserUsecaseImpl,
+  GetMeUsecaseImpl,
 } from 'src/application';
+import { RoleRepositoryImpl } from 'src/domain/roles/repository';
+import { RoleFactoryImpl, RolePermissionRepositoryImpl } from 'src/domain';
 @Module({
   controllers: [AuthController],
-  imports: [OtpModule, UserModule],
+  imports: [OtpModule, forwardRef(() => UserModule)],
   providers: [
+    {
+      provide: RepositorySymbols.RoleRepository,
+      useClass: RoleRepositoryImpl,
+    },
+    {
+      provide: RepositorySymbols.RolePermissionRepository,
+      useClass: RolePermissionRepositoryImpl,
+    },
+    {
+      provide: FactorySymbols.RoleFactory,
+      useClass: RoleFactoryImpl,
+    },
     {
       provide: UsecaseSymbols.Auth.RegisterUserUsecase,
       useClass: RegisterUserUsecaseImpl,
@@ -36,7 +53,11 @@ import {
     {
       provide: UsecaseSymbols.Auth.RefreshTokenUsecase,
       useClass: RefreshTokenUsecaseImpl,
-    }
+    },
+    {
+      provide: UsecaseSymbols.Auth.GetMeUsecase,
+      useClass: GetMeUsecaseImpl,
+    },
   ],
 })
 export class AuthModule {}
