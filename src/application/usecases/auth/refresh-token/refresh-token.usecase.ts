@@ -5,6 +5,7 @@ import { TokenService } from 'src/infrastructure/helpers';
 import { ConfigSymbols, ServiceSymbols } from 'src/infrastructure';
 import { AuthConfig } from 'src/config';
 import { RefreshTokenUsecase, RefreshTokenUsecaseResult } from './types';
+import { AuthorizationException } from '../../../../common';
 
 export class RefreshTokenUsecaseImpl implements RefreshTokenUsecase {
   constructor(
@@ -20,15 +21,13 @@ export class RefreshTokenUsecaseImpl implements RefreshTokenUsecase {
 
   async execute(refreshToken: string): Promise<RefreshTokenUsecaseResult> {
     if (!refreshToken) {
-      throw UserException.UnauthorizedAccess('refresh token');
+      throw AuthorizationException.Unauthorized('refresh token');
     }
 
-    const payload = this.tokenService.parseToken(
-      refreshToken
-    );
+    const payload = this.tokenService.parseToken(refreshToken);
 
     if (!payload?.userId) {
-      throw UserException.UnauthorizedAccess('refresh token');
+      throw AuthorizationException.Unauthorized('refresh token');
     }
 
     const user = await this.userRepository.findById(payload.userId);
