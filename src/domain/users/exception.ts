@@ -15,10 +15,6 @@ export class UserException extends Error {
     return new UserException(`Invalid user data: ${reason}`, 400);
   }
 
-  public static UnauthorizedAccess(action: string): UserException {
-    return new UserException(`Unauthorized access attempt to ${action}.`, 401);
-  }
-
   public static IncorrectPassword(): UserException {
     return new UserException(`The provided password is incorrect.`, 401);
   }
