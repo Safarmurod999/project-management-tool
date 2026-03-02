@@ -1,6 +1,20 @@
 import { Connection, createConnection, Model } from 'mongoose';
-import { UserSchema, PermissionSchema, RoleSchema, RolePermissionSchema, TeamSchema } from './schemas';
-import { UserDocument, PermissionDocument, RoleDocument, RolePermissionDocument, TeamDocument } from './models';
+import {
+  UserSchema,
+  PermissionSchema,
+  RoleSchema,
+  RolePermissionSchema,
+  TeamSchema,
+  ProjectSchema,
+} from './schemas';
+import {
+  UserDocument,
+  PermissionDocument,
+  RoleDocument,
+  RolePermissionDocument,
+  TeamDocument,
+  ProjectDocument,
+} from './models';
 import { Database } from '../database';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigSymbols } from 'src/infrastructure/dependency-injection';
@@ -42,8 +56,12 @@ export class MongoDb implements Database {
     this._client.model<UserDocument>('User', UserSchema);
     this._client.model<PermissionDocument>('Permission', PermissionSchema);
     this._client.model<RoleDocument>('Role', RoleSchema);
-    this._client.model<RolePermissionDocument>('RolePermission', RolePermissionSchema);
+    this._client.model<RolePermissionDocument>(
+      'RolePermission',
+      RolePermissionSchema,
+    );
     this._client.model<TeamDocument>('Team', TeamSchema);
+    this._client.model<TeamDocument>('Project', ProjectSchema);
 
     console.log('[MongoDB] Connected.');
   }
@@ -74,14 +92,18 @@ export class MongoDb implements Database {
     if (!this._client) throw new Error('MongoDB not connected');
     return this._client.model<RoleDocument>('Role');
   }
-rolePermissionModel(): Model<RolePermissionDocument> {
+  rolePermissionModel(): Model<RolePermissionDocument> {
     if (!this._client) throw new Error('MongoDB not connected');
     return this._client.model<RolePermissionDocument>('RolePermission');
   }
 
-  public 
   public teamModel(): Model<TeamDocument> {
     if (!this._client) throw new Error('MongoDB not connected');
     return this._client.model<TeamDocument>('Team');
+  }
+
+  public projectModel(): Model<ProjectDocument> {
+    if (!this._client) throw new Error('MongoDB not connected');
+    return this._client.model<ProjectDocument>('Project');
   }
 }
