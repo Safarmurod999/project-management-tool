@@ -14,11 +14,4 @@ export class ProjectException extends Error {
   public static InvalidProjectData(reason: string): ProjectException {
     return new ProjectException(`Invalid project data: ${reason}`, 400);
   }
-
-  public static UnauthorizedAccess(action: string): ProjectException {
-    return new ProjectException(
-      `Unauthorized access attempt to ${action}.`,
-      401,
-    );
-  }
 }
