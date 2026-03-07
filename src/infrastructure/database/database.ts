@@ -1,5 +1,6 @@
 import { Connection, Model } from 'mongoose';
 import {
+  MembershipDocument,
   PermissionDocument,
   ProjectDocument,
   RoleDocument,
@@ -19,4 +20,5 @@ export interface Database {
   rolePermissionModel(): Model<RolePermissionDocument>;
   teamModel(): Model<TeamDocument>;
   projectModel(): Model<ProjectDocument>;
+  membershipModel(): Model<MembershipDocument>;
 }

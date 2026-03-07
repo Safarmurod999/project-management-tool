@@ -10,12 +10,12 @@ import { TeamMapper } from "src/infrastructure/database/mongodb/mappers";
 
 export type TeamCreateParams = Omit<
   TeamStruct,
-  "id" | "createdAt" | "updatedAt" | "members"
-> & { members: string[] };
+  "id" | "createdAt" | "updatedAt"
+>;
 
 export type TeamUpdateParams = Partial<
-  Omit<TeamStruct, "createdAt" | "members">
-> & { members?: string[] };
+  Omit<TeamStruct, "createdAt">
+>;
 
 export interface TeamGetQuery {
   page?: number;
@@ -45,14 +45,9 @@ export class TeamRepositoryImpl implements TeamRepository {
   ) {}
 
   async create(team: TeamCreateParams): Promise<Team> {
-    const teamData = await (
-      await this.teamModel.create({
-        ...team,
-        members: team.members.map((id) => new Types.ObjectId(id)),
-      })
-    ).populate({
-      path: "members",
-      populate: { path: "role", populate: { path: "permissions" } },
+    const teamData = await this.teamModel.create({
+      ...team,
+      ownerId: new Types.ObjectId(team.ownerId),
     });
 
     return TeamMapper.toDomain(teamData);
@@ -73,10 +68,6 @@ export class TeamRepositoryImpl implements TeamRepository {
       .find(filter)
       .skip((page - 1) * limit)
       .limit(limit)
-      .populate({
-        path: "members",
-        populate: { path: "role", populate: { path: "permissions" } },
-      })
       .exec();
 
     return {
@@ -90,10 +81,6 @@ export class TeamRepositoryImpl implements TeamRepository {
   async findById(id: string): Promise<Team> {
     const teamData = await this.teamModel
       .findById(id)
-      .populate({
-        path: "members",
-        populate: { path: "role", populate: { path: "permissions" } },
-      })
       .exec();
 
     if (!teamData) {
@@ -112,22 +99,13 @@ export class TeamRepositoryImpl implements TeamRepository {
 
     teamData.name = team.name ?? teamData.name;
     teamData.description = team.description ?? teamData.description;
-    teamData.ownerId = new Types.ObjectId(team.ownerId) ?? teamData.ownerId;
+    if (team.ownerId) {
+      teamData.ownerId = new Types.ObjectId(team.ownerId);
+    }
     teamData.status = team.status ?? teamData.status;
     teamData.updatedAt = new Date();
 
-    if (team.members) {
-      teamData.members = team.members.map(
-        (id) => new Types.ObjectId(id),
-      );
-    }
-
     await teamData.save();
-
-    await teamData.populate({
-      path: "members",
-      populate: { path: "role", populate: { path: "permissions" } },
-    });
 
     return TeamMapper.toDomain(teamData);
   }

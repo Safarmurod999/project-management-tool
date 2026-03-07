@@ -2,6 +2,169 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.0] - 2026-03-06
+
+### 🎉 New Features
+
+#### Team Management
+- ✅ Complete CRUD operations for teams
+- ✅ Team ownership and member management
+- ✅ Team status lifecycle (active/archived)
+- ✅ Member population with user details
+- ✅ Role-based access control for team operations
+
+#### Project Management
+- ✅ Complete CRUD operations for projects
+- ✅ Project-team relationship (projects belong to teams)
+- ✅ Project status lifecycle (active/archived)
+- ✅ Role-based access control for project operations
+
+#### Membership System
+- ✅ Scope-based role assignments (team/project/board)
+- ✅ Granular permission control across different contexts
+- ✅ Complete CRUD operations for memberships
+- ✅ Advanced filtering by user, scope type, scope ID, and role
+- ✅ Compound uniqueness (user can only have one role per scope)
+
+### 📚 Documentation Updates
+
+#### API Documentation
+- ✅ Complete API reference added to [docs/API.md](docs/API.md)
+- ✅ Request/response examples for all endpoints
+- ✅ Error code documentation
+- ✅ Authentication and authorization guides
+- ✅ Teams, Projects, and Memberships endpoints fully documented
+
+#### Postman Collection
+- ✅ Complete Postman collection created: [postman-collection.json](../postman-collection.json)
+- ✅ Auto-variable extraction for IDs and tokens
+- ✅ All 50+ endpoints included with examples
+- ✅ Environment variables pre-configured
+- ✅ Comprehensive [Postman Guide](POSTMAN-GUIDE.md) added
+
+#### Architecture Documentation
+- ✅ Updated database schema documentation
+- ✅ Added Team, Project, and Membership models
+- ✅ Updated API Reference with new endpoints
+- ✅ Enhanced authorization documentation
+
+#### README Updates
+- ✅ Feature list expanded with new modules
+- ✅ API endpoints quick reference added
+- ✅ Documentation links reorganized
+- ✅ Postman collection usage guide
+
+### 🗄️ Database Changes
+
+#### New Collections
+
+**Teams**
+```typescript
+{
+  _id: ObjectId,
+  name: string,
+  description?: string,
+  members: ObjectId[],
+  ownerId: ObjectId,
+  status: 'active' | 'archived',
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
+**Projects**
+```typescript
+{
+  _id: ObjectId,
+  name: string,
+  description?: string,
+  teamId: ObjectId,
+  status: 'active' | 'archived',
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
+**Memberships**
+```typescript
+{
+  _id: ObjectId,
+  userId: ObjectId,
+  scopeType: 'team' | 'project' | 'board',
+  scopeId: ObjectId,
+  roleId: ObjectId,
+  createdAt: Date,
+  updatedAt: Date
+}
+// Compound unique index: (userId, scopeType, scopeId)
+```
+
+### 🔐 New Permissions
+
+```typescript
+// Team permissions
+TEAM_CREATE = 'team:create'
+TEAM_GET = 'team:get'
+TEAM_EDIT = 'team:edit'
+TEAM_DELETE = 'team:delete'
+
+// Project permissions
+PROJECT_CREATE = 'project:create'
+PROJECT_GET = 'project:get'
+PROJECT_EDIT = 'project:edit'
+PROJECT_DELETE = 'project:delete'
+```
+
+### 🏗️ Architecture Enhancements
+
+#### Clean Architecture Layers
+- Domain layer: Team, Project, Membership entities with factories and repositories
+- Application layer: Complete use cases for all CRUD operations
+- Adapter layer: Controllers and presenters for all new resources
+- Infrastructure layer: NestJS modules with full dependency injection
+
+#### Repository Pattern
+- Population support for related entities (team members, project teams)
+- Pagination and filtering capabilities
+- Soft delete support
+- Optimized queries with indexes
+
+### 📦 API Endpoints
+
+#### Teams (`/teams`)
+- `POST /teams` - Create team
+- `GET /teams` - List teams (paginated, filterable)
+- `GET /teams/:id` - Get team by ID
+- `PUT /teams/:id` - Update team
+- `DELETE /teams/:id` - Delete team
+
+#### Projects (`/projects`)
+- `POST /projects` - Create project
+- `GET /projects` - List projects (paginated, filterable)
+- `GET /projects/:id` - Get project by ID
+- `PUT /projects/:id` - Update project
+- `DELETE /projects/:id` - Delete project
+
+#### Memberships (`/memberships`)
+- `POST /memberships` - Create membership
+- `GET /memberships` - List memberships (filterable by user/scope/role)
+- `GET /memberships/:id` - Get membership by ID
+- `PUT /memberships/:id` - Update membership
+- `DELETE /memberships/:id` - Delete membership
+
+### 🐛 Bug Fixes
+- Fixed error handling in controllers with typed error resolution
+- Corrected Mongoose model registration for Projects
+- Added optional field guards in repository update operations
+
+### 🔧 Developer Experience
+- Postman collection for easy API testing
+- Comprehensive documentation with examples
+- Type-safe error handling across all controllers
+- Improved DI symbol management
+
+---
+
 ## [2.0.0] - 2026-02-20
 
 ### 🚀 Major Refactoring: Authentication & Authorization System

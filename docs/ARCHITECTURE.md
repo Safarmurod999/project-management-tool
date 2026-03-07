@@ -274,11 +274,44 @@ async getProtectedData(@Request() req) {
   _id: ObjectId,
   name: string,
   description?: string,
-  status: 'active' | 'inactive',
+  members: ObjectId[] (ref: User),
+  ownerId: ObjectId (ref: User),
+  status: 'active' | 'archived',
   createdAt: Date,
   updatedAt: Date
 }
 ```
+
+#### Project
+```typescript
+{
+  _id: ObjectId,
+  name: string,
+  description?: string,
+  teamId: ObjectId (ref: Team),
+  status: 'active' | 'archived',
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
+#### Membership
+```typescript
+{
+  _id: ObjectId,
+  userId: ObjectId (ref: User),
+  scopeType: 'team' | 'project' | 'board',
+  scopeId: ObjectId,
+  roleId: ObjectId (ref: Role),
+  createdAt: Date,
+  updatedAt: Date
+}
+
+// Compound Unique Index: (userId + scopeType + scopeId)
+```
+
+**Purpose**: Controls role-based permissions across different scopes (teams, projects, boards).  
+**Use Case**: A user can be an Admin in one project but a Member in another.
 
 #### OTP (One-Time Password)
 ```typescript
@@ -574,6 +607,135 @@ Response: 200 OK
 #### Delete User
 ```http
 DELETE /users/:id
+Authorization: Bearer {accessToken}
+
+Response: 204 No Content
+```
+
+### Team Management Endpoints
+
+#### Create Team
+```http
+POST /teams
+Authorization: Bearer {accessToken}
+Content-Type: application/json
+
+{
+  "name": "Engineering Team",
+  "description": "Main engineering team",
+  "members": ["507f1f77bcf86cd799439011"],
+  "ownerId": "507f1f77bcf86cd799439011",
+  "status": "active"
+}
+
+Response: 201 Created
+```
+
+#### Get Teams
+```http
+GET /teams?page=1&limit=10
+Authorization: Bearer {accessToken}
+
+Response: 200 OK
+```
+
+#### Update Team
+```http
+PUT /teams/:id
+Authorization: Bearer {accessToken}
+
+Response: 200 OK
+```
+
+#### Delete Team
+```http
+DELETE /teams/:id
+Authorization: Bearer {accessToken}
+
+Response: 204 No Content
+```
+
+### Project Management Endpoints
+
+#### Create Project
+```http
+POST /projects
+Authorization: Bearer {accessToken}
+Content-Type: application/json
+
+{
+  "name": "Customer Portal V2",
+  "description": "Redesign of customer portal",
+  "teamId": "507f1f77bcf86cd799439020",
+  "status": "active"
+}
+
+Response: 201 Created
+```
+
+#### Get Projects
+```http
+GET /projects?page=1&limit=10
+Authorization: Bearer {accessToken}
+
+Response: 200 OK
+```
+
+#### Update Project
+```http
+PUT /projects/:id
+Authorization: Bearer {accessToken}
+
+Response: 200 OK
+```
+
+#### Delete Project
+```http
+DELETE /projects/:id
+Authorization: Bearer {accessToken}
+
+Response: 204 No Content
+```
+
+### Membership Management Endpoints
+
+#### Create Membership
+```http
+POST /memberships
+Authorization: Bearer {accessToken}
+Content-Type: application/json
+
+{
+  "userId": "507f1f77bcf86cd799439011",
+  "scopeType": "project",
+  "scopeId": "507f1f77bcf86cd799439030",
+  "roleId": "507f191e810c19729de860ea"
+}
+
+Response: 201 Created
+```
+
+**Scope Types**: `team`, `project`, `board`
+
+#### Get Memberships
+```http
+GET /memberships?userId=507f1f77bcf86cd799439011&scopeType=project
+Authorization: Bearer {accessToken}
+
+Response: 200 OK
+```
+
+#### Update Membership
+```http
+PUT /memberships/:id
+Authorization: Bearer {accessToken}
+
+Response: 200 OK
+```
+
+#### Delete Membership
+```http
+DELETE /memberships/:id
 Authorization: Bearer {accessToken}
 
 Response: 204 No Content
