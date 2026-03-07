@@ -799,6 +799,596 @@ Authorization: Bearer {accessToken}
 
 ---
 
+## 👥 Team Management
+
+### 1. Create Team
+
+Create a new team with members and owner.
+
+**Endpoint:** `POST /teams`
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`  
+**Required Permissions:** `TEAM_CREATE`
+
+**Request:**
+```json
+{
+  "name": "Engineering Team",
+  "description": "Main engineering team for backend services",
+  "members": ["507f1f77bcf86cd799439011", "507f1f77bcf86cd799439012"],
+  "ownerId": "507f1f77bcf86cd799439011",
+  "status": "active"
+}
+```
+
+**Response:** `201 Created`
+```json
+{
+  "status": 201,
+  "data": {
+    "id": "507f1f77bcf86cd799439020",
+    "name": "Engineering Team",
+    "description": "Main engineering team for backend services",
+    "members": [
+      {
+        "id": "507f1f77bcf86cd799439011",
+        "name": "John Doe",
+        "email": "john.doe@example.com"
+      },
+      {
+        "id": "507f1f77bcf86cd799439012",
+        "name": "Jane Smith",
+        "email": "jane.smith@example.com"
+      }
+    ],
+    "owner": {
+      "id": "507f1f77bcf86cd799439011",
+      "name": "John Doe",
+      "email": "john.doe@example.com"
+    },
+    "status": "active",
+    "createdAt": "2026-03-06T10:00:00.000Z",
+    "updatedAt": "2026-03-06T10:00:00.000Z"
+  }
+}
+```
+
+---
+
+### 2. Get All Teams
+
+Retrieve all teams with pagination and filtering.
+
+**Endpoint:** `GET /teams`
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`, `USER`  
+**Required Permissions:** `TEAM_GET`
+
+**Query Parameters:**
+- `page` (optional): Page number (default: 1)
+- `limit` (optional): Items per page (default: 10)
+- `name` (optional): Filter by team name
+
+**Example:** `GET /teams?page=1&limit=10&name=Engineering`
+
+**Response:** `200 OK`
+```json
+{
+  "status": 200,
+  "data": {
+    "teams": [
+      {
+        "id": "507f1f77bcf86cd799439020",
+        "name": "Engineering Team",
+        "description": "Main engineering team",
+        "members": [...],
+        "owner": {...},
+        "status": "active"
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "limit": 10
+  }
+}
+```
+
+---
+
+### 3. Get Team by ID
+
+Get detailed information about a specific team.
+
+**Endpoint:** `GET /teams/:id`
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`, `USER`  
+**Required Permissions:** `TEAM_GET`
+
+**Response:** `200 OK`
+```json
+{
+  "status": 200,
+  "data": {
+    "id": "507f1f77bcf86cd799439020",
+    "name": "Engineering Team",
+    "description": "Main engineering team for backend services",
+    "members": [
+      {
+        "id": "507f1f77bcf86cd799439011",
+        "name": "John Doe",
+        "email": "john.doe@example.com"
+      }
+    ],
+    "owner": {
+      "id": "507f1f77bcf86cd799439011",
+      "name": "John Doe",
+      "email": "john.doe@example.com"
+    },
+    "status": "active",
+    "createdAt": "2026-03-06T10:00:00.000Z",
+    "updatedAt": "2026-03-06T10:00:00.000Z"
+  }
+}
+```
+
+---
+
+### 4. Update Team
+
+Update team information, members, or status.
+
+**Endpoint:** `PUT /teams/:id`
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`  
+**Required Permissions:** `TEAM_EDIT`
+
+**Request:**
+```json
+{
+  "name": "Engineering Team - Updated",
+  "description": "Updated description",
+  "members": ["507f1f77bcf86cd799439011", "507f1f77bcf86cd799439012", "507f1f77bcf86cd799439013"],
+  "status": "active"
+}
+```
+
+**Response:** `200 OK`
+```json
+{
+  "status": 200,
+  "data": {
+    "id": "507f1f77bcf86cd799439020",
+    "name": "Engineering Team - Updated",
+    "description": "Updated description",
+    "members": [...],
+    "owner": {...},
+    "status": "active",
+    "updatedAt": "2026-03-06T11:00:00.000Z"
+  }
+}
+```
+
+---
+
+### 5. Delete Team
+
+Delete a team (soft delete).
+
+**Endpoint:** `DELETE /teams/:id`
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`  
+**Required Permissions:** `TEAM_DELETE`
+
+**Response:** `204 No Content`
+
+---
+
+## 📁 Project Management
+
+### 1. Create Project
+
+Create a new project within a team.
+
+**Endpoint:** `POST /projects`
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`  
+**Required Permissions:** `PROJECT_CREATE`
+
+**Request:**
+```json
+{
+  "name": "Customer Portal V2",
+  "description": "Redesign of customer-facing portal",
+  "teamId": "507f1f77bcf86cd799439020",
+  "status": "active"
+}
+```
+
+**Response:** `201 Created`
+```json
+{
+  "status": 201,
+  "data": {
+    "id": "507f1f77bcf86cd799439030",
+    "name": "Customer Portal V2",
+    "description": "Redesign of customer-facing portal",
+    "team": {
+      "id": "507f1f77bcf86cd799439020",
+      "name": "Engineering Team"
+    },
+    "status": "active",
+    "createdAt": "2026-03-06T10:00:00.000Z",
+    "updatedAt": "2026-03-06T10:00:00.000Z"
+  }
+}
+```
+
+---
+
+### 2. Get All Projects
+
+Retrieve all projects with pagination and filtering.
+
+**Endpoint:** `GET /projects`
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`, `USER`  
+**Required Permissions:** `PROJECT_GET`
+
+**Query Parameters:**
+- `page` (optional): Page number (default: 1)
+- `limit` (optional): Items per page (default: 10)
+- `name` (optional): Filter by project name
+
+**Example:** `GET /projects?page=1&limit=10&name=Portal`
+
+**Response:** `200 OK`
+```json
+{
+  "status": 200,
+  "data": {
+    "projects": [
+      {
+        "id": "507f1f77bcf86cd799439030",
+        "name": "Customer Portal V2",
+        "description": "Redesign of customer-facing portal",
+        "team": {...},
+        "status": "active"
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "limit": 10
+  }
+}
+```
+
+---
+
+### 3. Get Project by ID
+
+Get detailed information about a specific project.
+
+**Endpoint:** `GET /projects/:id`
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`, `USER`  
+**Required Permissions:** `PROJECT_GET`
+
+**Response:** `200 OK`
+```json
+{
+  "status": 200,
+  "data": {
+    "id": "507f1f77bcf86cd799439030",
+    "name": "Customer Portal V2",
+    "description": "Redesign of customer-facing portal",
+    "team": {
+      "id": "507f1f77bcf86cd799439020",
+      "name": "Engineering Team"
+    },
+    "status": "active",
+    "createdAt": "2026-03-06T10:00:00.000Z",
+    "updatedAt": "2026-03-06T10:00:00.000Z"
+  }
+}
+```
+
+---
+
+### 4. Update Project
+
+Update project information or status.
+
+**Endpoint:** `PUT /projects/:id`
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`  
+**Required Permissions:** `PROJECT_EDIT`
+
+**Request:**
+```json
+{
+  "name": "Customer Portal V2.1",
+  "description": "Updated project description",
+  "status": "archived"
+}
+```
+
+**Response:** `200 OK`
+```json
+{
+  "status": 200,
+  "data": {
+    "id": "507f1f77bcf86cd799439030",
+    "name": "Customer Portal V2.1",
+    "description": "Updated project description",
+    "team": {...},
+    "status": "archived",
+    "updatedAt": "2026-03-06T11:00:00.000Z"
+  }
+}
+```
+
+---
+
+### 5. Delete Project
+
+Delete a project (soft delete).
+
+**Endpoint:** `DELETE /projects/:id`
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`  
+**Required Permissions:** `PROJECT_DELETE`
+
+**Response:** `204 No Content`
+
+---
+
+## 🔗 Membership Management
+
+### 1. Create Membership
+
+Assign a role to a user for a specific scope (team, project, or board).
+
+**Endpoint:** `POST /memberships`
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`
+
+**Request:**
+```json
+{
+  "userId": "507f1f77bcf86cd799439011",
+  "scopeType": "project",
+  "scopeId": "507f1f77bcf86cd799439030",
+  "roleId": "507f191e810c19729de860ea"
+}
+```
+
+**Scope Types:**
+- `team` - Team membership
+- `project` - Project membership
+- `board` - Board membership
+
+**Response:** `201 Created`
+```json
+{
+  "status": 201,
+  "data": {
+    "id": "507f1f77bcf86cd799439040",
+    "user": {
+      "id": "507f1f77bcf86cd799439011",
+      "name": "John Doe",
+      "email": "john.doe@example.com"
+    },
+    "scopeType": "project",
+    "scopeId": "507f1f77bcf86cd799439030",
+    "role": {
+      "id": "507f191e810c19729de860ea",
+      "name": "Admin",
+      "code": "ADMIN"
+    },
+    "createdAt": "2026-03-06T10:00:00.000Z",
+    "updatedAt": "2026-03-06T10:00:00.000Z"
+  }
+}
+```
+
+---
+
+### 2. Get All Memberships
+
+Retrieve all memberships with filtering options.
+
+**Endpoint:** `GET /memberships`
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`, `USER`
+
+**Query Parameters:**
+- `page` (optional): Page number (default: 1)
+- `limit` (optional): Items per page (default: 10)
+- `userId` (optional): Filter by user ID
+- `scopeType` (optional): Filter by scope type (team/project/board)
+- `scopeId` (optional): Filter by scope ID
+- `roleId` (optional): Filter by role ID
+
+**Example:** `GET /memberships?userId=507f1f77bcf86cd799439011&scopeType=project`
+
+**Response:** `200 OK`
+```json
+{
+  "status": 200,
+  "data": {
+    "memberships": [
+      {
+        "id": "507f1f77bcf86cd799439040",
+        "user": {...},
+        "scopeType": "project",
+        "scopeId": "507f1f77bcf86cd799439030",
+        "role": {...}
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "limit": 10
+  }
+}
+```
+
+---
+
+### 3. Get Membership by ID
+
+Get detailed information about a specific membership.
+
+**Endpoint:** `GET /memberships/:id`
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`, `USER`
+
+**Response:** `200 OK`
+```json
+{
+  "status": 200,
+  "data": {
+    "id": "507f1f77bcf86cd799439040",
+    "user": {
+      "id": "507f1f77bcf86cd799439011",
+      "name": "John Doe",
+      "email": "john.doe@example.com"
+    },
+    "scopeType": "project",
+    "scopeId": "507f1f77bcf86cd799439030",
+    "role": {
+      "id": "507f191e810c19729de860ea",
+      "name": "Admin",
+      "code": "ADMIN"
+    },
+    "createdAt": "2026-03-06T10:00:00.000Z",
+    "updatedAt": "2026-03-06T10:00:00.000Z"
+  }
+}
+```
+
+---
+
+### 4. Update Membership
+
+Update membership role or scope.
+
+**Endpoint:** `PUT /memberships/:id`
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`
+
+**Request:**
+```json
+{
+  "roleId": "507f191e810c19729de860eb",
+  "scopeType": "team",
+  "scopeId": "507f1f77bcf86cd799439020"
+}
+```
+
+**Response:** `200 OK`
+```json
+{
+  "status": 200,
+  "data": {
+    "id": "507f1f77bcf86cd799439040",
+    "user": {...},
+    "scopeType": "team",
+    "scopeId": "507f1f77bcf86cd799439020",
+    "role": {...},
+    "updatedAt": "2026-03-06T11:00:00.000Z"
+  }
+}
+```
+
+---
+
+### 5. Delete Membership
+
+Remove a membership assignment.
+
+**Endpoint:** `DELETE /memberships/:id`
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`
+
+**Response:** `204 No Content`
+
+---
+
 ## ❗ Error Codes
 
 | Status Code | Description |

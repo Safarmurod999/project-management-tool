@@ -6,6 +6,7 @@ import {
   RolePermissionSchema,
   TeamSchema,
   ProjectSchema,
+  MembershipSchema,
 } from './schemas';
 import {
   UserDocument,
@@ -14,6 +15,7 @@ import {
   RolePermissionDocument,
   TeamDocument,
   ProjectDocument,
+  MembershipDocument,
 } from './models';
 import { Database } from '../database';
 import { Inject, Injectable } from '@nestjs/common';
@@ -61,7 +63,8 @@ export class MongoDb implements Database {
       RolePermissionSchema,
     );
     this._client.model<TeamDocument>('Team', TeamSchema);
-    this._client.model<TeamDocument>('Project', ProjectSchema);
+    this._client.model<ProjectDocument>('Project', ProjectSchema);
+    this._client.model<MembershipDocument>('Membership', MembershipSchema);
 
     console.log('[MongoDB] Connected.');
   }
@@ -105,5 +108,10 @@ export class MongoDb implements Database {
   public projectModel(): Model<ProjectDocument> {
     if (!this._client) throw new Error('MongoDB not connected');
     return this._client.model<ProjectDocument>('Project');
+  }
+
+  public membershipModel(): Model<MembershipDocument> {
+    if (!this._client) throw new Error('MongoDB not connected');
+    return this._client.model<MembershipDocument>('Membership');
   }
 }

@@ -5,13 +5,6 @@ export const TeamSchema = new Schema(
   {
     name: { type: String, required: true },
     description: { type: String, default: null },
-    members: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-      },
-    ],
     ownerId: {
       type: Schema.Types.ObjectId,
       ref: "User",

@@ -5,18 +5,27 @@ A scalable, role-based project management system built with **NestJS** and **Cle
 ## 🚀 Features
 
 - ✅ **JWT Authentication** - Secure access & refresh token system
+- ✅ **Email Verification** - OTP-based user email verification
 - ✅ **Role-Based Access Control (RBAC)** - Granular permission management
+- ✅ **Team Management** - Create and manage teams with members
+- ✅ **Project Management** - Organize projects within teams
+- ✅ **Membership System** - Scope-based role assignments (team/project/board)
 - ✅ **Clean Architecture** - Separation of concerns with domain-driven design
 - ✅ **MongoDB + Redis** - NoSQL database with caching layer
-- ✅ **OTP Verification** - Email-based user verification
 - ✅ **Dynamic Permission Resolution** - Server-side permission validation
 - ✅ **TypeScript** - Fully typed codebase
+- ✅ **API Documentation** - Complete API reference with Postman collection
 
 ## 📚 Documentation
 
+- **[Quick Start Guide](docs/QUICK-START.md)** - Get started in 5 minutes ⚡
+- **[API Documentation](docs/API.md)** - Complete API reference with request/response examples for all endpoints
 - **[Architecture Documentation](docs/ARCHITECTURE.md)** - Comprehensive technical documentation
+- **[Postman Collection](postman-collection.json)** - Ready-to-use Postman collection for API testing
+- **[Postman Guide](docs/POSTMAN-GUIDE.md)** - Complete guide for using the Postman collection
 - **[Component Diagram](docs/component-diagram.puml)** - System architecture visualization
 - **[Sequence Diagram](docs/sequence-diagram.puml)** - Authentication flow diagrams
+- **[Changelog](docs/CHANGELOG.md)** - Version history and updates
 
 ## 🏗️ Architecture
 
@@ -173,7 +182,38 @@ npm run test:cov
 | PUT | `/permissions/:id` | Update permission | ✅ |
 | DELETE | `/permissions/:id` | Delete permission | ✅ |
 
-> See [Architecture Documentation](docs/ARCHITECTURE.md) for detailed API specifications.
+### Teams
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/teams` | Get all teams | ✅ |
+| GET | `/teams/:id` | Get team by ID | ✅ |
+| POST | `/teams` | Create team | ✅ |
+| PUT | `/teams/:id` | Update team | ✅ |
+| DELETE | `/teams/:id` | Delete team | ✅ |
+
+### Projects
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/projects` | Get all projects | ✅ |
+| GET | `/projects/:id` | Get project by ID | ✅ |
+| POST | `/projects` | Create project | ✅ |
+| PUT | `/projects/:id` | Update project | ✅ |
+| DELETE | `/projects/:id` | Delete project | ✅ |
+
+### Memberships
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/memberships` | Get all memberships (with filters) | ✅ |
+| GET | `/memberships/:id` | Get membership by ID | ✅ |
+| POST | `/memberships` | Create membership (scope-based role) | ✅ |
+| PUT | `/memberships/:id` | Update membership | ✅ |
+| DELETE | `/memberships/:id` | Delete membership | ✅ |
+
+> See [API Documentation](docs/API.md) for detailed request/response examples.  
+> Import [Postman Collection](postman-collection.json) for easy API testing.
 
 ## 🔑 Key Concepts
 

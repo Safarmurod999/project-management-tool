@@ -87,3 +87,9 @@ export enum ProjectStatus {
   ACTIVE = 'active',
   ARCHIVED = 'archived',
 }
+
+export enum ScopeType {
+  TEAM = 'team',
+  PROJECT = 'project',
+  BOARD = 'board',
+}

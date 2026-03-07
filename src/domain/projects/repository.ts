@@ -96,8 +96,9 @@ export class ProjectRepositoryImpl implements ProjectRepository {
 
     projectData.name = project.name ?? projectData.name;
     projectData.description = project.description ?? projectData.description;
-    projectData.teamId =
-      new Types.ObjectId(project.teamId) ?? projectData.teamId;
+    if (project.teamId) {
+      projectData.teamId = new Types.ObjectId(project.teamId);
+    }
     projectData.status = project.status ?? projectData.status;
     projectData.updatedAt = new Date();
 
