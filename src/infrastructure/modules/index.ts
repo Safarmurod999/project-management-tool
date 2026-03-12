@@ -5,3 +5,4 @@ export * from "./auth/auth.module";
 export * from "./common/common.module";
 export * from "./permission/permission.module";
 export * from "./roles/roles.module";
+export * from "./realtime/realtime.module";

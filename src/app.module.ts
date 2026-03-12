@@ -6,11 +6,21 @@ import {
   AuthModule,
   CommonModule,
   PermissionModule,
-  RolesModule
+  RolesModule,
+  RealtimeModule,
 } from './infrastructure/modules';
 
 @Module({
-  imports: [MainConfigModule, UserModule, OtpModule, AuthModule, CommonModule, PermissionModule, RolesModule],
+  imports: [
+    MainConfigModule,
+    UserModule,
+    OtpModule,
+    AuthModule,
+    CommonModule,
+    PermissionModule,
+    RolesModule,
+    RealtimeModule,
+  ],
 })
 export class AppModule {
 }

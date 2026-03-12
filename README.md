@@ -15,6 +15,7 @@ A scalable, role-based project management system built with **NestJS** and **Cle
 ## 📚 Documentation
 
 - **[Architecture Documentation](docs/ARCHITECTURE.md)** - Comprehensive technical documentation
+- **[Real-time Guide](docs/REALTIME.md)** - Socket.IO usage
 - **[Component Diagram](docs/component-diagram.puml)** - System architecture visualization
 - **[Sequence Diagram](docs/sequence-diagram.puml)** - Authentication flow diagrams
 
@@ -272,4 +273,5 @@ If migrating from an older version with embedded permissions in roles:
 ---
 
 **Built with ❤️ using NestJS**
+
 
