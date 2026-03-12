@@ -8,6 +8,9 @@ import {
   PermissionModule,
   RolesModule,
   RealtimeModule,
+  TeamsModule,
+  ProjectsModule,
+  MembershipsModule,
 } from './infrastructure/modules';
 
 @Module({
@@ -20,6 +23,9 @@ import {
     PermissionModule,
     RolesModule,
     RealtimeModule,
+    TeamsModule,
+    ProjectsModule,
+    MembershipsModule,
   ],
 })
 export class AppModule {

@@ -4,4 +4,7 @@ export const RepositorySymbols = {
     PermissionRepository: Symbol.for('PermissionRepository'),
     RoleRepository: Symbol.for('RoleRepository'),
     RolePermissionRepository: Symbol.for('RolePermissionRepository'),
+    MembershipRepository: Symbol.for('MembershipRepository'),
+    TeamRepository: Symbol.for('TeamRepository'),
+    ProjectRepository: Symbol.for('ProjectRepository'),
 }

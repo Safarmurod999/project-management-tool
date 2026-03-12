@@ -28,4 +28,25 @@ export const PresenterSymbols = {
     UpdateRolePresenter: Symbol('UpdateRolePresenter'),
     DeleteRolePresenter: Symbol('DeleteRolePresenter'),
   },
+  Membership: {
+    CreateMembershipPresenter: Symbol('CreateMembershipPresenter'),
+    FindMembershipByIdPresenter: Symbol('FindMembershipByIdPresenter'),
+    GetMembershipsPresenter: Symbol('GetMembershipsPresenter'),
+    UpdateMembershipPresenter: Symbol('UpdateMembershipPresenter'),
+    DeleteMembershipPresenter: Symbol('DeleteMembershipPresenter'),
+  },
+  Team: {
+    CreateTeamPresenter: Symbol('CreateTeamPresenter'),
+    FindTeamByIdPresenter: Symbol('FindTeamByIdPresenter'),
+    GetTeamsPresenter: Symbol('GetTeamsPresenter'),
+    UpdateTeamPresenter: Symbol('UpdateTeamPresenter'), 
+    DeleteTeamPresenter: Symbol('DeleteTeamPresenter'),
+  },
+  Project: {
+    CreateProjectPresenter: Symbol('CreateProjectPresenter'),
+    FindProjectByIdPresenter: Symbol('FindProjectByIdPresenter'),
+    GetProjectsPresenter: Symbol('GetProjectsPresenter'),
+    UpdateProjectPresenter: Symbol('UpdateProjectPresenter'),
+    DeleteProjectPresenter: Symbol('DeleteProjectPresenter'),
+  }
 };

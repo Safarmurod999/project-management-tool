@@ -6,7 +6,6 @@ export class Team {
         private readonly _id: string,
         private readonly _name: string,
         private readonly _description: string | null,
-        private readonly _members: User[],
         private readonly _ownerId: string,
         private readonly _createdAt: Date,
         private readonly _updatedAt: Date | null = null,
@@ -23,10 +22,6 @@ export class Team {
 
     public get description(): string | null {
         return this._description;
-    }
-
-    public get members(): User[] {
-        return this._members;
     }
 
     public get ownerId(): string {

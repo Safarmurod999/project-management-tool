@@ -99,7 +99,7 @@ export class UserController {
         data: this.createUserPresenter.present(user),
       });
     } catch (error) {
-      res.status(error.statusCode).send({
+      res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         message: error.message,
@@ -127,7 +127,7 @@ export class UserController {
         limit: roles.limit,
       });
     } catch (error) {
-      res.status(HttpStatus.BAD_REQUEST).send({
+      res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         message: error.message,
@@ -146,7 +146,7 @@ export class UserController {
         data: this.findUserByIdPresenter.present(user),
       });
     } catch (error) {
-      res.status(error.statusCode).send({
+      res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         message: error.message,
@@ -165,7 +165,7 @@ export class UserController {
         data: this.findUserByEmailPresenter.present(user),
       });
     } catch (error) {
-      res.status(error.statusCode).send({
+      res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         message: error.message,
@@ -196,7 +196,7 @@ export class UserController {
         data: this.updateUserPresenter.present(user),
       });
     } catch (error) {
-      res.status(error.statusCode).send({
+      res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         message: error.message,
@@ -215,7 +215,7 @@ export class UserController {
         data: deletedUserId,
       });
     } catch (error) {
-      res.status(error.statusCode).send({
+      res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         message: error.message,

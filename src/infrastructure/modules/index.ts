@@ -6,3 +6,6 @@ export * from "./common/common.module";
 export * from "./permission/permission.module";
 export * from "./roles/roles.module";
 export * from "./realtime/realtime.module";
+export * from "./memberships/memberships.module";
+export * from "./teams/teams.module";
+export * from "./projects/projects.module";
