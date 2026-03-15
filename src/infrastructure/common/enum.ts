@@ -88,6 +88,11 @@ export enum ProjectStatus {
   ARCHIVED = 'archived',
 }
 
+export enum BoardStatus {
+  ACTIVE = 'active',
+  ARCHIVED = 'archived',
+}
+
 export enum ScopeType {
   TEAM = 'team',
   PROJECT = 'project',

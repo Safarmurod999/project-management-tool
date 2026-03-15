@@ -7,6 +7,7 @@ import {
   TeamSchema,
   ProjectSchema,
   MembershipSchema,
+  BoardSchema,
 } from './schemas';
 import {
   UserDocument,
@@ -16,6 +17,7 @@ import {
   TeamDocument,
   ProjectDocument,
   MembershipDocument,
+  BoardDocument,
 } from './models';
 import { Database } from '../database';
 import { Inject, Injectable } from '@nestjs/common';
@@ -65,6 +67,7 @@ export class MongoDb implements Database {
     this._client.model<TeamDocument>('Team', TeamSchema);
     this._client.model<ProjectDocument>('Project', ProjectSchema);
     this._client.model<MembershipDocument>('Membership', MembershipSchema);
+    this._client.model<BoardDocument>('Board', BoardSchema);
 
     console.log('[MongoDB] Connected.');
   }
@@ -113,5 +116,10 @@ export class MongoDb implements Database {
   public membershipModel(): Model<MembershipDocument> {
     if (!this._client) throw new Error('MongoDB not connected');
     return this._client.model<MembershipDocument>('Membership');
+  }
+
+  public boardModel(): Model<BoardDocument> {
+    if (!this._client) throw new Error('MongoDB not connected');
+    return this._client.model<BoardDocument>('Board');
   }
 }

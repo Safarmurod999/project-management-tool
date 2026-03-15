@@ -6,4 +6,5 @@ export const FactorySymbols = {
     MemebershipFactory: Symbol.for('MembershipFactory'),
     TeamFactory: Symbol.for('TeamFactory'),
     ProjectFactory: Symbol.for('ProjectFactory'),
+    BoardFactory: Symbol.for('BoardFactory'),
 }
