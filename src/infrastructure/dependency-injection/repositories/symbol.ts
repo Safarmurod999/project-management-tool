@@ -7,4 +7,5 @@ export const RepositorySymbols = {
     MembershipRepository: Symbol.for('MembershipRepository'),
     TeamRepository: Symbol.for('TeamRepository'),
     ProjectRepository: Symbol.for('ProjectRepository'),
+    BoardRepository: Symbol.for('BoardRepository'),
 }

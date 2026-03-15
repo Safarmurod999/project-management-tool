@@ -5,4 +5,5 @@ export * from './roles';
 export * from './role-permissions';
 export * from './teams';
 export * from './projects';
+export * from './boards';
 export * from './memberships';
