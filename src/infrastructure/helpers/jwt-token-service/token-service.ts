@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from 'jsonwebtoken';
 import { TokenService } from '../token-service';
+import { GlobalException } from 'src/common';
 
 @Injectable()
 export class TokenServiceImpl implements TokenService {
@@ -19,13 +20,13 @@ export class TokenServiceImpl implements TokenService {
     const decoded = this.jwt.decode(token, { json: true });
 
     if (!decoded || typeof decoded !== 'object' || decoded === null) {
-      throw new Error('Error occurred while decoding the token');
+      throw GlobalException.ValidationError('Error occurred while decoding the token');
     }
 
     const jwtPayload = decoded as JwtPayload;
     
     if (!jwtPayload.exp) {
-      throw new Error('Token expiration information not found');
+      throw GlobalException.ValidationError('Token expiration information not found');
     }
 
     return new Date(jwtPayload.exp * 1000);

@@ -28,4 +28,29 @@ export class TeamException extends Error {
       409,
     );
   }
+
+  public static TeamAlreadyExists(name: string): TeamException {
+    return new TeamException(`Team with name "${name}" already exists.`, 409);
+  }
+
+  public static CannotDeleteActiveTeam(teamId: string): TeamException {
+    return new TeamException(
+      `Cannot delete active team with ID ${teamId}. Archive it first.`,
+      409,
+    );
+  }
+
+  public static TeamHasActiveProjects(teamId: string): TeamException {
+    return new TeamException(
+      `Cannot archive team ${teamId} as it has active projects.`,
+      409,
+    );
+  }
+
+  public static UnauthorizedTeamAccess(teamId: string): TeamException {
+    return new TeamException(
+      `Unauthorized access to team with ID ${teamId}.`,
+      403,
+    );
+  }
 }

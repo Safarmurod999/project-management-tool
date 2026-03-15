@@ -6,7 +6,7 @@ import {
   LoginUserUsecaseParams,
   LoginUserUsecaseResult,
 } from './types';
-import { TokenService } from 'src/infrastructure/helpers';
+import { TokenService, PasswordService } from 'src/infrastructure/helpers';
 import { ConfigSymbols, ServiceSymbols } from 'src/infrastructure';
 import { AuthConfig } from 'src/config';
 
@@ -17,6 +17,9 @@ export class LoginUserUsecaseImpl implements LoginUserUsecase {
 
     @Inject(ServiceSymbols.TokenService)
     private tokenService: TokenService,
+
+    @Inject(ServiceSymbols.PasswordService)
+    private passwordService: PasswordService,
 
     @Inject(ConfigSymbols.AuthConfig)
     private authConfig: AuthConfig,
@@ -31,7 +34,8 @@ export class LoginUserUsecaseImpl implements LoginUserUsecase {
         throw UserException.UnverifiedUser();
     }    
 
-    if (user?.password !== params.password) {
+    const isPasswordValid = await this.passwordService.comparePassword(params.password, user.password);
+    if (!isPasswordValid) {
       throw UserException.IncorrectPassword();
     }
 

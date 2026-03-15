@@ -9,6 +9,7 @@ import {
 } from 'src/infrastructure/dependency-injection';
 import { OtpModule } from 'src/infrastructure/modules/otp/otp.module';
 import { UserModule } from 'src/infrastructure/modules/users/user.module';
+import { CommonModule } from '../common/common.module';
 import {
   LoginUserUsecaseImpl,
   RefreshTokenUsecaseImpl,
@@ -20,7 +21,7 @@ import { RoleRepositoryImpl } from 'src/domain/roles/repository';
 import { RoleFactoryImpl, RolePermissionRepositoryImpl } from 'src/domain';
 @Module({
   controllers: [AuthController],
-  imports: [OtpModule, forwardRef(() => UserModule)],
+  imports: [OtpModule, forwardRef(() => UserModule), CommonModule],
   providers: [
     {
       provide: RepositorySymbols.RoleRepository,

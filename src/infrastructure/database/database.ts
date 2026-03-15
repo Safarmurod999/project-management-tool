@@ -7,6 +7,7 @@ import {
   RolePermissionDocument,
   TeamDocument,
   UserDocument,
+  BoardDocument,
 } from './mongodb/models';
 
 export interface Database {
@@ -21,4 +22,5 @@ export interface Database {
   teamModel(): Model<TeamDocument>;
   projectModel(): Model<ProjectDocument>;
   membershipModel(): Model<MembershipDocument>;
+  boardModel(): Model<BoardDocument>;
 }

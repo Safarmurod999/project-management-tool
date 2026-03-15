@@ -4,4 +4,5 @@ export * from './role.model';
 export * from './role-permission.model';
 export * from './team.model';
 export * from './project.model';
+export * from './board.model';
 export * from './membership.model';
