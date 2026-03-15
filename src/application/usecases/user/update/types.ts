@@ -6,7 +6,7 @@ export interface UpdateUserUsecaseParams {
   name: string;
   email: string;
   role: string;
-  password: string;
+  password?: string;
   isVerified: boolean;
   status: UserStatus;
 }

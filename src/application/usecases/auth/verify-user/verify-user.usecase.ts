@@ -5,6 +5,7 @@ import {
   ServiceSymbols,
 } from 'src/infrastructure';
 import { OtpRepository, UserRepository } from 'src/domain';
+import { GlobalException } from 'src/common';
 import {
   VerifyUserUsecase,
   VerifyUserUsecaseParams,
@@ -34,7 +35,7 @@ export class VerifyUserUsecaseImpl implements VerifyUserUsecase {
     let otp = await this.otpRepository.get(params.token);
 
     if (!otp) {
-      throw new Error('Invalid or expired token');
+      throw GlobalException.NotFound('Invalid or expired token');
     }
 
     await this.userRepository.update({

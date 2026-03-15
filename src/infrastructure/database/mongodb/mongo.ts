@@ -23,6 +23,7 @@ import { Database } from '../database';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigSymbols } from 'src/infrastructure/dependency-injection';
 import { MongoDbConfig } from 'src/config';
+import { GlobalException } from 'src/common';
 
 @Injectable()
 export class MongoDb implements Database {
@@ -80,46 +81,46 @@ export class MongoDb implements Database {
   }
 
   public getClient(): Connection {
-    if (!this._client) throw new Error('MongoDB not connected');
+    if (!this._client) throw GlobalException.DatabaseError('MongoDB not connected');
     return this._client;
   }
 
   public userModel(): Model<UserDocument> {
-    if (!this._client) throw new Error('MongoDB not connected');
+    if (!this._client) throw GlobalException.DatabaseError('MongoDB not connected');
     return this._client.model<UserDocument>('User');
   }
 
   public permissionModel(): Model<PermissionDocument> {
-    if (!this._client) throw new Error('MongoDB not connected');
+    if (!this._client) throw GlobalException.DatabaseError('MongoDB not connected');
     return this._client.model<PermissionDocument>('Permission');
   }
 
   public roleModel(): Model<RoleDocument> {
-    if (!this._client) throw new Error('MongoDB not connected');
+    if (!this._client) throw GlobalException.DatabaseError('MongoDB not connected');
     return this._client.model<RoleDocument>('Role');
   }
   rolePermissionModel(): Model<RolePermissionDocument> {
-    if (!this._client) throw new Error('MongoDB not connected');
+    if (!this._client) throw GlobalException.DatabaseError('MongoDB not connected');
     return this._client.model<RolePermissionDocument>('RolePermission');
   }
 
   public teamModel(): Model<TeamDocument> {
-    if (!this._client) throw new Error('MongoDB not connected');
+    if (!this._client) throw GlobalException.DatabaseError('MongoDB not connected');
     return this._client.model<TeamDocument>('Team');
   }
 
   public projectModel(): Model<ProjectDocument> {
-    if (!this._client) throw new Error('MongoDB not connected');
+    if (!this._client) throw GlobalException.DatabaseError('MongoDB not connected');
     return this._client.model<ProjectDocument>('Project');
   }
 
   public membershipModel(): Model<MembershipDocument> {
-    if (!this._client) throw new Error('MongoDB not connected');
+    if (!this._client) throw GlobalException.DatabaseError('MongoDB not connected');
     return this._client.model<MembershipDocument>('Membership');
   }
 
   public boardModel(): Model<BoardDocument> {
-    if (!this._client) throw new Error('MongoDB not connected');
+    if (!this._client) throw GlobalException.DatabaseError('MongoDB not connected');
     return this._client.model<BoardDocument>('Board');
   }
 }

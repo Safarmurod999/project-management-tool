@@ -15,7 +15,7 @@ export type UserCreateParams = Omit<
 export type UserUpdateParams = Omit<
   UserStruct,
   'role' | 'createdAt' | 'updatedAt'
-> & { role: string };
+> & { role: string; password?: string };
 
 export interface UserGetQuery {
   page?: number;

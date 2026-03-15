@@ -28,9 +28,10 @@ import {
   UpdateUserUsecaseImpl,
 } from 'src/application';
 import { RolesModule } from '../roles/roles.module';
+import { CommonModule } from '../common/common.module';
 
 @Module({
-  imports: [forwardRef(() => RolesModule)],
+  imports: [forwardRef(() => RolesModule), CommonModule],
   controllers: [UserController],
   providers: [
     {
