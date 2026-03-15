@@ -13,8 +13,10 @@ import {
   UsecaseSymbols,
 } from 'src/infrastructure/dependency-injection';
 import { SendOtpUsecaseImpl, VerifyOtpUsecaseImpl } from 'src/application';
+import { QueueModule } from '../queue/queue.module';
 
 @Module({
+  imports: [QueueModule],
   controllers: [OtpController],
   providers: [
     {

@@ -5,7 +5,8 @@ A scalable, role-based project management system built with **NestJS** and **Cle
 ## 🚀 Features
 
 - ✅ **JWT Authentication** - Secure access & refresh token system
-- ✅ **Email Verification** - OTP-based user email verification
+- ✅ **Email Verification** - OTP-based user email verification with background processing
+- ✅ **Background Job Processing** - BullMQ-powered email queuing for improved performance
 - ✅ **Role-Based Access Control (RBAC)** - Granular permission management
 - ✅ **Team Management** - Create and manage teams with members
 - ✅ **Project Management** - Organize projects within teams
@@ -21,12 +22,9 @@ A scalable, role-based project management system built with **NestJS** and **Cle
 - **[Quick Start Guide](docs/QUICK-START.md)** - Get started in 5 minutes ⚡
 - **[API Documentation](docs/API.md)** - Complete API reference with request/response examples for all endpoints
 - **[Architecture Documentation](docs/ARCHITECTURE.md)** - Comprehensive technical documentation
-<<<<<<< HEAD
 - **[Real-time Guide](docs/REALTIME.md)** - Socket.IO usage
-=======
 - **[Postman Collection](postman-collection.json)** - Ready-to-use Postman collection for API testing
 - **[Postman Guide](docs/POSTMAN-GUIDE.md)** - Complete guide for using the Postman collection
->>>>>>> main
 - **[Component Diagram](docs/component-diagram.puml)** - System architecture visualization
 - **[Sequence Diagram](docs/sequence-diagram.puml)** - Authentication flow diagrams
 - **[Changelog](docs/CHANGELOG.md)** - Version history and updates

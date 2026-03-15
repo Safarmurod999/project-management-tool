@@ -17,8 +17,10 @@ A role-based project management system built with NestJS, implementing Clean Arc
 - **Language**: TypeScript
 - **Database**: MongoDB with Mongoose ODM
 - **Cache**: Redis
+- **Job Queue**: BullMQ (Redis-based job processing)
 - **Authentication**: JWT (Access + Refresh Tokens)
 - **Authorization**: Role-Based Access Control (RBAC)
+- **Email**: Nodemailer with SMTP
 
 ## Architecture
 
@@ -182,6 +184,37 @@ GetMeUsecase
   ↓
 Returns: { user, role, permissions[] }
 ```
+
+### Background Job Processing
+
+The system uses BullMQ for asynchronous job processing to improve performance and user experience.
+
+#### Email Processing Flow
+
+```
+User Registration/Login → OTP Generation
+  ↓
+SendOtpUsecase queues email job (immediate response)
+  ↓
+BullMQ Worker processes job asynchronously
+  ↓
+EmailClient sends email via SMTP
+```
+
+#### BullMQ Configuration
+
+- **Queue**: `email` - Dedicated queue for email jobs
+- **Concurrency**: 3 workers processing emails simultaneously
+- **Retry Logic**: 3 attempts with exponential backoff (2s, 4s, 8s)
+- **Job Cleanup**: Retains last 100 completed, 50 failed jobs
+- **Connection**: Uses existing Redis cache connection
+
+#### Benefits
+
+- **Performance**: API responses are immediate, not blocked by email sending
+- **Reliability**: Failed emails are automatically retried
+- **Scalability**: Multiple workers can process jobs concurrently
+- **Monitoring**: Built-in job tracking and error logging
 
 ### Guards & Decorators
 
