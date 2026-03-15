@@ -1,6 +1,7 @@
 import { User } from "src/domain";
 import { RoleDocument, UserDocument } from "../models";
 import { RoleMapper } from "./roles.mapper";
+import { GlobalException } from "src/common";
 
 export class UserMapper {
   static toDomain(raw: UserDocument): User {
@@ -9,10 +10,10 @@ export class UserMapper {
     if (typeof raw.role === 'object' && raw.role !== null) {
       role = RoleMapper.toDomain(raw.role as unknown as RoleDocument);
     } else if (raw.role === null || raw.role === undefined) {
-      throw new Error(`Role should be populated. User: ${raw._id}`);
+      throw GlobalException.DatabaseError(`Role should be populated. User: ${raw._id}`);
     } else {
       // Handle case where role is stored as string ID (not populated)
-      throw new Error(`Role should be populated as an object, but received: ${typeof raw.role}. User: ${raw._id}`);
+      throw GlobalException.DatabaseError(`Role should be populated as an object, but received: ${typeof raw.role}. User: ${raw._id}`);
     }
 
     return new User(
