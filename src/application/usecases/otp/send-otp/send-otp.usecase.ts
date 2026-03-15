@@ -17,6 +17,9 @@ export class SendOtpUsecaseImpl implements SendOtpUsecase {
 
         @Inject(ClientSymbols.EmailClient)
         private readonly emailClient: EmailClient,
+
+        @Inject('BullMQService')
+        private readonly bullMQService: any, // Using any for now, will type properly later
     ) {}
 
     public async execute(params: SendOtpUsecaseParams): Promise<Otp>{
@@ -33,7 +36,8 @@ export class SendOtpUsecaseImpl implements SendOtpUsecase {
             }
         )
 
-        await this.emailClient.sendEmail({
+        // Queue email job instead of sending synchronously
+        await this.bullMQService.addJob('email', 'send-otp-email', {
             email: params.email,
             subject: "Your OTP Code",
             otpCode: otpCode,

@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.0] - 2026-03-15
+
+### 🎉 New Features
+
+#### Background Job Processing
+- ✅ **BullMQ Integration** - Redis-based job queue system for background processing
+- ✅ **Asynchronous Email Processing** - OTP emails are now sent asynchronously for improved performance
+- ✅ **Job Monitoring** - Built-in job tracking, retry logic, and error handling
+- ✅ **Scalable Architecture** - Multiple concurrent workers for email processing
+- ✅ **Performance Optimization** - Immediate API responses, non-blocking email operations
+
+### 🔧 Technical Improvements
+
+#### Infrastructure Enhancements
+- ✅ **Queue Module** - New BullMQ service with Redis integration
+- ✅ **Email Job Processor** - Dedicated processor for background email sending
+- ✅ **Queue Initializer** - Automatic queue and worker setup on application start
+- ✅ **Dependency Injection** - Proper DI configuration for BullMQ services
+
+#### Performance Benefits
+- ✅ **Faster API Responses** - Email operations no longer block API endpoints
+- ✅ **Reliable Delivery** - Automatic retry mechanism for failed email jobs
+- ✅ **Resource Efficiency** - Background processing prevents server overload
+- ✅ **Monitoring & Logging** - Comprehensive job processing logs and error tracking
+
 ## [3.0.0] - 2026-03-06
 
 ### 🎉 New Features

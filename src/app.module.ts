@@ -12,15 +12,17 @@ import {
   ProjectsModule,
   MembershipsModule,
   BoardsModule,
+  QueueModule,
 } from './infrastructure/modules';
 
 @Module({
   imports: [
     MainConfigModule,
+    CommonModule,
+    QueueModule,
     UserModule,
     OtpModule,
     AuthModule,
-    CommonModule,
     PermissionModule,
     RolesModule,
     RealtimeModule,
