@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { TeamController } from 'src/adapters';
+import { GetTeamMembersPresenterImpl, TeamController } from 'src/adapters';
 import { RolePermissionRepositoryImpl, TeamFactoryImpl, TeamRepositoryImpl, UserRepositoryImpl } from 'src/domain';
 import {
   CreateTeamUsecaseImpl,
@@ -81,7 +81,7 @@ import { MembershipsModule } from '../memberships/memberships.module';
     },
     {
       provide: PresenterSymbols.Membership.GetTeamMembersPresenter,
-      useClass: GetTeamsPresenterImpl
+      useClass: GetTeamMembersPresenterImpl
     }
   ],
   exports: [

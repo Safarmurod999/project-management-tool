@@ -7,11 +7,14 @@ import { TeamException } from "./exception";
 import { TeamStruct } from "./factory";
 import { TeamDocument } from "src/infrastructure/database/mongodb/models";
 import { TeamMapper } from "src/infrastructure/database/mongodb/mappers";
+import { RepositorySymbols } from "src/infrastructure";
+import { MembershipRepository } from "../memberships";
+import { ScopeType } from "src/infrastructure/common/enum";
 
 export type TeamCreateParams = Omit<
   TeamStruct,
   "id" | "createdAt" | "updatedAt"
->;
+> & {roleId: string};
 
 export type TeamUpdateParams = Partial<
   Omit<TeamStruct, "createdAt">
@@ -42,6 +45,9 @@ export class TeamRepositoryImpl implements TeamRepository {
   constructor(
     @Inject(DatabaseSymbols.MongoDb)
     private readonly database: Database,
+
+    @Inject(RepositorySymbols.MembershipRepository)
+    private readonly membershipRepository: MembershipRepository
   ) {}
 
   async create(team: TeamCreateParams): Promise<Team> {
@@ -49,6 +55,12 @@ export class TeamRepositoryImpl implements TeamRepository {
       ...team,
       ownerId: new Types.ObjectId(team.ownerId),
     });
+    await this.membershipRepository.create({
+      userId: String(teamData.ownerId),
+      scopeType: ScopeType.TEAM,
+      scopeId: teamData.id,
+      roleId: team.roleId
+    })
 
     return TeamMapper.toDomain(teamData);
   }

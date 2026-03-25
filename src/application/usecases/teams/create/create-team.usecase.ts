@@ -15,6 +15,7 @@ export class CreateTeamUsecaseImpl implements CreateTeamUsecase {
       description: params.description,
       ownerId: params.ownerId,
       status: params.status,
+      roleId: params.roleId
     };
 
     return await this.teamRepository.create(team);

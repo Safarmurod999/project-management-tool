@@ -9,6 +9,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -43,6 +44,7 @@ export class CreateTeamDto {
   description: string | null;
   ownerId: string;
   status?: TeamStatus;
+  roleId: string;
 }
 
 export class GetTeamsQuery {
@@ -99,6 +101,7 @@ export class TeamController {
         description: dto.description,
         ownerId: dto.ownerId,
         status: dto.status,
+        roleId: dto.roleId
       });
 
       res.status(HttpStatus.CREATED).send({
