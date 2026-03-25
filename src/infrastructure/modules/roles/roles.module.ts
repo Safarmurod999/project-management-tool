@@ -3,7 +3,7 @@ import {
   FindRoleByIdPresenterImpl,
   GetRolesPresenterImpl
 } from 'src/adapters/presenters';
-import { Module, forwardRef } from '@nestjs/common';
+import { Global, Module, forwardRef } from '@nestjs/common';
 import {
   PresenterSymbols,
   UsecaseSymbols,
@@ -16,6 +16,7 @@ import { CreateRoleUsecaseImpl, DeleteRoleUsecaseImpl, FindRoleByIdUsecaseImpl, 
 import { RoleController } from 'src/adapters';
 import { UserModule } from '../users/user.module';
 
+@Global()
 @Module({  
   imports: [forwardRef(() => UserModule)],
   controllers: [RoleController],

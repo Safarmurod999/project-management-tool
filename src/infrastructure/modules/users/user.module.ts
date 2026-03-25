@@ -1,4 +1,4 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Global, Module, forwardRef } from '@nestjs/common';
 import {
   CreateUserPresenterImpl,
   FindUserByEmailPresenterImpl,
@@ -30,6 +30,7 @@ import {
 import { RolesModule } from '../roles/roles.module';
 import { CommonModule } from '../common/common.module';
 
+@Global()
 @Module({
   imports: [forwardRef(() => RolesModule), CommonModule],
   controllers: [UserController],

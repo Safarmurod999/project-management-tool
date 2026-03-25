@@ -78,6 +78,10 @@ import { MembershipsModule } from '../memberships/memberships.module';
     {
       provide: RepositorySymbols.RolePermissionRepository,
       useClass: RolePermissionRepositoryImpl,
+    },
+    {
+      provide: PresenterSymbols.Membership.GetTeamMembersPresenter,
+      useClass: GetTeamsPresenterImpl
     }
   ],
   exports: [

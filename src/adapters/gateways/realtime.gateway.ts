@@ -78,8 +78,14 @@ export class RealtimeGateway
     const token = this.resolveToken(client);
     const accessSecret = this.getAccessSecret();
 
-    if (!token || !accessSecret || !this.tokenService.isValidToken(token, accessSecret)) {
-      this.logger.warn(`Socket rejected: invalid token (socketId=${client.id})`);
+    if (
+      !token ||
+      !accessSecret ||
+      !this.tokenService.isValidToken(token, accessSecret)
+    ) {
+      this.logger.warn(
+        `Socket rejected: invalid token (socketId=${client.id})`,
+      );
       client.disconnect(true);
       return;
     }
@@ -87,7 +93,9 @@ export class RealtimeGateway
     const payload = this.tokenService.parseToken<AccessTokenPayload>(token);
 
     if (!payload?.userId) {
-      this.logger.warn(`Socket rejected: missing userId (socketId=${client.id})`);
+      this.logger.warn(
+        `Socket rejected: missing userId (socketId=${client.id})`,
+      );
       client.disconnect(true);
       return;
     }
@@ -95,14 +103,18 @@ export class RealtimeGateway
     client.data.userId = payload.userId;
     client.join(this.userRoom(payload.userId));
 
-    this.logger.log(`Socket connected: userId=${payload.userId} socketId=${client.id}`);
+    this.logger.log(
+      `Socket connected: userId=${payload.userId} socketId=${client.id}`,
+    );
   }
 
   handleDisconnect(client: Socket): void {
     const userId = client.data?.userId;
 
     if (userId) {
-      this.logger.log(`Socket disconnected: userId=${userId} socketId=${client.id}`);
+      this.logger.log(
+        `Socket disconnected: userId=${userId} socketId=${client.id}`,
+      );
       return;
     }
 
@@ -125,6 +137,8 @@ export class RealtimeGateway
     }
 
     this.server.to(room).emit(event, payload);
+
+    this.logger.debug(`emitted to room: (event=${event})`);
   }
 
   broadcast(event: string, payload: unknown): void {
@@ -151,12 +165,22 @@ export class RealtimeGateway
     return { event: 'pong', data: response };
   }
 
+  @SubscribeMessage('project:join')
+  handleJoinProject(
+    @MessageBody() projectId: string,
+    @ConnectedSocket() client: Socket,
+  ) {
+    client.join(`project:${projectId}`);
+    this.logger.debug(`Ping received (socketId=${client.id})`);
+  }
+
   private userRoom(userId: string): string {
     return `user:${userId}`;
   }
 
   private resolveToken(client: Socket): string | null {
     const authToken = client.handshake.auth?.token;
+
     if (typeof authToken === 'string' && authToken.trim().length > 0) {
       return authToken.trim();
     }
