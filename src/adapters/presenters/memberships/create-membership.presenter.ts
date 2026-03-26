@@ -12,6 +12,7 @@ export class CreateMembershipPresenterImpl implements CreateMembershipPresenter 
       scopeType: membership.scopeType,
       scopeId: membership.scopeId,
       roleId: membership.roleId,
+      override: membership.override,
       createdAt: membership.createdAt,
       updatedAt: membership.updatedAt,
     };

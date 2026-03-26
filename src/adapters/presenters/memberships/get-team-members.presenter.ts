@@ -1,27 +1,28 @@
-// import { Membership, MembershipStruct } from 'src/domain';
+import { MembershipDetails, MembershipDetailsStruct } from "../../../domain";
 
 export interface GetTeamMembersPresenter {
-  present(memberships);
+  present(memberships: MembershipDetails[]): MembershipDetailsStruct[];
 }
 
 export class GetTeamMembersPresenterImpl implements GetTeamMembersPresenter {
-  present(memberships){    
+  present(memberships: MembershipDetails[]): MembershipDetailsStruct[] {
+    
     return memberships.map((membership) => ({
-      id: membership._id,
+      id: membership.id,
       user: {
         email: membership.user.email,
-        name: membership.user.name, 
-        status: membership.user.status, 
+        name: membership.user.name,
       },
       role: {
         name: membership.role.name,
         description: membership.role.description,
         code: membership.role.code,
       },
-      scopeType: membership._scopeType,
-      scopeId: membership._scopeId,
-      createdAt: membership._createdAt,
-      updatedAt: membership._updatedAt,
+      scopeType: membership.scopeType,
+      scopeId: membership.scopeId,
+      override: membership.override,
+      createdAt: membership.createdAt,
+      updatedAt: membership.updatedAt,
     }));
   }
 }

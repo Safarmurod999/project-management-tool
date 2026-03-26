@@ -15,6 +15,7 @@ export class CreateMembershipUsecaseImpl implements CreateMembershipUsecase {
       scopeType: params.scopeType,
       scopeId: params.scopeId,
       roleId: params.roleId,
+      override: params.override ?? false
     });
   }
 }

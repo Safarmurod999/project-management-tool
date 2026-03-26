@@ -26,10 +26,17 @@ import {
   RoleCode,
   ScopeType,
 } from 'src/infrastructure/common/enum';
-import { Permissions, Roles, ScopePermission } from 'src/infrastructure/decorators';
+import {
+  Permissions,
+  Roles,
+  ScopePermission,
+} from 'src/infrastructure/decorators';
 import { PresenterSymbols } from 'src/infrastructure/dependency-injection/presenters/symbol';
 import { UsecaseSymbols } from 'src/infrastructure/dependency-injection/usecases/symbol';
-import { RolesPermissionsGuard, ScopePermissionGuard } from 'src/infrastructure/middlewares';
+import {
+  RolesPermissionsGuard,
+  ScopePermissionGuard,
+} from 'src/infrastructure/middlewares';
 import {
   CreateProjectPresenter,
   FindProjectByIdPresenter,
@@ -41,6 +48,8 @@ export class CreateProjectDto {
   description: string | null;
   teamId: string;
   status?: ProjectStatus;
+  userId: string;
+  roleId: string;
 }
 
 export class GetProjectsQuery {
@@ -87,6 +96,8 @@ export class ProjectController {
         description: dto.description,
         teamId: dto.teamId,
         status: dto.status,
+        userId: dto.userId,
+        roleId: dto.roleId,
       });
 
       res.status(HttpStatus.CREATED).send({

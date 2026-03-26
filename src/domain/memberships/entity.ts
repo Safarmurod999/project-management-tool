@@ -1,4 +1,4 @@
-import { ScopeType } from 'src/infrastructure/common/enum';
+import { RoleCode, ScopeType } from 'src/infrastructure/common/enum';
 
 export class Membership {
   constructor(
@@ -7,6 +7,7 @@ export class Membership {
     private readonly _scopeType: ScopeType,
     private readonly _scopeId: string,
     private readonly _roleId: string,
+    private readonly _override: boolean,
     private readonly _createdAt: Date,
     private readonly _updatedAt: Date | null = null,
   ) {}
@@ -31,6 +32,10 @@ export class Membership {
     return this._roleId;
   }
 
+  public get override(): boolean {
+    return this._override;
+  }
+
   public get createdAt(): Date {
     return this._createdAt;
   }
@@ -38,4 +43,24 @@ export class Membership {
   public get updatedAt(): Date | null {
     return this._updatedAt;
   }
+}
+
+export class MembershipDetails {
+  constructor(
+    public readonly id: string,
+    public readonly user: {
+      name: string;
+      email: string;
+    },
+    public readonly role: {
+      name: string;
+      code: RoleCode;
+      description: string;
+    },
+    public readonly scopeType: ScopeType,
+    public readonly scopeId: string,
+    public readonly override: boolean,
+    public readonly createdAt: Date,
+    public readonly updatedAt: Date | null,
+  ) {}
 }

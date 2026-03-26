@@ -1,4 +1,4 @@
-import { Membership } from 'src/domain';
+import { MembershipDetails } from 'src/domain';
 
 export interface GetTeamMembersUsecaseParams {
   teamId: string;
@@ -7,7 +7,7 @@ export interface GetTeamMembersUsecaseParams {
 }
 
 export interface GetTeamMembersUsecaseResult {
-  data: Membership[];
+  data: MembershipDetails[];
   totalCount: number;
   page: number;
   limit: number;

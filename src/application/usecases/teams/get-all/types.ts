@@ -1,6 +1,7 @@
 import { Team } from 'src/domain';
 
 export interface GetTeamsUsecaseParams {
+  userId?: string;
   name?: string;
   page?: number;
   limit?: number;

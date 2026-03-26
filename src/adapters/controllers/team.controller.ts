@@ -48,6 +48,7 @@ export class CreateTeamDto {
 }
 
 export class GetTeamsQuery {
+  userId?: string;
   page?: number;
   limit?: number;
   name?: string;
@@ -127,6 +128,7 @@ export class TeamController {
         page: query.page ? Number(query.page) : undefined,
         limit: query.limit ? Number(query.limit) : undefined,
         name: query.name,
+        userId: query.userId
       });
 
       res.status(HttpStatus.OK).send({
