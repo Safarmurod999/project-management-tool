@@ -6,6 +6,8 @@ export interface CreateProjectUsecaseParams {
   description: string | null;
   teamId: string;
   status?: ProjectStatus;
+  userId: string;
+  roleId: string;
 }
 
 export interface CreateProjectUsecase {

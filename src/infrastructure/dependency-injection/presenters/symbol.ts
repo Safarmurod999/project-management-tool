@@ -32,6 +32,7 @@ export const PresenterSymbols = {
     CreateMembershipPresenter: Symbol('CreateMembershipPresenter'),
     FindMembershipByIdPresenter: Symbol('FindMembershipByIdPresenter'),
     GetMembershipsPresenter: Symbol('GetMembershipsPresenter'),
+    GetTeamMembersPresenter: Symbol('GetTeamMembersPresenter'),
     UpdateMembershipPresenter: Symbol('UpdateMembershipPresenter'),
     DeleteMembershipPresenter: Symbol('DeleteMembershipPresenter'),
   },
@@ -39,7 +40,7 @@ export const PresenterSymbols = {
     CreateTeamPresenter: Symbol('CreateTeamPresenter'),
     FindTeamByIdPresenter: Symbol('FindTeamByIdPresenter'),
     GetTeamsPresenter: Symbol('GetTeamsPresenter'),
-    UpdateTeamPresenter: Symbol('UpdateTeamPresenter'), 
+    UpdateTeamPresenter: Symbol('UpdateTeamPresenter'),
     DeleteTeamPresenter: Symbol('DeleteTeamPresenter'),
   },
   Project: {
@@ -48,5 +49,12 @@ export const PresenterSymbols = {
     GetProjectsPresenter: Symbol('GetProjectsPresenter'),
     UpdateProjectPresenter: Symbol('UpdateProjectPresenter'),
     DeleteProjectPresenter: Symbol('DeleteProjectPresenter'),
-  }
+  },
+  Board: {
+    CreateBoardPresenter: Symbol('CreateBoardPresenter'),
+    FindBoardByIdPresenter: Symbol('FindBoardByIdPresenter'),
+    GetBoardsPresenter: Symbol('GetBoardsPresenter'),
+    UpdateBoardPresenter: Symbol('UpdateBoardPresenter'),
+    DeleteBoardPresenter: Symbol('DeleteBoardPresenter'),
+  },
 };

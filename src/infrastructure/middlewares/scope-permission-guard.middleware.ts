@@ -41,10 +41,10 @@ export class ScopePermissionGuard implements CanActivate {
     const authHeader = request.headers.authorization;
     if (!authHeader) return false;
 
-    const token = authHeader.split(' ')[1];
+    const token = authHeader.split(' ')[1];    
 
     let payload;
-
+    
     try {
       if (!this.tokenService.isValidToken(token, process.env.ACCESS_SECRET!)) {
         throw new UnauthorizedException();
@@ -65,6 +65,11 @@ export class ScopePermissionGuard implements CanActivate {
         return false;
       }
 
+      console.log(scopeId);
+      console.log(scopeType);
+      
+      
+
       // Find membership for this user in the specified scope
       const membershipResult = await this.membershipRepository.find({
         userId: payload.userId,
@@ -73,6 +78,9 @@ export class ScopePermissionGuard implements CanActivate {
         page: 1,
         limit: 1,
       });
+
+      console.log(membershipResult);
+      
 
       if (membershipResult.data.length === 0) {
         // User is not a member of this scope

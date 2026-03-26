@@ -10,7 +10,7 @@ import { BoardDocument } from '../../infrastructure/database/mongodb/models';
 
 export type BoardCreateParams = Omit<
   BoardStruct,
-  'id' | 'createdAt' | 'updatedAt'
+  'id' | 'createdAt' | 'updatedAt' | 'status' | 'version'
 >;
 
 export type BoardUpdateParams = Partial<Omit<BoardStruct, 'createdAt'>>;

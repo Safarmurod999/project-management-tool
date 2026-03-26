@@ -1,10 +1,11 @@
 import winston from "winston";
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { createLogger, LoggerAdapter } from "../../logger";
 import { CommonSymbols } from "src/infrastructure/dependency-injection/common/symbol";
 import { BcryptPasswordService } from "../../helpers/bcrypt-password-service/bcrypt-password-service";
 import { ServiceSymbols } from "../../dependency-injection/services/symbol";
 
+@Global()
 @Module({
     providers: [
         {

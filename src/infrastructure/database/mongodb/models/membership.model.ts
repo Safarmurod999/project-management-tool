@@ -6,6 +6,7 @@ export interface MembershipDocument extends Document {
   scopeType: ScopeType;
   scopeId: Types.ObjectId;
   roleId: Types.ObjectId;
+  override: boolean;
   createdAt: Date;
   updatedAt: Date | null;
 }

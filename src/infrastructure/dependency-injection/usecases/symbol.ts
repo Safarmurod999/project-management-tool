@@ -35,6 +35,7 @@ export const UsecaseSymbols = {
   Membership: {
     CreateMembershipUsecase: Symbol.for('CreateMembershipUsecase'),
     GetMembershipsUsecase: Symbol.for('GetMembershipsUsecase'),
+    GetTeamMembersUsecase: Symbol.for('GetTeamMembersUsecase'),
     FindMembershipByIdUsecase: Symbol.for('FindMembershipByIdUsecase'),
     UpdateMembershipUsecase: Symbol.for('UpdateMembershipUsecase'),
     DeleteMembershipUsecase: Symbol.for('DeleteMembershipUsecase'),
@@ -46,11 +47,18 @@ export const UsecaseSymbols = {
     UpdateTeamUsecase: Symbol.for('UpdateTeamUsecase'),
     DeleteTeamUsecase: Symbol.for('DeleteTeamUsecase'),
   },
-  Project:{
+  Project: {
     CreateProjectUsecase: Symbol.for('CreateProjectUsecase'),
     GetProjectsUsecase: Symbol.for('GetProjectsUsecase'),
     FindProjectByIdUsecase: Symbol.for('FindProjectByIdUsecase'),
     UpdateProjectUsecase: Symbol.for('UpdateProjectUsecase'),
     DeleteProjectUsecase: Symbol.for('DeleteProjectUsecase'),
-  }
+  },
+  Board: {
+    CreateBoardUsecase: Symbol.for('CreateBoardUsecase'),
+    GetBoardsUsecase: Symbol.for('GetBoardsUsecase'),
+    FindBoardByIdUsecase: Symbol.for('FindBoardByIdUsecase'),
+    UpdateBoardUsecase: Symbol.for('UpdateBoardUsecase'),
+    DeleteBoardUsecase: Symbol.for('DeleteBoardUsecase'),
+  },
 };

@@ -6,6 +6,7 @@ export interface CreateMembershipUsecaseParams {
   scopeType: ScopeType;
   scopeId: string;
   roleId: string;
+  override?: boolean;
 }
 
 export interface CreateMembershipUsecase {

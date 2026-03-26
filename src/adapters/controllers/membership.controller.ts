@@ -48,7 +48,7 @@ export class GetMembershipsQuery {
 }
 
 @Controller('memberships')
-@UseGuards(RolesPermissionsGuard)
+// @UseGuards(RolesPermissionsGuard)
 export class MembershipController {
   constructor(
     @Inject(UsecaseSymbols.Membership.CreateMembershipUsecase)
@@ -76,7 +76,7 @@ export class MembershipController {
   ) {}
 
   @Post()
-  @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
+  // @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
   async create(@Res() res: Response, @Body() dto: CreateMembershipDto) {
     try {
       const membership = await this.createMembershipUsecase.execute({
@@ -100,7 +100,7 @@ export class MembershipController {
   }
 
   @Get()
-  @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
+  // @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
   async getAll(@Res() res: Response, @Query() query: GetMembershipsQuery) {
     try {
       const memberships = await this.getMembershipsUsecase.execute({
@@ -130,7 +130,7 @@ export class MembershipController {
   }
 
   @Get(':id')
-  @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
+  // @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
   async findById(@Res() res: Response, @Param('id') id: string) {
     try {
       const membership = await this.findMembershipByIdUsecase.execute({ id });
@@ -149,7 +149,7 @@ export class MembershipController {
   }
 
   @Put(':id')
-  @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
+  // @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
   async update(
     @Res() res: Response,
     @Param('id') id: string,
@@ -178,7 +178,7 @@ export class MembershipController {
   }
 
   @Delete(':id')
-  @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
+  // @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
   async delete(@Res() res: Response, @Param('id') id: string) {
     try {
       const deletedId = await this.deleteMembershipUsecase.execute({ id });

@@ -1,26 +1,25 @@
-import { Inject } from "@nestjs/common";
-import { Model, Types } from "mongoose";
-import { Database } from "src/infrastructure/database/database";
-import { DatabaseSymbols } from "src/infrastructure/dependency-injection/databases/symbol";
-import { Team } from "./entity";
-import { TeamException } from "./exception";
-import { TeamStruct } from "./factory";
-import { TeamDocument } from "src/infrastructure/database/mongodb/models";
-import { TeamMapper } from "src/infrastructure/database/mongodb/mappers";
+import { Inject } from '@nestjs/common';
+import { Model, Types } from 'mongoose';
+import { Database } from 'src/infrastructure/database/database';
+import { DatabaseSymbols } from 'src/infrastructure/dependency-injection/databases/symbol';
+import { Team } from './entity';
+import { TeamException } from './exception';
+import { TeamStruct } from './factory';
+import { TeamDocument } from 'src/infrastructure/database/mongodb/models';
+import { TeamMapper } from 'src/infrastructure/database/mongodb/mappers';
 
 export type TeamCreateParams = Omit<
   TeamStruct,
-  "id" | "createdAt" | "updatedAt"
->;
+  'id' | 'createdAt' | 'updatedAt'
+> & { roleId: string };
 
-export type TeamUpdateParams = Partial<
-  Omit<TeamStruct, "createdAt">
->;
+export type TeamUpdateParams = Partial<Omit<TeamStruct, 'createdAt'>>;
 
 export interface TeamGetQuery {
   page?: number;
   limit?: number;
   name?: string;
+  userId?: string;
 }
 
 export interface TeamGetResponse {
@@ -54,12 +53,16 @@ export class TeamRepositoryImpl implements TeamRepository {
   }
 
   async find(params: TeamGetQuery): Promise<TeamGetResponse> {
-    const { page = 1, limit = 10, name } = params;
+    const { page = 1, limit = 10, name, userId } = params;
 
     const filter: Record<string, any> = {};
 
     if (name) {
-      filter.name = { $regex: name, $options: "i" };
+      filter.name = { $regex: name, $options: 'i' };
+    }
+
+    if (userId) {
+      filter.ownerId = { $in: [userId] };
     }
 
     const totalCount = await this.teamModel.countDocuments(filter);
@@ -79,9 +82,7 @@ export class TeamRepositoryImpl implements TeamRepository {
   }
 
   async findById(id: string): Promise<Team> {
-    const teamData = await this.teamModel
-      .findById(id)
-      .exec();
+    const teamData = await this.teamModel.findById(id).exec();
 
     if (!teamData) {
       throw TeamException.TeamNotFound(id);

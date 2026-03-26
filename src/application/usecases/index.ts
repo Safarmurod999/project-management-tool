@@ -6,3 +6,4 @@ export * from "./roles";
 export * from "./memberships";
 export * from "./teams";
 export * from "./projects";
+export * from './boards';

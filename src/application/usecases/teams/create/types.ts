@@ -6,6 +6,7 @@ export interface CreateTeamUsecaseParams {
   description: string | null;
   ownerId: string;
   status?: TeamStatus;
+  roleId: string;
 }
 
 export interface CreateTeamUsecase {

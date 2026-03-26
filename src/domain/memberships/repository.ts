@@ -2,7 +2,7 @@ import { Inject } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
 import { Database } from 'src/infrastructure/database/database';
 import { DatabaseSymbols } from 'src/infrastructure/dependency-injection/databases/symbol';
-import { Membership } from './entity';
+import { Membership, MembershipDetails } from './entity';
 import { MembershipException } from './exception';
 import { MembershipStruct } from './factory';
 import { MembershipDocument } from 'src/infrastructure/database/mongodb/models';
@@ -34,9 +34,17 @@ export interface MembershipGetResponse {
   totalCount: number;
 }
 
+export interface MembershipGetPopulatedResponse {
+  data: MembershipDetails[];
+  page: number;
+  limit: number;
+  totalCount: number;
+}
+
 export interface MembershipRepository {
   create(data: MembershipCreateParams): Promise<Membership>;
   find(params: MembershipGetQuery): Promise<MembershipGetResponse>;
+  findAndPopulate(params: MembershipGetQuery): Promise<MembershipGetPopulatedResponse>;
   findById(id: string): Promise<Membership>;
   update(data: MembershipUpdateParams & { id: string }): Promise<Membership>;
   delete(id: string): Promise<string>;
@@ -54,6 +62,7 @@ export class MembershipRepositoryImpl implements MembershipRepository {
       scopeType: data.scopeType,
       scopeId: new Types.ObjectId(data.scopeId),
       roleId: new Types.ObjectId(data.roleId),
+      override: data.override,
     });
 
     return MembershipMapper.toDomain(membershipData);
@@ -98,6 +107,51 @@ export class MembershipRepositoryImpl implements MembershipRepository {
     };
   }
 
+  async findAndPopulate(
+    params: MembershipGetQuery,
+  ): Promise<MembershipGetPopulatedResponse> {
+    const { page = 1, limit = 10, userId, scopeType, scopeId, roleId } = params;
+
+    const filter: Record<string, unknown> = {};
+
+    if (userId) {
+      filter.userId = new Types.ObjectId(userId);
+    }
+
+    if (scopeType) {
+      filter.scopeType = scopeType;
+    }
+
+    if (scopeId) {
+      filter.scopeId = new Types.ObjectId(scopeId);
+    }
+
+    if (roleId) {
+      filter.roleId = new Types.ObjectId(roleId);
+    }
+
+    const totalCount = await this.membershipModel.countDocuments(filter);
+
+    const membershipDataList = await this.membershipModel
+      .find(filter)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .populate([
+        { path: 'userId', select: 'name email' },
+        { path: 'roleId', select: 'name code description' },
+      ])
+      .exec();
+
+    return {
+      data: membershipDataList.map((membership) =>
+        MembershipMapper.toDetailsDomain(membership),
+      ),
+      page,
+      limit,
+      totalCount,
+    };
+  }
+
   async findById(id: string): Promise<Membership> {
     const membershipData = await this.membershipModel.findById(id).exec();
 
@@ -130,6 +184,8 @@ export class MembershipRepositoryImpl implements MembershipRepository {
     if (data.roleId) {
       membershipData.roleId = new Types.ObjectId(data.roleId);
     }
+
+    membershipData.override = data.override ?? membershipData.override;
 
     membershipData.updatedAt = new Date();
 

@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { RealtimeGateway } from 'src/adapters';
 import { ServiceSymbols } from 'src/infrastructure/dependency-injection';
 
+@Global()
 @Module({
   providers: [
     RealtimeGateway,

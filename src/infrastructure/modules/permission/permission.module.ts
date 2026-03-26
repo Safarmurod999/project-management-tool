@@ -3,7 +3,7 @@ import {
   FindPermissionByIdPresenterImpl,
   GetPermissionsPresenterImpl
 } from 'src/adapters/presenters';
-import { Module, forwardRef } from '@nestjs/common';
+import { Global, Module, forwardRef } from '@nestjs/common';
 import {
   PresenterSymbols,
   UsecaseSymbols,
@@ -17,6 +17,7 @@ import { PermissionController } from 'src/adapters';
 import { RolesModule } from '../roles/roles.module';
 import { UserModule } from '../users/user.module';
 
+@Global()
 @Module({
   imports: [forwardRef(() => RolesModule), forwardRef(() => UserModule)],
   controllers: [PermissionController],
