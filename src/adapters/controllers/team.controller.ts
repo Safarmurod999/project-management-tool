@@ -60,7 +60,7 @@ export class GetTeamMembersQuery {
 }
 
 @Controller('teams')
-// @UseGuards(RolesPermissionsGuard, ScopePermissionGuard)
+@UseGuards(RolesPermissionsGuard, ScopePermissionGuard)
 export class TeamController {
   constructor(
     @Inject(UsecaseSymbols.Team.CreateTeamUsecase)
@@ -93,8 +93,8 @@ export class TeamController {
   ) {}
 
   @Post()
-  // @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
-  // @Permissions(PermissionCode.TEAM_CREATE)
+  @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
+  @Permissions(PermissionCode.TEAM_CREATE)
   async create(@Res() res: Response, @Body() dto: CreateTeamDto) {
     try {
       const team = await this.createTeamUsecase.execute({
@@ -120,8 +120,8 @@ export class TeamController {
   }
 
   @Get()
-  // @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
-  // @Permissions(PermissionCode.TEAM_GET)
+  @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
+  @Permissions(PermissionCode.TEAM_GET)
   async getAll(@Res() res: Response, @Query() query: GetTeamsQuery) {
     try {
       const teams = await this.getTeamsUsecase.execute({
@@ -149,7 +149,7 @@ export class TeamController {
   }
 
   @Get(':id')
-  // @ScopePermission(ScopeType.TEAM, 'id', PermissionCode.TEAM_GET)
+  @ScopePermission(ScopeType.TEAM, 'id', PermissionCode.TEAM_GET)
   async findById(@Res() res: Response, @Param('id') id: string) {
     try {
       const team = await this.findTeamByIdUsecase.execute({ id });
@@ -168,7 +168,7 @@ export class TeamController {
   }
 
   @Get(':id/members')
-  // @ScopePermission(ScopeType.TEAM, 'id', PermissionCode.TEAM_GET)
+  @ScopePermission(ScopeType.TEAM, 'id', PermissionCode.TEAM_GET)
   async getMembers(
     @Res() res: Response,
     @Param('id') id: string,
@@ -198,7 +198,7 @@ export class TeamController {
   }
 
   @Put(':id')
-  // @ScopePermission(ScopeType.TEAM, 'id', PermissionCode.TEAM_EDIT)
+  @ScopePermission(ScopeType.TEAM, 'id', PermissionCode.TEAM_EDIT)
   async update(
     @Res() res: Response,
     @Param('id') id: string,
@@ -227,7 +227,7 @@ export class TeamController {
   }
 
   @Delete(':id')
-  // @ScopePermission(ScopeType.TEAM, 'id', PermissionCode.TEAM_DELETE)
+  @ScopePermission(ScopeType.TEAM, 'id', PermissionCode.TEAM_DELETE)
   async delete(@Res() res: Response, @Param('id') id: string) {
     try {
       const deletedId = await this.deleteTeamUsecase.execute({ id });

@@ -148,7 +148,7 @@ export class AuthController {
 
     const result = await this.refreshTokenUsecase.execute(refreshToken);
 
-    res.send({
+    res.status(HttpStatus.OK).send({
       success: true,
       status: HttpStatus.OK,
       data: result
