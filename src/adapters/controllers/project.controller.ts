@@ -9,6 +9,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -19,7 +20,7 @@ import {
   GetProjectsUsecase,
   UpdateProjectUsecase,
 } from 'src/application';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import {
   PermissionCode,
   ProjectStatus,
@@ -53,8 +54,6 @@ export class CreateProjectDto {
 }
 
 export class GetProjectsQuery {
-  page?: number;
-  limit?: number;
   name?: string;
 }
 
@@ -116,21 +115,29 @@ export class ProjectController {
   @Get()
   @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
   @Permissions(PermissionCode.PROJECT_GET)
-  async getAll(@Res() res: Response, @Query() query: GetProjectsQuery) {
+  async getAll(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query() query: GetProjectsQuery,
+  ) {
     try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(HttpStatus.UNAUTHORIZED).send({
+          status: HttpStatus.UNAUTHORIZED,
+          success: false,
+          message: 'User not authenticated',
+        });
+      }
+
       const projects = await this.getProjectsUsecase.execute({
-        page: query.page ? Number(query.page) : undefined,
-        limit: query.limit ? Number(query.limit) : undefined,
+        userId,
         name: query.name,
       });
 
       res.status(HttpStatus.OK).send({
         status: HttpStatus.OK,
-        data: this.getProjectsPresenter.present(projects.data),
-        filter: query,
-        totalCount: projects.totalCount,
-        page: projects.page,
-        limit: projects.limit,
+        data: this.getProjectsPresenter.presentGrouped(projects),
       });
     } catch (error) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
