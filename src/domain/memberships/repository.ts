@@ -44,6 +44,7 @@ export interface MembershipGetPopulatedResponse {
 export interface MembershipRepository {
   create(data: MembershipCreateParams): Promise<Membership>;
   find(params: MembershipGetQuery): Promise<MembershipGetResponse>;
+  findAll(params: Omit<MembershipGetQuery, 'page' | 'limit'>): Promise<Membership[]>;
   findAndPopulate(params: MembershipGetQuery): Promise<MembershipGetPopulatedResponse>;
   findById(id: string): Promise<Membership>;
   update(data: MembershipUpdateParams & { id: string }): Promise<Membership>;
@@ -69,25 +70,8 @@ export class MembershipRepositoryImpl implements MembershipRepository {
   }
 
   async find(params: MembershipGetQuery): Promise<MembershipGetResponse> {
-    const { page = 1, limit = 10, userId, scopeType, scopeId, roleId } = params;
-
-    const filter: Record<string, unknown> = {};
-
-    if (userId) {
-      filter.userId = new Types.ObjectId(userId);
-    }
-
-    if (scopeType) {
-      filter.scopeType = scopeType;
-    }
-
-    if (scopeId) {
-      filter.scopeId = new Types.ObjectId(scopeId);
-    }
-
-    if (roleId) {
-      filter.roleId = new Types.ObjectId(roleId);
-    }
+    const { page = 1, limit = 10 } = params;
+    const filter = this.buildFilter(params);
 
     const totalCount = await this.membershipModel.countDocuments(filter);
 
@@ -107,28 +91,20 @@ export class MembershipRepositoryImpl implements MembershipRepository {
     };
   }
 
+  async findAll(
+    params: Omit<MembershipGetQuery, 'page' | 'limit'>,
+  ): Promise<Membership[]> {
+    const filter = this.buildFilter(params);
+    const membershipDataList = await this.membershipModel.find(filter).exec();
+
+    return membershipDataList.map((membership) => MembershipMapper.toDomain(membership));
+  }
+
   async findAndPopulate(
     params: MembershipGetQuery,
   ): Promise<MembershipGetPopulatedResponse> {
-    const { page = 1, limit = 10, userId, scopeType, scopeId, roleId } = params;
-
-    const filter: Record<string, unknown> = {};
-
-    if (userId) {
-      filter.userId = new Types.ObjectId(userId);
-    }
-
-    if (scopeType) {
-      filter.scopeType = scopeType;
-    }
-
-    if (scopeId) {
-      filter.scopeId = new Types.ObjectId(scopeId);
-    }
-
-    if (roleId) {
-      filter.roleId = new Types.ObjectId(roleId);
-    }
+    const { page = 1, limit = 10 } = params;
+    const filter = this.buildFilter(params);
 
     const totalCount = await this.membershipModel.countDocuments(filter);
 
@@ -201,5 +177,30 @@ export class MembershipRepositoryImpl implements MembershipRepository {
 
   private get membershipModel(): Model<MembershipDocument> {
     return this.database.membershipModel();
+  }
+
+  private buildFilter(
+    params: Pick<MembershipGetQuery, 'userId' | 'scopeType' | 'scopeId' | 'roleId'>,
+  ): Record<string, unknown> {
+    const filter: Record<string, unknown> = {};
+    const { userId, scopeType, scopeId, roleId } = params;
+
+    if (userId) {
+      filter.userId = new Types.ObjectId(userId);
+    }
+
+    if (scopeType) {
+      filter.scopeType = scopeType;
+    }
+
+    if (scopeId) {
+      filter.scopeId = new Types.ObjectId(scopeId);
+    }
+
+    if (roleId) {
+      filter.roleId = new Types.ObjectId(roleId);
+    }
+
+    return filter;
   }
 }
