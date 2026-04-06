@@ -1,16 +1,13 @@
 import { Project } from 'src/domain';
 
 export interface GetProjectsUsecaseParams {
+  userId: string;
   name?: string;
-  page?: number;
-  limit?: number;
 }
 
 export interface GetProjectsUsecaseResult {
-  data: Project[];
-  totalCount: number;
-  page: number;
-  limit: number;
+  myProjects: Project[];
+  participatedProjects: Project[];
 }
 
 export interface GetProjectsUsecase {

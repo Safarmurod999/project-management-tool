@@ -31,6 +31,8 @@ export interface ProjectGetResponse {
 export interface ProjectRepository {
   create(project: ProjectCreateParams): Promise<Project>;
   find(params: ProjectGetQuery): Promise<ProjectGetResponse>;
+  findByIds(ids: string[], name?: string): Promise<Project[]>;
+  findByTeamIds(teamIds: string[], name?: string): Promise<Project[]>;
   findById(id: string): Promise<Project>;
   update(project: ProjectUpdateParams & { id: string }): Promise<Project>;
   delete(id: string): Promise<string>;
@@ -73,6 +75,42 @@ export class ProjectRepositoryImpl implements ProjectRepository {
       limit,
       totalCount,
     };
+  }
+
+  async findByIds(ids: string[], name?: string): Promise<Project[]> {
+    if (ids.length === 0) {
+      return [];
+    }
+
+    const filter: Record<string, unknown> = {
+      _id: { $in: ids.map((id) => new Types.ObjectId(id)) },
+    };
+
+    if (name) {
+      filter.name = { $regex: name, $options: 'i' };
+    }
+
+    const projectDataList = await this.projectModel.find(filter).exec();
+
+    return projectDataList.map((project) => ProjectMapper.toDomain(project));
+  }
+
+  async findByTeamIds(teamIds: string[], name?: string): Promise<Project[]> {
+    if (teamIds.length === 0) {
+      return [];
+    }
+
+    const filter: Record<string, unknown> = {
+      teamId: { $in: teamIds.map((teamId) => new Types.ObjectId(teamId)) },
+    };
+
+    if (name) {
+      filter.name = { $regex: name, $options: 'i' };
+    }
+
+    const projectDataList = await this.projectModel.find(filter).exec();
+
+    return projectDataList.map((project) => ProjectMapper.toDomain(project));
   }
 
   async findById(id: string): Promise<Project> {
