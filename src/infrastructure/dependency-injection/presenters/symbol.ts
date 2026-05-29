@@ -33,6 +33,7 @@ export const PresenterSymbols = {
     FindMembershipByIdPresenter: Symbol('FindMembershipByIdPresenter'),
     GetMembershipsPresenter: Symbol('GetMembershipsPresenter'),
     GetTeamMembersPresenter: Symbol('GetTeamMembersPresenter'),
+    GetProjectMembersPresenter: Symbol('GetProjectMembersPresenter'),
     UpdateMembershipPresenter: Symbol('UpdateMembershipPresenter'),
     DeleteMembershipPresenter: Symbol('DeleteMembershipPresenter'),
   },

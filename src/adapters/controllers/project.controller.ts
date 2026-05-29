@@ -19,6 +19,7 @@ import {
   FindProjectByIdUsecase,
   GetProjectsUsecase,
   UpdateProjectUsecase,
+  GetProjectMembersUsecase,
 } from 'src/application';
 import { Request, Response } from 'express';
 import {
@@ -42,6 +43,7 @@ import {
   CreateProjectPresenter,
   FindProjectByIdPresenter,
   GetProjectsPresenter,
+  GetProjectMembersPresenter
 } from '../presenters';
 
 export class CreateProjectDto {
@@ -70,6 +72,11 @@ export class ProjectController {
     private readonly findProjectByIdUsecase: FindProjectByIdUsecase,
     @Inject(PresenterSymbols.Project.FindProjectByIdPresenter)
     private readonly findProjectByIdPresenter: FindProjectByIdPresenter,
+
+    @Inject(UsecaseSymbols.Membership.GetProjectMembersUsecase)
+    private readonly getProjectMembersUsecase: GetProjectMembersUsecase,
+    @Inject(PresenterSymbols.Membership.GetProjectMembersPresenter)
+    private readonly getProjectMembersPresenter: GetProjectMembersPresenter,
 
     @Inject(UsecaseSymbols.Project.GetProjectsUsecase)
     private readonly getProjectsUsecase: GetProjectsUsecase,
@@ -103,7 +110,7 @@ export class ProjectController {
         status: HttpStatus.CREATED,
         data: this.createProjectPresenter.present(project),
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,
@@ -139,7 +146,7 @@ export class ProjectController {
         status: HttpStatus.OK,
         data: this.getProjectsPresenter.presentGrouped(projects),
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         success: false,
@@ -158,7 +165,7 @@ export class ProjectController {
         status: HttpStatus.OK,
         data: this.findProjectByIdPresenter.present(project),
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         success: false,
@@ -187,7 +194,7 @@ export class ProjectController {
         status: HttpStatus.OK,
         data: this.updateProjectPresenter.present(project),
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         success: false,
@@ -206,7 +213,7 @@ export class ProjectController {
         status: HttpStatus.OK,
         data: { id: deletedId },
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         success: false,

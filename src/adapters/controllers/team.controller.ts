@@ -21,7 +21,7 @@ import {
   GetTeamMembersUsecase,
   UpdateTeamUsecase,
 } from 'src/application';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import {
   PermissionCode,
   RoleCode,
@@ -95,14 +95,25 @@ export class TeamController {
   @Post()
   @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
   @Permissions(PermissionCode.TEAM_CREATE)
-  async create(@Res() res: Response, @Body() dto: CreateTeamDto) {
+  async create(@Req() req: Request, @Res() res: Response, @Body() dto: CreateTeamDto) {
     try {
+      const userId = req.user?.id;
+      const roleId = req.user?.role?.id;
+
+      if (!userId || !roleId) {
+        return res.status(HttpStatus.UNAUTHORIZED).send({
+          status: HttpStatus.UNAUTHORIZED,
+          success: false,
+          message: 'User not authenticated',
+        });
+      }
+
       const team = await this.createTeamUsecase.execute({
         name: dto.name,
         description: dto.description,
-        ownerId: dto.ownerId,
+        ownerId: userId,
         status: dto.status,
-        roleId: dto.roleId
+        roleId: roleId
       });
 
       res.status(HttpStatus.CREATED).send({
@@ -110,7 +121,7 @@ export class TeamController {
         status: HttpStatus.CREATED,
         data: this.createTeamPresenter.present(team),
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,
@@ -122,13 +133,15 @@ export class TeamController {
   @Get()
   @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
   @Permissions(PermissionCode.TEAM_GET)
-  async getAll(@Res() res: Response, @Query() query: GetTeamsQuery) {
+  async getAll(@Req() req: Request, @Res() res: Response, @Query() query: GetTeamsQuery) {
     try {
+      const userId = req.user?.id;
+
       const teams = await this.getTeamsUsecase.execute({
         page: query.page ? Number(query.page) : undefined,
         limit: query.limit ? Number(query.limit) : undefined,
         name: query.name,
-        userId: query.userId
+        userId: userId
       });
 
       res.status(HttpStatus.OK).send({
@@ -139,7 +152,7 @@ export class TeamController {
         page: teams.page,
         limit: teams.limit,
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         success: false,
@@ -158,7 +171,7 @@ export class TeamController {
         status: HttpStatus.OK,
         data: this.findTeamByIdPresenter.present(team),
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         success: false,
@@ -188,7 +201,7 @@ export class TeamController {
         page: members.page,
         limit: members.limit,
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         success: false,
@@ -217,7 +230,7 @@ export class TeamController {
         status: HttpStatus.OK,
         data: this.updateTeamPresenter.present(team),
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         success: false,
@@ -236,7 +249,7 @@ export class TeamController {
         status: HttpStatus.OK,
         data: { id: deletedId },
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         success: false,

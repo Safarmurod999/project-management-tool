@@ -65,11 +65,6 @@ export class ScopePermissionGuard implements CanActivate {
         return false;
       }
 
-      console.log(scopeId);
-      console.log(scopeType);
-      
-      
-
       // Find membership for this user in the specified scope
       const membershipResult = await this.membershipRepository.find({
         userId: payload.userId,
@@ -79,15 +74,12 @@ export class ScopePermissionGuard implements CanActivate {
         limit: 1,
       });
 
-      console.log(membershipResult);
-      
-
       if (membershipResult.data.length === 0) {
         // User is not a member of this scope
         return false;
       }
 
-      const membership = membershipResult.data[0];
+      const membership = membershipResult.data[0]
 
       // Get permissions for the user's role in this scope
       const permissions =

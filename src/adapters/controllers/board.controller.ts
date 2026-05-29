@@ -51,7 +51,6 @@ export class GetBoardsQuery {
 // @UseGuards(RolesPermissionsGuard)
 export class BoardController {
   constructor(
-
     @Inject(UsecaseSymbols.Board.CreateBoardUsecase)
     private readonly createBoardUsecase: CreateBoardUsecase,
     @Inject(PresenterSymbols.Board.CreateBoardPresenter)
@@ -91,7 +90,7 @@ export class BoardController {
         status: HttpStatus.CREATED,
         data: this.createBoardPresenter.present(board),
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode).send({
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         success: false,
@@ -119,7 +118,7 @@ export class BoardController {
   //         page: Boards.page,
   //         limit: Boards.limit,
   //       });
-  //     } catch (error) {
+  //     } catch (error: any) {
   //       res.status(error.statusCode).send({
   //         status: error.statusCode || HttpStatus.BAD_REQUEST,
   //         success: false,
@@ -139,7 +138,7 @@ export class BoardController {
   //         status: HttpStatus.OK,
   //         data: this.findBoardByIdPresenter.present(Board),
   //       });
-  //     } catch (error) {
+  //     } catch (error: any) {
   //       res.status(error.statusCode).send({
   //         status: error.statusCode || HttpStatus.BAD_REQUEST,
   //         success: false,
@@ -166,7 +165,7 @@ export class BoardController {
   //         status: HttpStatus.OK,
   //         data: this.updateBoardPresenter.present(Board),
   //       });
-  //     } catch (error) {
+  //     } catch (error: any) {
   //       res.status(error.statusCode).send({
   //         status: error.statusCode || HttpStatus.BAD_REQUEST,
   //         success: false,
@@ -185,7 +184,7 @@ export class BoardController {
   //         status: HttpStatus.OK,
   //         data: { id: deletedId },
   //       });
-  //     } catch (error) {
+  //     } catch (error: any) {
   //       res.status(error.statusCode).send({
   //         status: error.statusCode || HttpStatus.BAD_REQUEST,
   //         success: false,

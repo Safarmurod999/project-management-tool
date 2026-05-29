@@ -94,7 +94,7 @@ export class RoleController {
         status: HttpStatus.CREATED,
         data: this.createRolePresenter.present(role),
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,
@@ -122,7 +122,7 @@ export class RoleController {
         page: roles.page,
         limit: roles.limit,
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode).send({
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         success: false,
@@ -142,7 +142,7 @@ export class RoleController {
         status: HttpStatus.OK,
         data: this.findRoleByIdPresenter.present(role),
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode).send({
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         success: false,
@@ -172,7 +172,7 @@ export class RoleController {
         status: HttpStatus.OK,
         data: this.updateRolePresenter.present(role),
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode).send({
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         success: false,
@@ -191,7 +191,7 @@ export class RoleController {
         status: HttpStatus.OK,
         data: { id: deletedId },
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode).send({
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         success: false,

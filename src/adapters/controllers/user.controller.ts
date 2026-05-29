@@ -98,7 +98,7 @@ export class UserController {
         status: HttpStatus.CREATED,
         data: this.createUserPresenter.present(user),
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,
@@ -126,7 +126,7 @@ export class UserController {
         page: roles.page,
         limit: roles.limit,
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,
@@ -145,7 +145,7 @@ export class UserController {
         status: HttpStatus.OK,
         data: this.findUserByIdPresenter.present(user),
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,
@@ -164,7 +164,7 @@ export class UserController {
         status: HttpStatus.OK,
         data: this.findUserByEmailPresenter.present(user),
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,
@@ -195,7 +195,7 @@ export class UserController {
         status: HttpStatus.OK,
         data: this.updateUserPresenter.present(user),
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,
@@ -214,7 +214,7 @@ export class UserController {
         status: HttpStatus.OK,
         data: deletedUserId,
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,

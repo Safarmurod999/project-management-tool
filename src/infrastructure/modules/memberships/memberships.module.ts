@@ -7,6 +7,7 @@ import {
   FindMembershipByIdUsecaseImpl,
   GetMembershipsUsecaseImpl,
   GetTeamMembersUsecaseImpl,
+  GetProjectMembersUsecaseImpl,
   UpdateMembershipUsecaseImpl,
 } from 'src/application';
 import {
@@ -14,6 +15,7 @@ import {
   FindMembershipByIdPresenterImpl,
   GetMembershipsPresenterImpl,
   GetTeamMembersPresenterImpl,
+  GetProjectMembersPresenterImpl,
 } from 'src/adapters';
 import {
   FactorySymbols,
@@ -67,6 +69,14 @@ import { RolesModule } from '../roles/roles.module';
     {
       provide: PresenterSymbols.Membership.GetTeamMembersPresenter,
       useClass: GetTeamMembersPresenterImpl,
+    },
+    {
+      provide: UsecaseSymbols.Membership.GetProjectMembersUsecase,
+      useClass: GetProjectMembersUsecaseImpl,
+    },
+    {
+      provide: PresenterSymbols.Membership.GetProjectMembersPresenter,
+      useClass: GetProjectMembersPresenterImpl,
     },
     {
       provide: UsecaseSymbols.Membership.UpdateMembershipUsecase,

@@ -14,6 +14,9 @@ export class CreateProjectUsecaseImpl implements CreateProjectUsecase {
   ) {}
 
   async execute(params: CreateProjectUsecaseParams): Promise<Project> {
+
+    console.log('CreateProjectUsecaseImpl.execute called with params:', params);
+
     const project = {
       name: params.name,
       description: params.description,

@@ -43,7 +43,7 @@ export class OtpController {
         status: HttpStatus.CREATED,
         data: this.otpPresenter.present(otp),
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,
@@ -69,7 +69,7 @@ export class OtpController {
         status: HttpStatus.OK,
         data: this.otpPresenter.present(otp),
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,

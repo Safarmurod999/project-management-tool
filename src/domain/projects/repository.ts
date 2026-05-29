@@ -47,6 +47,7 @@ export class ProjectRepositoryImpl implements ProjectRepository {
   async create(project: ProjectCreateParams): Promise<Project> {
     const projectData = await this.projectModel.create({
       ...project,
+      teamId: new Types.ObjectId(project.teamId),
     });
 
     return ProjectMapper.toDomain(projectData);
