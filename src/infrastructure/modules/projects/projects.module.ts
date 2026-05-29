@@ -1,17 +1,24 @@
 import { Module } from '@nestjs/common';
 import { ProjectController } from 'src/adapters';
-import { ProjectFactoryImpl, ProjectRepositoryImpl, RolePermissionRepositoryImpl, UserRepositoryImpl } from 'src/domain';
+import {
+  ProjectFactoryImpl,
+  ProjectRepositoryImpl,
+  RolePermissionRepositoryImpl,
+  UserRepositoryImpl,
+} from 'src/domain';
 import {
   CreateProjectUsecaseImpl,
   DeleteProjectUsecaseImpl,
   FindProjectByIdUsecaseImpl,
   GetProjectsUsecaseImpl,
   UpdateProjectUsecaseImpl,
+  GetProjectMembersUsecaseImpl,
 } from 'src/application';
 import {
   CreateProjectPresenterImpl,
   FindProjectByIdPresenterImpl,
   GetProjectsPresenterImpl,
+  GetProjectMembersPresenterImpl
 } from 'src/adapters';
 import {
   FactorySymbols,
@@ -78,6 +85,14 @@ import { MembershipsModule } from '../memberships/memberships.module';
     {
       provide: RepositorySymbols.RolePermissionRepository,
       useClass: RolePermissionRepositoryImpl,
+    },
+    {
+      provide: UsecaseSymbols.Membership.GetProjectMembersUsecase,
+      useClass: GetProjectMembersUsecaseImpl,
+    },
+    {
+      provide: PresenterSymbols.Membership.GetProjectMembersPresenter,
+      useClass: GetProjectMembersPresenterImpl,
     },
   ],
   exports: [

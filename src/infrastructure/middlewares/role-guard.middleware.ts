@@ -67,11 +67,14 @@ export class RolesPermissionsGuard implements CanActivate {
       request.user = {
         id: user.id,
         email: user.email,
-        role: user.role.code,
+        role: {
+          id: user.role.id,
+          code: user.role.code,
+        },
         permissions: permissions.map((p) => p.code),
       };
 
-      if (requiredRoles && !requiredRoles.includes(request.user.role)) {
+      if (requiredRoles && !requiredRoles.includes(request.user.role.code)) {
         return false;
       }
       

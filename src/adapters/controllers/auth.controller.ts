@@ -22,7 +22,6 @@ import {
 import { PresenterSymbols } from 'src/infrastructure';
 import { UsecaseSymbols } from 'src/infrastructure/dependency-injection/usecases/symbol';
 import { RegisterUserPresenter } from 'src/adapters/presenters';
-import { RoleCode } from 'src/infrastructure/common/enum';
 import { RolesPermissionsGuard } from 'src/infrastructure/middlewares/role-guard.middleware';
 
 export class RegisterUserDto {
@@ -71,7 +70,7 @@ export class AuthController {
         status: HttpStatus.CREATED,
         data: this.registerUserPresenter.present(result),
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,
@@ -103,7 +102,7 @@ export class AuthController {
         status: HttpStatus.CREATED,
         data: result.access_token,
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,
@@ -132,7 +131,7 @@ export class AuthController {
         status: HttpStatus.CREATED,
         data: result.access_token,
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,
@@ -142,18 +141,18 @@ export class AuthController {
   }
 
   @Post('refresh-token')
-  async refreshToken(@Req() req: Request, @Res() res: Response) {    
+  async refreshToken(@Req() req: Request, @Res() res: Response) {
     try {
-      const refreshToken = req.cookies['refresh_token'];    
+      const refreshToken = req.cookies['refresh_token'];
 
-    const result = await this.refreshTokenUsecase.execute(refreshToken);
+      const result = await this.refreshTokenUsecase.execute(refreshToken);
 
-    res.status(HttpStatus.OK).send({
-      success: true,
-      status: HttpStatus.OK,
-      data: result
-    });
-    } catch (error) {
+      res.status(HttpStatus.OK).send({
+        success: true,
+        status: HttpStatus.OK,
+        data: result,
+      });
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,
@@ -165,7 +164,6 @@ export class AuthController {
   @Post('logout')
   async logout(@Req() req: Request, @Res() res: Response) {
     try {
-
       res.cookie('refresh_token', '', {
         httpOnly: true,
         secure: true,
@@ -178,7 +176,7 @@ export class AuthController {
         status: HttpStatus.OK,
         message: 'Logged out successfully',
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,
@@ -208,7 +206,7 @@ export class AuthController {
         status: HttpStatus.OK,
         data: result,
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,

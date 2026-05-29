@@ -36,6 +36,7 @@ export const UsecaseSymbols = {
     CreateMembershipUsecase: Symbol.for('CreateMembershipUsecase'),
     GetMembershipsUsecase: Symbol.for('GetMembershipsUsecase'),
     GetTeamMembersUsecase: Symbol.for('GetTeamMembersUsecase'),
+    GetProjectMembersUsecase: Symbol.for('GetProjectMembersUsecase'),
     FindMembershipByIdUsecase: Symbol.for('FindMembershipByIdUsecase'),
     UpdateMembershipUsecase: Symbol.for('UpdateMembershipUsecase'),
     DeleteMembershipUsecase: Symbol.for('DeleteMembershipUsecase'),

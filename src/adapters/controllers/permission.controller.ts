@@ -88,7 +88,7 @@ export class PermissionController {
         status: HttpStatus.CREATED,
         data: this.createPermissionPresenter.present(permission),
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode).send({
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         success: false,
@@ -116,7 +116,7 @@ export class PermissionController {
         page: permissions.page,
         limit: permissions.limit,
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode).send({
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         success: false,
@@ -136,7 +136,7 @@ export class PermissionController {
         status: HttpStatus.OK,
         data: this.findPermissionByIdPresenter.present(permission),
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode).send({
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         success: false,
@@ -163,7 +163,7 @@ export class PermissionController {
         status: HttpStatus.OK,
         data: this.updatePermissionPresenter.present(permission),
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode).send({
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         success: false,
@@ -182,7 +182,7 @@ export class PermissionController {
         status: HttpStatus.OK,
         data: { id: deletedId },
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode).send({
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         success: false,

@@ -90,7 +90,7 @@ export class MembershipController {
         status: HttpStatus.CREATED,
         data: this.createMembershipPresenter.present(membership),
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         success: false,
         status: error.statusCode || HttpStatus.BAD_REQUEST,
@@ -120,7 +120,7 @@ export class MembershipController {
         page: memberships.page,
         limit: memberships.limit,
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         success: false,
@@ -139,7 +139,7 @@ export class MembershipController {
         status: HttpStatus.OK,
         data: this.findMembershipByIdPresenter.present(membership),
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         success: false,
@@ -168,7 +168,7 @@ export class MembershipController {
         status: HttpStatus.OK,
         data: this.updateMembershipPresenter.present(membership),
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         success: false,
@@ -187,7 +187,7 @@ export class MembershipController {
         status: HttpStatus.OK,
         data: { id: deletedId },
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
         status: error.statusCode || HttpStatus.BAD_REQUEST,
         success: false,
