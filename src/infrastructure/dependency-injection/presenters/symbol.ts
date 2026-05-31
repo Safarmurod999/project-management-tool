@@ -35,6 +35,7 @@ export const PresenterSymbols = {
     GetTeamMembersPresenter: Symbol('GetTeamMembersPresenter'),
     GetProjectMembersPresenter: Symbol('GetProjectMembersPresenter'),
     UpdateMembershipPresenter: Symbol('UpdateMembershipPresenter'),
+    UpdateTeamMemberRolePresenter: Symbol('UpdateTeamMemberRolePresenter'),
     DeleteMembershipPresenter: Symbol('DeleteMembershipPresenter'),
   },
   Team: {

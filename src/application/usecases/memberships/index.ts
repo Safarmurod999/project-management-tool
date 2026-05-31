@@ -3,5 +3,6 @@ export * from './find-by-id';
 export * from './get-all';
 export * from './get-team-members';
 export * from './get-project-members';
+export * from './update-team-member-role';
 export * from './update';
 export * from './delete';

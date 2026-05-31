@@ -9,6 +9,7 @@ import {
   GetTeamMembersUsecaseImpl,
   GetProjectMembersUsecaseImpl,
   UpdateMembershipUsecaseImpl,
+  UpdateTeamMemberRoleUsecaseImpl,
 } from 'src/application';
 import {
   CreateMembershipPresenterImpl,
@@ -16,6 +17,7 @@ import {
   GetMembershipsPresenterImpl,
   GetTeamMembersPresenterImpl,
   GetProjectMembersPresenterImpl,
+  UpdateTeamMemberRolePresenterImpl,
 } from 'src/adapters';
 import {
   FactorySymbols,
@@ -87,6 +89,14 @@ import { RolesModule } from '../roles/roles.module';
       useClass: CreateMembershipPresenterImpl,
     },
     {
+      provide: UsecaseSymbols.Membership.UpdateTeamMemberRoleUsecase,
+      useClass: UpdateTeamMemberRoleUsecaseImpl,
+    },
+    {
+      provide: PresenterSymbols.Membership.UpdateTeamMemberRolePresenter,
+      useClass: UpdateTeamMemberRolePresenterImpl,
+    },
+    {
       provide: UsecaseSymbols.Membership.DeleteMembershipUsecase,
       useClass: DeleteMembershipUsecaseImpl,
     },
@@ -98,7 +108,10 @@ import { RolesModule } from '../roles/roles.module';
     UsecaseSymbols.Membership.FindMembershipByIdUsecase,
     UsecaseSymbols.Membership.GetMembershipsUsecase,
     UsecaseSymbols.Membership.GetTeamMembersUsecase,
+    UsecaseSymbols.Membership.GetProjectMembersUsecase,
     UsecaseSymbols.Membership.UpdateMembershipUsecase,
+    UsecaseSymbols.Membership.UpdateTeamMemberRoleUsecase,
+    PresenterSymbols.Membership.UpdateTeamMemberRolePresenter,
     UsecaseSymbols.Membership.DeleteMembershipUsecase,
   ],
 })
