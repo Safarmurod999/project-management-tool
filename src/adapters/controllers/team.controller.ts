@@ -20,6 +20,7 @@ import {
   GetTeamsUsecase,
   GetTeamMembersUsecase,
   UpdateTeamUsecase,
+  UpdateTeamMemberRoleUsecase,
 } from 'src/application';
 import { Request, Response } from 'express';
 import {
@@ -37,6 +38,7 @@ import {
   FindTeamByIdPresenter,
   GetTeamsPresenter,
   GetTeamMembersPresenter,
+  UpdateTeamMemberRolePresenter,
 } from '../presenters';
 
 export class CreateTeamDto {
@@ -57,6 +59,10 @@ export class GetTeamsQuery {
 export class GetTeamMembersQuery {
   page?: number;
   limit?: number;
+}
+
+export class UpdateTeamMemberRoleDto {
+  roleId: string;
 }
 
 @Controller('teams')
@@ -82,6 +88,10 @@ export class TeamController {
     private readonly getTeamMembersUsecase: GetTeamMembersUsecase,
     @Inject(PresenterSymbols.Membership.GetTeamMembersPresenter)
     private readonly getTeamMembersPresenter: GetTeamMembersPresenter,
+    @Inject(UsecaseSymbols.Membership.UpdateTeamMemberRoleUsecase)
+    private readonly updateTeamMemberRoleUsecase: UpdateTeamMemberRoleUsecase,
+    @Inject(PresenterSymbols.Membership.UpdateTeamMemberRolePresenter)
+    private readonly updateTeamMemberRolePresenter: UpdateTeamMemberRolePresenter,
 
     @Inject(UsecaseSymbols.Team.UpdateTeamUsecase)
     private readonly updateTeamUsecase: UpdateTeamUsecase,
@@ -200,6 +210,34 @@ export class TeamController {
         totalCount: members.totalCount,
         page: members.page,
         limit: members.limit,
+      });
+    } catch (error: any) {
+      res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
+        status: error.statusCode || HttpStatus.BAD_REQUEST,
+        success: false,
+        message: error.message,
+      });
+    }
+  }
+
+  @Put(':id/members/:membershipId/role')
+  @ScopePermission(ScopeType.TEAM, 'id', PermissionCode.TEAM_EDIT)
+  async updateMemberRole(
+    @Res() res: Response,
+    @Param('id') teamId: string,
+    @Param('membershipId') membershipId: string,
+    @Body() dto: UpdateTeamMemberRoleDto,
+  ) {
+    try {
+      const membership = await this.updateTeamMemberRoleUsecase.execute({
+        teamId,
+        membershipId,
+        roleId: dto.roleId,
+      });
+
+      res.status(HttpStatus.OK).send({
+        status: HttpStatus.OK,
+        data: this.updateTeamMemberRolePresenter.present(membership),
       });
     } catch (error: any) {
       res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
