@@ -1,0 +1,56 @@
+export class TeamException extends Error {
+  public readonly statusCode: number;
+
+  constructor(message: string, statusCode: number = 400) {
+    super(message);
+    this.name = 'TeamException';
+    this.statusCode = statusCode;
+  }
+
+  public static TeamNotFound(teamId: string): TeamException {
+    return new TeamException(`Team with ID ${teamId} not found.`, 404);
+  }
+
+  public static InvalidTeamData(reason: string): TeamException {
+    return new TeamException(`Invalid team data: ${reason}`, 400);
+  }
+
+  public static UserNotInTeam(userId: string, teamId: string): TeamException {
+    return new TeamException(
+      `User with ID ${userId} is not a member of team ${teamId}.`,
+      403,
+    );
+  }
+
+  public static TeamAlreadyArchived(teamId: string): TeamException {
+    return new TeamException(
+      `Team with ID ${teamId} is already archived.`,
+      409,
+    );
+  }
+
+  public static TeamAlreadyExists(name: string): TeamException {
+    return new TeamException(`Team with name "${name}" already exists.`, 409);
+  }
+
+  public static CannotDeleteActiveTeam(teamId: string): TeamException {
+    return new TeamException(
+      `Cannot delete active team with ID ${teamId}. Archive it first.`,
+      409,
+    );
+  }
+
+  public static TeamHasActiveProjects(teamId: string): TeamException {
+    return new TeamException(
+      `Cannot archive team ${teamId} as it has active projects.`,
+      409,
+    );
+  }
+
+  public static UnauthorizedTeamAccess(teamId: string): TeamException {
+    return new TeamException(
+      `Unauthorized access to team with ID ${teamId}.`,
+      403,
+    );
+  }
+}
