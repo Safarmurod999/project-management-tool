@@ -18,5 +18,7 @@ export interface GetMembershipsUsecaseResult {
 }
 
 export interface GetMembershipsUsecase {
-  execute(params: GetMembershipsUsecaseParams): Promise<GetMembershipsUsecaseResult>;
+  execute(
+    params: GetMembershipsUsecaseParams,
+  ): Promise<GetMembershipsUsecaseResult>;
 }

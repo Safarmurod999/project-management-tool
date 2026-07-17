@@ -90,9 +90,7 @@ export class BoardRepositoryImpl implements BoardRepository {
     return BoardMapper.toDomain(boardData);
   }
 
-  async update(
-    board: BoardUpdateParams & { id: string },
-  ): Promise<Board> {
+  async update(board: BoardUpdateParams & { id: string }): Promise<Board> {
     const boardData = await this.boardModel.findById(board.id);
 
     if (!boardData) {

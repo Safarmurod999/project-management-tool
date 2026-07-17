@@ -97,7 +97,7 @@ export class PermissionRepositoryImpl implements PermissionRepository {
     }
 
     permissionData.code = user.code ?? permissionData.code;
-    permissionData.updatedAt = new Date() as Date;
+    permissionData.updatedAt = new Date();
     permissionData.status = user.status ?? permissionData.status;
 
     await permissionData.save();

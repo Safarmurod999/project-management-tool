@@ -4,7 +4,9 @@ export interface UpdateTeamMemberRolePresenter {
   present(membership: Membership): MembershipStruct;
 }
 
-export class UpdateTeamMemberRolePresenterImpl implements UpdateTeamMemberRolePresenter {
+export class UpdateTeamMemberRolePresenterImpl
+  implements UpdateTeamMemberRolePresenter
+{
   present(membership: Membership): MembershipStruct {
     return {
       id: membership.id,

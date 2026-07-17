@@ -1,4 +1,9 @@
-import { Injectable, OnModuleInit, OnModuleDestroy, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  OnModuleInit,
+  OnModuleDestroy,
+  Inject,
+} from '@nestjs/common';
 import { BullMQService } from '../../queue/bullmq.service';
 import { EmailJobProcessor } from '../../queue/processors/email.processor';
 
@@ -18,7 +23,7 @@ export class QueueInitializerService implements OnModuleInit, OnModuleDestroy {
     this.bullMQService.createWorker(
       'email',
       this.emailProcessor.process.bind(this.emailProcessor),
-      { concurrency: 3 } // Process up to 3 email jobs concurrently
+      { concurrency: 3 }, // Process up to 3 email jobs concurrently
     );
 
     console.log('BullMQ queues and workers initialized successfully');

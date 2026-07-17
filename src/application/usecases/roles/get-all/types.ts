@@ -1,4 +1,4 @@
-import { Role } from "src/domain";
+import { Role } from 'src/domain';
 
 export interface GetRolesUsecaseParams {
   name?: string;

@@ -1,3 +1,3 @@
 export const DatabaseSymbols = {
-    MongoDb: Symbol.for("MongoDb"),
-}
+  MongoDb: Symbol.for('MongoDb'),
+};

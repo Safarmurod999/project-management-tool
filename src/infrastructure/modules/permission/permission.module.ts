@@ -1,18 +1,24 @@
 import {
   CreatePermissionPresenterImpl,
   FindPermissionByIdPresenterImpl,
-  GetPermissionsPresenterImpl
+  GetPermissionsPresenterImpl,
 } from 'src/adapters/presenters';
 import { Global, Module, forwardRef } from '@nestjs/common';
 import {
   PresenterSymbols,
   UsecaseSymbols,
   RepositorySymbols,
-  FactorySymbols
+  FactorySymbols,
 } from 'src/infrastructure/dependency-injection';
 import { PermissionFactoryImpl } from 'src/domain';
-import { PermissionRepositoryImpl } from "src/domain";
-import { CreatePermissionUsecaseImpl, DeletePermissionUsecaseImpl, FindPermissionByIdUsecaseImpl, GetPermissionsUsecaseImpl, UpdatePermissionUsecaseImpl } from 'src/application';
+import { PermissionRepositoryImpl } from 'src/domain';
+import {
+  CreatePermissionUsecaseImpl,
+  DeletePermissionUsecaseImpl,
+  FindPermissionByIdUsecaseImpl,
+  GetPermissionsUsecaseImpl,
+  UpdatePermissionUsecaseImpl,
+} from 'src/application';
 import { PermissionController } from 'src/adapters';
 import { RolesModule } from '../roles/roles.module';
 import { UserModule } from '../users/user.module';
@@ -40,7 +46,7 @@ import { UserModule } from '../users/user.module';
     },
     {
       provide: UsecaseSymbols.Permission.GetPermissionsUsecase,
-      useClass: GetPermissionsUsecaseImpl
+      useClass: GetPermissionsUsecaseImpl,
     },
     {
       provide: PresenterSymbols.Permission.GetPermissionsPresenter,
@@ -48,7 +54,7 @@ import { UserModule } from '../users/user.module';
     },
     {
       provide: UsecaseSymbols.Permission.FindPermissionByIdUsecase,
-      useClass: FindPermissionByIdUsecaseImpl
+      useClass: FindPermissionByIdUsecaseImpl,
     },
     {
       provide: PresenterSymbols.Permission.FindPermissionByIdPresenter,
@@ -65,7 +71,7 @@ import { UserModule } from '../users/user.module';
     {
       provide: UsecaseSymbols.Permission.DeletePermissionUsecase,
       useClass: DeletePermissionUsecaseImpl,
-    }
+    },
   ],
   exports: [
     UsecaseSymbols.Permission.CreatePermissionUsecase,
@@ -74,6 +80,6 @@ import { UserModule } from '../users/user.module';
     PresenterSymbols.Permission.GetPermissionsPresenter,
     UsecaseSymbols.Permission.FindPermissionByIdUsecase,
     PresenterSymbols.Permission.FindPermissionByIdPresenter,
-  ]
+  ],
 })
 export class PermissionModule {}

@@ -1,7 +1,7 @@
-import Redis from "ioredis";
+import Redis from 'ioredis';
 
 export interface Cache {
-    client: Redis;
-    connect(): Promise<void>;
-    disconnect(): void;
+  client: Redis;
+  connect(): Promise<void>;
+  disconnect(): void;
 }

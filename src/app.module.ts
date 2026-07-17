@@ -32,5 +32,4 @@ import {
     BoardsModule,
   ],
 })
-export class AppModule {
-}
+export class AppModule {}

@@ -1,5 +1,5 @@
-import { Schema } from "mongoose";
-import { TeamStatus } from "src/infrastructure/common/enum";
+import { Schema } from 'mongoose';
+import { TeamStatus } from 'src/infrastructure/common/enum';
 
 export const TeamSchema = new Schema(
   {
@@ -7,7 +7,7 @@ export const TeamSchema = new Schema(
     description: { type: String, default: null },
     ownerId: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
       required: true,
     },
     status: {

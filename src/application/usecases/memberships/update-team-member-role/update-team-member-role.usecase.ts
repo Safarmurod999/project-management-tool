@@ -7,7 +7,9 @@ import {
   UpdateTeamMemberRoleUsecaseParams,
 } from './types';
 
-export class UpdateTeamMemberRoleUsecaseImpl implements UpdateTeamMemberRoleUsecase {
+export class UpdateTeamMemberRoleUsecaseImpl
+  implements UpdateTeamMemberRoleUsecase
+{
   constructor(
     @Inject(RepositorySymbols.MembershipRepository)
     private readonly membershipRepository: MembershipRepository,

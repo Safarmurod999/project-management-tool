@@ -6,7 +6,9 @@ import {
   FindMembershipByIdUsecaseParams,
 } from './types';
 
-export class FindMembershipByIdUsecaseImpl implements FindMembershipByIdUsecase {
+export class FindMembershipByIdUsecaseImpl
+  implements FindMembershipByIdUsecase
+{
   constructor(
     @Inject(RepositorySymbols.MembershipRepository)
     private membershipRepository: MembershipRepository,

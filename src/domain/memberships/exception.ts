@@ -15,7 +15,10 @@ export class MembershipException extends Error {
     return new MembershipException(`Invalid membership data: ${reason}`, 400);
   }
 
-  public static UserAlreadyMember(userId: string, teamId: string): MembershipException {
+  public static UserAlreadyMember(
+    userId: string,
+    teamId: string,
+  ): MembershipException {
     return new MembershipException(
       `User ${userId} is already a member of team ${teamId}.`,
       409,
@@ -29,7 +32,10 @@ export class MembershipException extends Error {
     );
   }
 
-  public static UserNotMember(userId: string, teamId: string): MembershipException {
+  public static UserNotMember(
+    userId: string,
+    teamId: string,
+  ): MembershipException {
     return new MembershipException(
       `User ${userId} is not a member of team ${teamId}.`,
       404,
@@ -44,7 +50,9 @@ export class MembershipException extends Error {
     return new MembershipException(`Role with ID ${roleId} not found.`, 404);
   }
 
-  public static UnauthorizedMembershipAccess(membershipId: string): MembershipException {
+  public static UnauthorizedMembershipAccess(
+    membershipId: string,
+  ): MembershipException {
     return new MembershipException(
       `Unauthorized access to membership with ID ${membershipId}.`,
       403,

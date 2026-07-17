@@ -15,7 +15,10 @@ export class ProjectException extends Error {
     return new ProjectException(`Invalid project data: ${reason}`, 400);
   }
 
-  public static ProjectAlreadyExists(name: string, teamId: string): ProjectException {
+  public static ProjectAlreadyExists(
+    name: string,
+    teamId: string,
+  ): ProjectException {
     return new ProjectException(
       `Project with name "${name}" already exists in team ${teamId}.`,
       409,

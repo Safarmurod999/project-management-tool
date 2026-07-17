@@ -4,7 +4,9 @@ export interface FindPermissionByIdPresenter {
   present(permission: Permission): PermissionStruct;
 }
 
-export class FindPermissionByIdPresenterImpl implements FindPermissionByIdPresenter {
+export class FindPermissionByIdPresenterImpl
+  implements FindPermissionByIdPresenter
+{
   present(permission: Permission): PermissionStruct {
     return {
       id: permission.id,

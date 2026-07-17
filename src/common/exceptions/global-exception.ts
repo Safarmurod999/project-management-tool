@@ -9,7 +9,9 @@ export class GlobalException extends Error {
     this.errorCode = errorCode;
   }
 
-  public static InternalServerError(message: string = 'Internal server error'): GlobalException {
+  public static InternalServerError(
+    message: string = 'Internal server error',
+  ): GlobalException {
     return new GlobalException(message, 500, 'INTERNAL_SERVER_ERROR');
   }
 
@@ -17,7 +19,9 @@ export class GlobalException extends Error {
     return new GlobalException(message, 400, 'BAD_REQUEST');
   }
 
-  public static Unauthorized(message: string = 'Unauthorized'): GlobalException {
+  public static Unauthorized(
+    message: string = 'Unauthorized',
+  ): GlobalException {
     return new GlobalException(message, 401, 'UNAUTHORIZED');
   }
 
@@ -37,11 +41,15 @@ export class GlobalException extends Error {
     return new GlobalException(message, 422, 'VALIDATION_ERROR');
   }
 
-  public static DatabaseError(message: string = 'Database operation failed'): GlobalException {
+  public static DatabaseError(
+    message: string = 'Database operation failed',
+  ): GlobalException {
     return new GlobalException(message, 500, 'DATABASE_ERROR');
   }
 
-  public static ExternalServiceError(message: string = 'External service error'): GlobalException {
+  public static ExternalServiceError(
+    message: string = 'External service error',
+  ): GlobalException {
     return new GlobalException(message, 502, 'EXTERNAL_SERVICE_ERROR');
   }
 }

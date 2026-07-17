@@ -8,8 +8,14 @@ import { PermissionMapper } from 'src/infrastructure/database/mongodb/mappers';
 
 export interface RolePermissionRepository {
   getPermissionsByRoleId(roleId: string): Promise<Permission[]>;
-  assignPermissionsToRole(roleId: string, permissionIds: string[]): Promise<void>;
-  removePermissionsFromRole(roleId: string, permissionIds: string[]): Promise<void>;
+  assignPermissionsToRole(
+    roleId: string,
+    permissionIds: string[],
+  ): Promise<void>;
+  removePermissionsFromRole(
+    roleId: string,
+    permissionIds: string[],
+  ): Promise<void>;
   clearRolePermissions(roleId: string): Promise<void>;
 }
 

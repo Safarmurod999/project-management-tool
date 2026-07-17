@@ -10,8 +10,13 @@ import { RoleMapper } from 'src/infrastructure/database/mongodb/mappers/roles.ma
 import { RolePermissionRepository } from '../role-permissions';
 import { RepositorySymbols } from 'src/infrastructure/dependency-injection/repositories/symbol';
 
-export type RoleCreateParams = Omit<RoleStruct, 'id' | 'createdAt' | 'updatedAt'> & { permissions?: string[] };
-export type RoleUpdateParams = Omit<RoleStruct, 'createdAt' | 'updatedAt'> & { permissions?: string[] };
+export type RoleCreateParams = Omit<
+  RoleStruct,
+  'id' | 'createdAt' | 'updatedAt'
+> & { permissions?: string[] };
+export type RoleUpdateParams = Omit<RoleStruct, 'createdAt' | 'updatedAt'> & {
+  permissions?: string[];
+};
 
 export interface RoleGetQuery {
   page?: number;
@@ -46,7 +51,7 @@ export class RoleRepositoryImpl implements RoleRepository {
   async create(role: RoleCreateParams): Promise<Role> {
     const { permissions, ...roleData } = role;
     const createdRole = await this.roleModel.create(roleData);
-    
+
     // Assign permissions if provided
     if (permissions && permissions.length > 0) {
       await this.rolePermissionRepository.assignPermissionsToRole(
@@ -54,23 +59,19 @@ export class RoleRepositoryImpl implements RoleRepository {
         permissions,
       );
     }
-    
+
     return RoleMapper.toDomain(createdRole);
   }
 
   async find(params: RoleGetQuery): Promise<RoleGetResponse> {
-    const {
-            page  = 1,
-            limit = 10,
-            name,
-          } = params;
+    const { page = 1, limit = 10, name } = params;
 
     const filter: Record<string, any> = {};
 
     const totalCount = await this.roleModel.countDocuments();
 
     if (name) {
-      filter.name = {$regex: name, $options: 'i'};
+      filter.name = { $regex: name, $options: 'i' };
     }
 
     const roleDataList = await this.roleModel
@@ -80,12 +81,10 @@ export class RoleRepositoryImpl implements RoleRepository {
       .exec();
 
     return {
-      data: roleDataList.map(roleData =>
-        RoleMapper.toDomain(roleData),
-      ),
+      data: roleDataList.map((roleData) => RoleMapper.toDomain(roleData)),
       totalCount: totalCount,
       page,
-      limit
+      limit,
     };
   }
 
@@ -112,11 +111,11 @@ export class RoleRepositoryImpl implements RoleRepository {
     roleData.name = updateData.name ?? roleData.name;
     roleData.code = updateData.code ?? roleData.code;
     roleData.description = updateData.description ?? roleData.description;
-    roleData.updatedAt = new Date() as Date;
+    roleData.updatedAt = new Date();
     roleData.status = updateData.status ?? roleData.status;
 
     await roleData.save();
-    
+
     // Update permissions if provided
     if (permissions) {
       await this.rolePermissionRepository.clearRolePermissions(role.id);
@@ -127,7 +126,7 @@ export class RoleRepositoryImpl implements RoleRepository {
         );
       }
     }
-    
+
     return RoleMapper.toDomain(roleData);
   }
 

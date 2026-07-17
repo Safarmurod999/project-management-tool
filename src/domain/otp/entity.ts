@@ -1,54 +1,54 @@
 export class Otp {
-    constructor(
-        private readonly _id: string,
-        private readonly _receiver: string,
-        private readonly _otpCode: string,
-        private _isVerified: boolean,
-        private _attempts: number,
-        private readonly _expiresAt: Date,
-    ) {}
+  constructor(
+    private readonly _id: string,
+    private readonly _receiver: string,
+    private readonly _otpCode: string,
+    private _isVerified: boolean,
+    private _attempts: number,
+    private readonly _expiresAt: Date,
+  ) {}
 
-    public get id(): string {
-        return this._id;
-    }
+  public get id(): string {
+    return this._id;
+  }
 
-    public get receiver(): string {
-        return this._receiver;
-    }
+  public get receiver(): string {
+    return this._receiver;
+  }
 
-    public get otpCode(): string {
-        return this._otpCode;
-    }
-    
-    public get isVerified(): boolean {
-        return this._isVerified;
-    }
+  public get otpCode(): string {
+    return this._otpCode;
+  }
 
-    public get attempts(): number {
-        return this._attempts;
-    }
+  public get isVerified(): boolean {
+    return this._isVerified;
+  }
 
-    public get expiresAt(): Date{
-        return this._expiresAt;
-    }
+  public get attempts(): number {
+    return this._attempts;
+  }
 
-    public verifyCode(otpCode: string): boolean {
-        return this._otpCode === otpCode;
-    }
+  public get expiresAt(): Date {
+    return this._expiresAt;
+  }
 
-    public setVerified(): void {
-        this._isVerified = true;
-    }
+  public verifyCode(otpCode: string): boolean {
+    return this._otpCode === otpCode;
+  }
 
-    public isExpired(): boolean {
-        return new Date() > this.expiresAt
-    }
+  public setVerified(): void {
+    this._isVerified = true;
+  }
 
-    public isOutOfLimit(maxAttempts: number): boolean {
-        return this._attempts >= maxAttempts;
-    }
+  public isExpired(): boolean {
+    return new Date() > this.expiresAt;
+  }
 
-    public increaseAttempts(): void {
-        this._attempts++;
-    }
+  public isOutOfLimit(maxAttempts: number): boolean {
+    return this._attempts >= maxAttempts;
+  }
+
+  public increaseAttempts(): void {
+    this._attempts++;
+  }
 }

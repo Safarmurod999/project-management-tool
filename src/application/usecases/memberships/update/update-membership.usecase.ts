@@ -1,7 +1,10 @@
 import { Inject } from '@nestjs/common';
 import { Membership, MembershipRepository } from 'src/domain';
 import { RepositorySymbols } from 'src/infrastructure/dependency-injection/repositories/symbol';
-import { UpdateMembershipUsecase, UpdateMembershipUsecaseParams } from './types';
+import {
+  UpdateMembershipUsecase,
+  UpdateMembershipUsecaseParams,
+} from './types';
 
 export class UpdateMembershipUsecaseImpl implements UpdateMembershipUsecase {
   constructor(

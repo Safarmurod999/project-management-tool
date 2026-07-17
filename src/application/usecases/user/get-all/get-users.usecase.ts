@@ -1,7 +1,11 @@
 import { Inject } from '@nestjs/common';
 import { UserRepository } from 'src/domain';
 import { RepositorySymbols } from 'src/infrastructure/dependency-injection/repositories/symbol';
-import { GetUsersUsecase, GetUsersUsecaseParams, GetUsersUsecaseResult } from './types';
+import {
+  GetUsersUsecase,
+  GetUsersUsecaseParams,
+  GetUsersUsecaseResult,
+} from './types';
 
 export class GetUsersUsecaseImpl implements GetUsersUsecase {
   constructor(

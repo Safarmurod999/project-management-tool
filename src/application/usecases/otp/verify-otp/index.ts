@@ -1,2 +1,2 @@
-export * from "./verify-otp.usecase";
-export * from "./types"
+export * from './verify-otp.usecase';
+export * from './types';

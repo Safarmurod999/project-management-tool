@@ -1,7 +1,11 @@
 import { Inject } from '@nestjs/common';
 import { PermissionRepository } from 'src/domain';
 import { RepositorySymbols } from 'src/infrastructure/dependency-injection/repositories/symbol';
-import { GetPermissionsUsecase, GetPermissionsUsecaseParams, GetPermissionsUsecaseResult } from './types';
+import {
+  GetPermissionsUsecase,
+  GetPermissionsUsecaseParams,
+  GetPermissionsUsecaseResult,
+} from './types';
 
 export class GetPermissionsUsecaseImpl implements GetPermissionsUsecase {
   constructor(
@@ -9,7 +13,9 @@ export class GetPermissionsUsecaseImpl implements GetPermissionsUsecase {
     private permissionRepository: PermissionRepository,
   ) {}
 
-  async execute(params: GetPermissionsUsecaseParams): Promise<GetPermissionsUsecaseResult> {
+  async execute(
+    params: GetPermissionsUsecaseParams,
+  ): Promise<GetPermissionsUsecaseResult> {
     return await this.permissionRepository.getAll(params);
   }
 }

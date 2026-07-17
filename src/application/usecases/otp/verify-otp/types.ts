@@ -1,10 +1,10 @@
-import { Otp } from "src/domain";
+import { Otp } from 'src/domain';
 
 export interface VerifyOtpUsecaseParams {
-    token: string;
-    otpCode: string;
+  token: string;
+  otpCode: string;
 }
 
 export interface VerifyOtpUsecase {
-    execute(params: VerifyOtpUsecaseParams): Promise<Otp>;
+  execute(params: VerifyOtpUsecaseParams): Promise<Otp>;
 }

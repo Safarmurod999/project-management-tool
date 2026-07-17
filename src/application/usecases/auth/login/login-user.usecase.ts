@@ -29,12 +29,15 @@ export class LoginUserUsecaseImpl implements LoginUserUsecase {
     params: LoginUserUsecaseParams,
   ): Promise<LoginUserUsecaseResult> {
     const user = await this.userRepository.findByEmail(params.email);
-    
-    if (!user?.isVerified) {
-        throw UserException.UnverifiedUser();
-    }    
 
-    const isPasswordValid = await this.passwordService.comparePassword(params.password, user.password);
+    if (!user?.isVerified) {
+      throw UserException.UnverifiedUser();
+    }
+
+    const isPasswordValid = await this.passwordService.comparePassword(
+      params.password,
+      user.password,
+    );
     if (!isPasswordValid) {
       throw UserException.IncorrectPassword();
     }

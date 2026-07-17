@@ -46,9 +46,7 @@ export class UserRepositoryImpl implements UserRepository {
   ) {}
 
   async create(user: UserCreateParams): Promise<User> {
-    const userData = await (
-      await this.userModel.create(user)
-    ).populate('role');
+    const userData = await (await this.userModel.create(user)).populate('role');
     return UserMapper.toDomain(userData);
   }
 
@@ -68,7 +66,7 @@ export class UserRepositoryImpl implements UserRepository {
       .skip((page - 1) * limit)
       .limit(limit)
       .populate('role')
-      .exec();      
+      .exec();
 
     return {
       data: userDataList.map((userData) => UserMapper.toDomain(userData)),
@@ -79,10 +77,7 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async findById(id: string): Promise<User> {
-    const userData = await this.userModel
-      .findById(id)
-      .populate('role')
-      .exec();
+    const userData = await this.userModel.findById(id).populate('role').exec();
 
     if (!userData) throw UserException.UserNotFound(id);
     return UserMapper.toDomain(userData);
@@ -98,14 +93,12 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async update(user: UserUpdateParams): Promise<User> {
-    const userData = await this.userModel
-      .findById(user.id)
-      .populate('role');
+    const userData = await this.userModel.findById(user.id).populate('role');
 
     if (!userData) {
       throw UserException.UserNotFound(user.id);
     }
-        
+
     userData.name = user.name ?? userData.name;
     userData.email = user.email ?? userData.email;
     userData.password = user.password ?? userData.password;
@@ -113,7 +106,7 @@ export class UserRepositoryImpl implements UserRepository {
       ? new Types.ObjectId(user.role)
       : userData.role._id;
     userData.isVerified = user.isVerified ?? userData.isVerified;
-    userData.updatedAt = new Date() as Date;
+    userData.updatedAt = new Date();
     userData.status = user.status ?? userData.status;
 
     await userData.save();

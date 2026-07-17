@@ -32,7 +32,7 @@ export class VerifyUserUsecaseImpl implements VerifyUserUsecase {
   async execute(
     params: VerifyUserUsecaseParams,
   ): Promise<VerifyUserUsecaseResult> {
-    let otp = await this.otpRepository.get(params.token);
+    const otp = await this.otpRepository.get(params.token);
 
     if (!otp) {
       throw GlobalException.NotFound('Invalid or expired token');

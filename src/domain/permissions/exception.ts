@@ -8,7 +8,10 @@ export class PermissionException extends Error {
   }
 
   public static PermissionNotFound(permissionId: string): PermissionException {
-    return new PermissionException(`Permission with ID ${permissionId} not found.`, 404);
+    return new PermissionException(
+      `Permission with ID ${permissionId} not found.`,
+      404,
+    );
   }
 
   public static InvalidPermissionData(reason: string): PermissionException {
@@ -16,10 +19,15 @@ export class PermissionException extends Error {
   }
 
   public static PermissionAlreadyExists(name: string): PermissionException {
-    return new PermissionException(`Permission with name "${name}" already exists.`, 409);
+    return new PermissionException(
+      `Permission with name "${name}" already exists.`,
+      409,
+    );
   }
 
-  public static CannotDeleteSystemPermission(permissionId: string): PermissionException {
+  public static CannotDeleteSystemPermission(
+    permissionId: string,
+  ): PermissionException {
     return new PermissionException(
       `Cannot delete system permission with ID ${permissionId}.`,
       409,
@@ -37,7 +45,9 @@ export class PermissionException extends Error {
     return new PermissionException(`Invalid permission scope provided.`, 400);
   }
 
-  public static UnauthorizedPermissionAccess(permissionId: string): PermissionException {
+  public static UnauthorizedPermissionAccess(
+    permissionId: string,
+  ): PermissionException {
     return new PermissionException(
       `Unauthorized access to permission with ID ${permissionId}.`,
       403,

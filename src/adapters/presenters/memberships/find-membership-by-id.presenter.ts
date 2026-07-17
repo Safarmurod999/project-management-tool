@@ -4,7 +4,9 @@ export interface FindMembershipByIdPresenter {
   present(membership: Membership): MembershipStruct;
 }
 
-export class FindMembershipByIdPresenterImpl implements FindMembershipByIdPresenter {
+export class FindMembershipByIdPresenterImpl
+  implements FindMembershipByIdPresenter
+{
   present(membership: Membership): MembershipStruct {
     return {
       id: membership.id,

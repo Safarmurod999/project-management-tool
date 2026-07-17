@@ -11,6 +11,7 @@ describe('SendOtpUsecaseImpl', () => {
   let mockConfig: jest.Mocked<OtpConfig>;
   let mockRepository: jest.Mocked<OtpRepository>;
   let mockEmailClient: jest.Mocked<EmailClient>;
+  let mockBullMQService: { addJob: jest.Mock };
 
   beforeEach(() => {
     mockConfig = {
@@ -25,16 +26,21 @@ describe('SendOtpUsecaseImpl', () => {
       sendEmail: jest.fn(),
     } as unknown as jest.Mocked<EmailClient>;
 
+    mockBullMQService = {
+      addJob: jest.fn(),
+    };
+
     usecase = new SendOtpUsecaseImpl(
       mockConfig,
       mockRepository,
       mockEmailClient,
+      mockBullMQService,
     );
   });
 
-  it('should create OTP and send email', async () => {
+  it('should create OTP and queue email job', async () => {
     const params: SendOtpUsecaseParams = {
-      email: "test@example.com",
+      email: 'test@example.com',
     };
 
     const fakeOtp: Otp = {
@@ -46,7 +52,7 @@ describe('SendOtpUsecaseImpl', () => {
     } as unknown as Otp;
 
     mockRepository.create.mockResolvedValue(fakeOtp);
-    mockEmailClient.sendEmail.mockResolvedValue({ messageId: 'msg123' });
+    mockBullMQService.addJob.mockResolvedValue({ id: 'job123' });
 
     const result = await usecase.execute(params);
 
@@ -57,18 +63,22 @@ describe('SendOtpUsecaseImpl', () => {
     expect(payload.otpCode).toHaveLength(6);
     expect(payload.expiresAt).toBeInstanceOf(Date);
 
-    expect(mockEmailClient.sendEmail).toHaveBeenCalledTimes(1);
-    expect(mockEmailClient.sendEmail).toHaveBeenCalledWith({
-      email: params.email,
-      subject: 'Your OTP Code',
-      otpCode: expect.any(String),
-      html: expect.stringContaining('<strong'),
-    });
+    expect(mockBullMQService.addJob).toHaveBeenCalledTimes(1);
+    expect(mockBullMQService.addJob).toHaveBeenCalledWith(
+      'email',
+      'send-otp-email',
+      {
+        email: params.email,
+        subject: 'Your OTP Code',
+        otpCode: expect.any(String),
+        html: expect.stringContaining('<strong'),
+      },
+    );
 
     expect(result).toBe(fakeOtp);
   });
 
-  it('should throw if email sending fails', async () => {
+  it('should throw if queuing email job fails', async () => {
     mockRepository.create.mockResolvedValue({
       id: '1',
       receiver: 'test@example.com',
@@ -77,10 +87,10 @@ describe('SendOtpUsecaseImpl', () => {
       createdAt: new Date(),
     } as unknown as Otp);
 
-    mockEmailClient.sendEmail.mockRejectedValue(new Error('SMTP error'));
+    mockBullMQService.addJob.mockRejectedValue(new Error('Queue error'));
 
     await expect(
-      usecase.execute({ email: 'test@example.com' })
-    ).rejects.toThrow('SMTP error');
+      usecase.execute({ email: 'test@example.com' }),
+    ).rejects.toThrow('Queue error');
   });
 });

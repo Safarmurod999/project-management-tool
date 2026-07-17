@@ -14,5 +14,7 @@ export interface GetTeamMembersUsecaseResult {
 }
 
 export interface GetTeamMembersUsecase {
-  execute(params: GetTeamMembersUsecaseParams): Promise<GetTeamMembersUsecaseResult>;
+  execute(
+    params: GetTeamMembersUsecaseParams,
+  ): Promise<GetTeamMembersUsecaseResult>;
 }

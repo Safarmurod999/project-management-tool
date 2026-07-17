@@ -1,9 +1,6 @@
 import { Module } from '@nestjs/common';
 import { OtpConfigImpl } from 'src/config';
-import {
-  OtpController,
-  OtpPresenterImpl,
-} from 'src/adapters';
+import { OtpController, OtpPresenterImpl } from 'src/adapters';
 import { OtpFactoryImpl, OtpRepositoryImpl } from 'src/domain';
 import {
   ConfigSymbols,
@@ -42,8 +39,13 @@ import { QueueModule } from '../queue/queue.module';
     {
       provide: UsecaseSymbols.Otp.VerifyOtpUsecase,
       useClass: VerifyOtpUsecaseImpl,
-    }
+    },
   ],
-  exports: [ConfigSymbols.OtpConfig, RepositorySymbols.OtpRepository, UsecaseSymbols.Otp.SendOtpUsecase, UsecaseSymbols.Otp.VerifyOtpUsecase],
+  exports: [
+    ConfigSymbols.OtpConfig,
+    RepositorySymbols.OtpRepository,
+    UsecaseSymbols.Otp.SendOtpUsecase,
+    UsecaseSymbols.Otp.VerifyOtpUsecase,
+  ],
 })
 export class OtpModule {}

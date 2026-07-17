@@ -1,5 +1,5 @@
-import { Team } from "./entity";
-import { TeamStatus } from "src/infrastructure/common/enum";
+import { Team } from './entity';
+import { TeamStatus } from 'src/infrastructure/common/enum';
 
 export interface TeamStruct {
   id: string;

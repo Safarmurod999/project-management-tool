@@ -1,12 +1,13 @@
-import { MembershipDetails, MembershipDetailsStruct } from "src/domain";
+import { MembershipDetails, MembershipDetailsStruct } from 'src/domain';
 
 export interface GetProjectMembersPresenter {
   present(memberships: MembershipDetails[]): MembershipDetailsStruct[];
 }
 
-export class GetProjectMembersPresenterImpl implements GetProjectMembersPresenter {
+export class GetProjectMembersPresenterImpl
+  implements GetProjectMembersPresenter
+{
   present(memberships: MembershipDetails[]): MembershipDetailsStruct[] {
-    
     return memberships.map((membership) => ({
       id: membership.id,
       user: {

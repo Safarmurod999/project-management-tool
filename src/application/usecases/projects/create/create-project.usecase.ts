@@ -14,7 +14,6 @@ export class CreateProjectUsecaseImpl implements CreateProjectUsecase {
   ) {}
 
   async execute(params: CreateProjectUsecaseParams): Promise<Project> {
-
     console.log('CreateProjectUsecaseImpl.execute called with params:', params);
 
     const project = {
@@ -23,7 +22,7 @@ export class CreateProjectUsecaseImpl implements CreateProjectUsecase {
       teamId: params.teamId,
       status: params.status,
       userId: params.userId,
-      roleId: params.roleId
+      roleId: params.roleId,
     };
 
     const projectData = await this.projectRepository.create(project);

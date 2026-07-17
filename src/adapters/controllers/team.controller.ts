@@ -29,10 +29,17 @@ import {
   ScopeType,
   TeamStatus,
 } from 'src/infrastructure/common/enum';
-import { Permissions, Roles, ScopePermission } from 'src/infrastructure/decorators';
+import {
+  Permissions,
+  Roles,
+  ScopePermission,
+} from 'src/infrastructure/decorators';
 import { PresenterSymbols } from 'src/infrastructure/dependency-injection/presenters/symbol';
 import { UsecaseSymbols } from 'src/infrastructure/dependency-injection/usecases/symbol';
-import { RolesPermissionsGuard, ScopePermissionGuard } from 'src/infrastructure/middlewares';
+import {
+  RolesPermissionsGuard,
+  ScopePermissionGuard,
+} from 'src/infrastructure/middlewares';
 import {
   CreateTeamPresenter,
   FindTeamByIdPresenter,
@@ -105,7 +112,11 @@ export class TeamController {
   @Post()
   @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
   @Permissions(PermissionCode.TEAM_CREATE)
-  async create(@Req() req: Request, @Res() res: Response, @Body() dto: CreateTeamDto) {
+  async create(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Body() dto: CreateTeamDto,
+  ) {
     try {
       const userId = req.user?.id;
       const roleId = req.user?.role?.id;
@@ -123,7 +134,7 @@ export class TeamController {
         description: dto.description,
         ownerId: userId,
         status: dto.status,
-        roleId: roleId
+        roleId: roleId,
       });
 
       res.status(HttpStatus.CREATED).send({
@@ -143,7 +154,11 @@ export class TeamController {
   @Get()
   @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
   @Permissions(PermissionCode.TEAM_GET)
-  async getAll(@Req() req: Request, @Res() res: Response, @Query() query: GetTeamsQuery) {
+  async getAll(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query() query: GetTeamsQuery,
+  ) {
     try {
       const userId = req.user?.id;
 
@@ -151,7 +166,7 @@ export class TeamController {
         page: query.page ? Number(query.page) : undefined,
         limit: query.limit ? Number(query.limit) : undefined,
         name: query.name,
-        userId: userId
+        userId: userId,
       });
 
       res.status(HttpStatus.OK).send({

@@ -1,4 +1,4 @@
-import { Permission } from "src/domain";
+import { Permission } from 'src/domain';
 
 export interface FindPermissionByIdUsecaseParams {
   id: string;

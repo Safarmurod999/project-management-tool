@@ -1,5 +1,5 @@
-import { User } from "src/domain";
-import { UserStatus } from "src/infrastructure/common/enum";
+import { User } from 'src/domain';
+import { UserStatus } from 'src/infrastructure/common/enum';
 
 export interface CreateUserUsecaseParams {
   name: string;

@@ -1,5 +1,5 @@
-import { Document, Types } from "mongoose";
-import { TeamStatus } from "src/infrastructure/common/enum";
+import { Document, Types } from 'mongoose';
+import { TeamStatus } from 'src/infrastructure/common/enum';
 
 export interface TeamDocument extends Document {
   name: string;

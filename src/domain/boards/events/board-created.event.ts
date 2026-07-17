@@ -1,5 +1,1 @@
-
-export type BoardCreatedEventParams = {
-
-}
-
+export type BoardCreatedEventParams = {};

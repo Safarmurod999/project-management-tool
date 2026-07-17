@@ -22,11 +22,12 @@ export class RegisterUserUsecaseImpl implements RegisterUserUsecase {
   async execute(
     params: RegisterUserUsecaseParams,
   ): Promise<RegisterUserUsecaseResult> {
-
     const firstRole = await this.roleRepository.findFirst();
 
-    const hashedPassword = await this.passwordService.hashPassword(params.password);
-    
+    const hashedPassword = await this.passwordService.hashPassword(
+      params.password,
+    );
+
     const newUser = {
       name: params.name,
       email: params.email,

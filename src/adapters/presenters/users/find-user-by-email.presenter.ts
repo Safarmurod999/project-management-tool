@@ -24,6 +24,6 @@ export class FindUserByEmailPresenterImpl implements FindUserByEmailPresenter {
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
       status: user.status,
-    }
+    };
   }
 }
