@@ -1,7 +1,10 @@
 import { Inject } from '@nestjs/common';
 import { Permission, PermissionRepository } from 'src/domain';
 import { RepositorySymbols } from 'src/infrastructure/dependency-injection/repositories/symbol';
-import { CreatePermissionUsecase, CreatePermissionUsecaseParams } from './types';
+import {
+  CreatePermissionUsecase,
+  CreatePermissionUsecaseParams,
+} from './types';
 
 export class CreatePermissionUsecaseImpl implements CreatePermissionUsecase {
   constructor(

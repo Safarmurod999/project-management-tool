@@ -14,5 +14,7 @@ export interface GetProjectMembersUsecaseResult {
 }
 
 export interface GetProjectMembersUsecase {
-  execute(params: GetProjectMembersUsecaseParams): Promise<GetProjectMembersUsecaseResult>;
+  execute(
+    params: GetProjectMembersUsecaseParams,
+  ): Promise<GetProjectMembersUsecaseResult>;
 }

@@ -1,5 +1,8 @@
 import { Schema } from 'mongoose';
-import { PermissionCode, PermissionStatus } from 'src/infrastructure/common/enum';
+import {
+  PermissionCode,
+  PermissionStatus,
+} from 'src/infrastructure/common/enum';
 
 export const PermissionSchema = new Schema(
   {

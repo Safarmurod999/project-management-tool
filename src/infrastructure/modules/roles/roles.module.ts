@@ -1,23 +1,29 @@
 import {
   CreateRolePresenterImpl,
   FindRoleByIdPresenterImpl,
-  GetRolesPresenterImpl
+  GetRolesPresenterImpl,
 } from 'src/adapters/presenters';
 import { Global, Module, forwardRef } from '@nestjs/common';
 import {
   PresenterSymbols,
   UsecaseSymbols,
   RepositorySymbols,
-  FactorySymbols
+  FactorySymbols,
 } from 'src/infrastructure/dependency-injection';
 import { RoleFactoryImpl, RolePermissionRepositoryImpl } from 'src/domain';
-import { RoleRepositoryImpl } from "src/domain";
-import { CreateRoleUsecaseImpl, DeleteRoleUsecaseImpl, FindRoleByIdUsecaseImpl, GetRolesUsecaseImpl, UpdateRoleUsecaseImpl } from 'src/application';
+import { RoleRepositoryImpl } from 'src/domain';
+import {
+  CreateRoleUsecaseImpl,
+  DeleteRoleUsecaseImpl,
+  FindRoleByIdUsecaseImpl,
+  GetRolesUsecaseImpl,
+  UpdateRoleUsecaseImpl,
+} from 'src/application';
 import { RoleController } from 'src/adapters';
 import { UserModule } from '../users/user.module';
 
 @Global()
-@Module({  
+@Module({
   imports: [forwardRef(() => UserModule)],
   controllers: [RoleController],
   providers: [
@@ -43,7 +49,7 @@ import { UserModule } from '../users/user.module';
     },
     {
       provide: UsecaseSymbols.Role.GetRolesUsecase,
-      useClass: GetRolesUsecaseImpl
+      useClass: GetRolesUsecaseImpl,
     },
     {
       provide: PresenterSymbols.Role.GetRolesPresenter,
@@ -51,7 +57,7 @@ import { UserModule } from '../users/user.module';
     },
     {
       provide: UsecaseSymbols.Role.FindRoleByIdUsecase,
-      useClass: FindRoleByIdUsecaseImpl
+      useClass: FindRoleByIdUsecaseImpl,
     },
     {
       provide: PresenterSymbols.Role.FindRoleByIdPresenter,
@@ -68,7 +74,7 @@ import { UserModule } from '../users/user.module';
     {
       provide: UsecaseSymbols.Role.DeleteRoleUsecase,
       useClass: DeleteRoleUsecaseImpl,
-    }
+    },
   ],
   exports: [
     RepositorySymbols.RoleRepository,
@@ -79,6 +85,6 @@ import { UserModule } from '../users/user.module';
     PresenterSymbols.Role.GetRolesPresenter,
     UsecaseSymbols.Role.FindRoleByIdUsecase,
     PresenterSymbols.Role.FindRoleByIdPresenter,
-  ]
+  ],
 })
 export class RolesModule {}

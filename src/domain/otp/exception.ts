@@ -1,4 +1,3 @@
-
 export class OtpException extends Error {
   public readonly statusCode: number;
 
@@ -29,7 +28,10 @@ export class OtpException extends Error {
   }
 
   public static TooManyRequests(): OtpException {
-    return new OtpException(`Too many OTP requests. Please try again later`, 429);
+    return new OtpException(
+      `Too many OTP requests. Please try again later`,
+      429,
+    );
   }
 
   public static InvalidOtpFormat(): OtpException {

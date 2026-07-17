@@ -15,7 +15,7 @@ export class UpdateUserUsecaseImpl implements UpdateUserUsecase {
 
   async execute(params: UpdateUserUsecaseParams): Promise<User> {
     let password = params.password;
-    
+
     if (params.password) {
       password = await this.passwordService.hashPassword(params.password);
     }

@@ -1,7 +1,10 @@
 import { Inject } from '@nestjs/common';
 import { Membership, MembershipRepository } from 'src/domain';
 import { RepositorySymbols } from 'src/infrastructure/dependency-injection/repositories/symbol';
-import { CreateMembershipUsecase, CreateMembershipUsecaseParams } from './types';
+import {
+  CreateMembershipUsecase,
+  CreateMembershipUsecaseParams,
+} from './types';
 
 export class CreateMembershipUsecaseImpl implements CreateMembershipUsecase {
   constructor(
@@ -15,7 +18,7 @@ export class CreateMembershipUsecaseImpl implements CreateMembershipUsecase {
       scopeType: params.scopeType,
       scopeId: params.scopeId,
       roleId: params.roleId,
-      override: params.override ?? false
+      override: params.override ?? false,
     });
   }
 }

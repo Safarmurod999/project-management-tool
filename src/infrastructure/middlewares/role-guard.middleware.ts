@@ -46,7 +46,6 @@ export class RolesPermissionsGuard implements CanActivate {
       }
 
       payload = this.tokenService.parseToken<{ userId: string }>(token);
-      
     } catch {
       return false;
     }
@@ -57,13 +56,14 @@ export class RolesPermissionsGuard implements CanActivate {
 
       if (!user) {
         return false;
-      }      
+      }
 
       // Fetch permissions for user's role
-      const permissions = await this.rolePermissionRepository.getPermissionsByRoleId(
-        user.role.id,
-      );      
-            
+      const permissions =
+        await this.rolePermissionRepository.getPermissionsByRoleId(
+          user.role.id,
+        );
+
       request.user = {
         id: user.id,
         email: user.email,
@@ -77,7 +77,7 @@ export class RolesPermissionsGuard implements CanActivate {
       if (requiredRoles && !requiredRoles.includes(request.user.role.code)) {
         return false;
       }
-      
+
       if (
         requiredPermissions &&
         !request.user.permissions.some((p) => requiredPermissions.includes(p))

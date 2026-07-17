@@ -1,7 +1,10 @@
 import { Inject } from '@nestjs/common';
 import { PermissionRepository } from 'src/domain';
 import { RepositorySymbols } from 'src/infrastructure/dependency-injection/repositories/symbol';
-import { DeletePermissionUsecase, DeletePermissionUsecaseParams } from './types';
+import {
+  DeletePermissionUsecase,
+  DeletePermissionUsecaseParams,
+} from './types';
 
 export class DeletePermissionUsecaseImpl implements DeletePermissionUsecase {
   constructor(

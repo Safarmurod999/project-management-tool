@@ -1,5 +1,5 @@
-import { RoleCode, RoleStatus } from "src/infrastructure/common/enum";
-import { Role } from "./entity";
+import { RoleCode, RoleStatus } from 'src/infrastructure/common/enum';
+import { Role } from './entity';
 
 export interface RoleStruct {
   id: string;
@@ -24,7 +24,7 @@ export class RoleFactoryImpl implements RoleFactory {
       data.createdAt,
       data.updatedAt,
       data.description,
-      data.status
+      data.status,
     );
   }
 }

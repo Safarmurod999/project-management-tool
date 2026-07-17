@@ -45,7 +45,7 @@ export class TeamRepositoryImpl implements TeamRepository {
 
   async create(team: TeamCreateParams): Promise<Team> {
     const teamData = await this.teamModel.create({
-      ...team
+      ...team,
     });
 
     return TeamMapper.toDomain(teamData);

@@ -1,1 +1,1 @@
-export * from "./otp.presenter";
+export * from './otp.presenter';

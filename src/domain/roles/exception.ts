@@ -8,14 +8,20 @@ export class RoleException extends Error {
   }
 
   public static RoleNotFound(roleId?: string): RoleException {
-    return new RoleException(`Role${roleId ? ` with ID ${roleId}` : ''} not found.`, 404);
+    return new RoleException(
+      `Role${roleId ? ` with ID ${roleId}` : ''} not found.`,
+      404,
+    );
   }
 
   public static InvalidRoleData(reason: string): RoleException {
     return new RoleException(`Invalid role data: ${reason}`, 400);
   }
 
-  public static RoleAlreadyExists(name: string, scopeId: string): RoleException {
+  public static RoleAlreadyExists(
+    name: string,
+    scopeId: string,
+  ): RoleException {
     return new RoleException(
       `Role with name "${name}" already exists in scope ${scopeId}.`,
       409,

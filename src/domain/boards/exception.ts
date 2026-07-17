@@ -15,7 +15,10 @@ export class BoardException extends Error {
     return new BoardException(`Invalid board data: ${reason}`, 400);
   }
 
-  public static BoardAlreadyExists(name: string, projectId: string): BoardException {
+  public static BoardAlreadyExists(
+    name: string,
+    projectId: string,
+  ): BoardException {
     return new BoardException(
       `Board with name "${name}" already exists in project ${projectId}.`,
       409,

@@ -61,6 +61,7 @@ export const UsecaseSymbols = {
     GetBoardsUsecase: Symbol.for('GetBoardsUsecase'),
     FindBoardByIdUsecase: Symbol.for('FindBoardByIdUsecase'),
     UpdateBoardUsecase: Symbol.for('UpdateBoardUsecase'),
+    GetBoardDetailsUsecase: Symbol.for('GetBoardDetailsUsecase'),
     DeleteBoardUsecase: Symbol.for('DeleteBoardUsecase'),
   },
 };

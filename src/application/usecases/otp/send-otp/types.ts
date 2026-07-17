@@ -1,4 +1,4 @@
-import { Otp } from "src/domain";
+import { Otp } from 'src/domain';
 
 export interface SendOtpUsecaseParams {
   email: string;

@@ -2,15 +2,15 @@ import { Schema } from 'mongoose';
 
 export const RolePermissionSchema = new Schema(
   {
-    roleId: { 
-      type: Schema.Types.ObjectId, 
-      ref: 'Role', 
+    roleId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Role',
       required: true,
       index: true,
     },
-    permissionId: { 
-      type: Schema.Types.ObjectId, 
-      ref: 'Permission', 
+    permissionId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Permission',
       required: true,
       index: true,
     },

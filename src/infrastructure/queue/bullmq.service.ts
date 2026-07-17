@@ -26,11 +26,11 @@ export class BullMQService {
       connection: this.cache.client,
       defaultJobOptions: {
         removeOnComplete: 100, // Keep only last 100 completed jobs
-        removeOnFail: 50,      // Keep only last 50 failed jobs
-        attempts: 3,           // Retry failed jobs 3 times
+        removeOnFail: 50, // Keep only last 50 failed jobs
+        attempts: 3, // Retry failed jobs 3 times
         backoff: {
           type: 'exponential',
-          delay: 2000,         // Initial delay of 2 seconds
+          delay: 2000, // Initial delay of 2 seconds
         },
       },
     });
@@ -52,7 +52,7 @@ export class BullMQService {
   createWorker(
     queueName: string,
     processor: (job: Job) => Promise<void>,
-    options: { concurrency?: number } = {}
+    options: { concurrency?: number } = {},
   ): Worker {
     if (this.workers.has(queueName)) {
       throw new Error(`Worker for queue ${queueName} already exists`);
@@ -69,7 +69,10 @@ export class BullMQService {
     });
 
     worker.on('failed', (job, err) => {
-      console.error(`Job ${job?.id} in queue ${queueName} failed:`, err.message);
+      console.error(
+        `Job ${job?.id} in queue ${queueName} failed:`,
+        err.message,
+      );
     });
 
     this.workers.set(queueName, worker);
@@ -79,7 +82,12 @@ export class BullMQService {
   /**
    * Add a job to a queue
    */
-  async addJob(queueName: string, jobName: string, data: any, options: any = {}): Promise<Job> {
+  async addJob(
+    queueName: string,
+    jobName: string,
+    data: any,
+    options: any = {},
+  ): Promise<Job> {
     const queue = this.getQueue(queueName) || this.createQueue(queueName);
     return queue.add(jobName, data, options);
   }

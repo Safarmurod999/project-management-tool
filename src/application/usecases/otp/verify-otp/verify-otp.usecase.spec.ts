@@ -31,7 +31,7 @@ describe('VerifyOtpUsecaseImpl (pure unit test)', () => {
     }) as unknown as Otp;
 
   it('should throw ExpiredOtp if otp is expired', async () => {
-    otpRepository.get.mockResolvedValue(mockOtp({ isExpired:() => true }));
+    otpRepository.get.mockResolvedValue(mockOtp({ isExpired: () => true }));
 
     await expect(
       usecase.execute({ token: '123', otpCode: '1111' }),

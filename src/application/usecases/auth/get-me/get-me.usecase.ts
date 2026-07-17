@@ -1,5 +1,9 @@
 import { Inject } from '@nestjs/common';
-import { UserRepository, UserException, RolePermissionRepository } from 'src/domain';
+import {
+  UserRepository,
+  UserException,
+  RolePermissionRepository,
+} from 'src/domain';
 import { RepositorySymbols } from 'src/infrastructure/dependency-injection/repositories/symbol';
 import { GetMeUsecase, GetMeUsecaseParams, GetMeUsecaseResult } from './types';
 
@@ -19,9 +23,8 @@ export class GetMeUsecaseImpl implements GetMeUsecase {
     }
 
     // Fetch permissions for the user's role
-    const permissions = await this.rolePermissionRepository.getPermissionsByRoleId(
-      user.role.id,
-    );
+    const permissions =
+      await this.rolePermissionRepository.getPermissionsByRoleId(user.role.id);
 
     return {
       id: user.id,

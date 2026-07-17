@@ -18,7 +18,7 @@ import {
   CreateProjectPresenterImpl,
   FindProjectByIdPresenterImpl,
   GetProjectsPresenterImpl,
-  GetProjectMembersPresenterImpl
+  GetProjectMembersPresenterImpl,
 } from 'src/adapters';
 import {
   FactorySymbols,

@@ -1,5 +1,5 @@
-import { Role } from "src/domain";
-import { RoleDocument } from "../models";
+import { Role } from 'src/domain';
+import { RoleDocument } from '../models';
 
 export class RoleMapper {
   static toDomain(raw: RoleDocument): Role {

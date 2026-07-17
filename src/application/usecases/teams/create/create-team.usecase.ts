@@ -22,7 +22,7 @@ export class CreateTeamUsecaseImpl implements CreateTeamUsecase {
       roleId: params.roleId,
     };
 
-    const teamData = await this.teamRepository.create(team)
+    const teamData = await this.teamRepository.create(team);
 
     await this.membershipRepository.create({
       userId: String(teamData.ownerId),

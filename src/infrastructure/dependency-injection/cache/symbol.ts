@@ -1,3 +1,3 @@
 export const CacheSymbols = {
-    RedisCache: Symbol.for("RedisCache"),
-}
+  RedisCache: Symbol.for('RedisCache'),
+};

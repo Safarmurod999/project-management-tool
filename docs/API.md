@@ -1440,3 +1440,48 @@ Endpoints that return lists support pagination:
   "totalPages": 15
 }
 ```
+
+---
+
+## 📋 Boards Endpoints
+
+### 1. Get Board Details
+
+Fetch a board along with its parent project details.
+
+**Endpoint:** `GET /boards/:id/details`
+
+**Request:**
+No body required.
+
+**Response:** `200 OK`
+```json
+{
+  "status": 200,
+  "data": {
+    "board": {
+      "id": "60c72b2f9b1d8b001c8e4b5a",
+      "projectId": "60c72b2f9b1d8b001c8e4b5b",
+      "name": "Sprint 1 Board",
+      "description": "Tasks for sprint 1",
+      "status": "ACTIVE",
+      "version": 1,
+      "createdAt": "2026-07-17T10:00:00Z",
+      "updatedAt": "2026-07-17T10:00:00Z"
+    },
+    "project": {
+      "id": "60c72b2f9b1d8b001c8e4b5b",
+      "name": "New Website",
+      "description": "Corporate website redesign",
+      "teamId": "60c72b2f9b1d8b001c8e4b5c",
+      "status": "IN_PROGRESS",
+      "createdAt": "2026-07-17T10:00:00Z",
+      "updatedAt": "2026-07-17T10:00:00Z"
+    }
+  }
+}
+```
+
+**Security:**
+- Roles: `SUPER_ADMIN`, `ADMIN`
+- Permissions: `BOARD_GET`

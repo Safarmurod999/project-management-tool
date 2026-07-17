@@ -57,6 +57,7 @@ export const PresenterSymbols = {
     FindBoardByIdPresenter: Symbol('FindBoardByIdPresenter'),
     GetBoardsPresenter: Symbol('GetBoardsPresenter'),
     UpdateBoardPresenter: Symbol('UpdateBoardPresenter'),
+    GetBoardDetailsPresenter: Symbol('GetBoardDetailsPresenter'),
     DeleteBoardPresenter: Symbol('DeleteBoardPresenter'),
   },
 };

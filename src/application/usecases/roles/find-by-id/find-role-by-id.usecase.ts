@@ -9,7 +9,7 @@ export class FindRoleByIdUsecaseImpl implements FindRoleByIdUsecase {
     private roleRepository: RoleRepository,
   ) {}
 
-  async execute (params: FindRoleByIdUsecaseParams): Promise<Role> {
+  async execute(params: FindRoleByIdUsecaseParams): Promise<Role> {
     return await this.roleRepository.findById(params.id);
   }
 }

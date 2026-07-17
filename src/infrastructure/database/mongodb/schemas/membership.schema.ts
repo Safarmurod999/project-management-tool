@@ -28,9 +28,9 @@ export const MembershipSchema = new Schema(
     },
     override: {
       type: Schema.Types.Boolean,
-      required:false,
-      default :false
-    }
+      required: false,
+      default: false,
+    },
   },
   { timestamps: true },
 );

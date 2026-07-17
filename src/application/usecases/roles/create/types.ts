@@ -1,5 +1,5 @@
-import { Role } from "src/domain";
-import { RoleCode, RoleStatus } from "src/infrastructure/common/enum";
+import { Role } from 'src/domain';
+import { RoleCode, RoleStatus } from 'src/infrastructure/common/enum';
 
 export interface CreateRoleUsecaseParams {
   name: string;

@@ -1,4 +1,4 @@
-import { Permission } from "src/domain";
+import { Permission } from 'src/domain';
 
 export interface GetPermissionsUsecaseParams {
   name?: string;
@@ -14,5 +14,7 @@ export interface GetPermissionsUsecaseResult {
 }
 
 export interface GetPermissionsUsecase {
-  execute(params: GetPermissionsUsecaseParams): Promise<GetPermissionsUsecaseResult>;
+  execute(
+    params: GetPermissionsUsecaseParams,
+  ): Promise<GetPermissionsUsecaseResult>;
 }

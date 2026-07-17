@@ -29,7 +29,11 @@ import {
   GetUsersPresenter,
   UpdateUserPresenter,
 } from '../presenters';
-import { PermissionCode, RoleCode, UserStatus } from 'src/infrastructure/common/enum';
+import {
+  PermissionCode,
+  RoleCode,
+  UserStatus,
+} from 'src/infrastructure/common/enum';
 import { Response } from 'express';
 import { RolesPermissionsGuard } from 'src/infrastructure/middlewares';
 import { Permissions, Roles } from 'src/infrastructure/decorators';

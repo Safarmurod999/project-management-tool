@@ -4,7 +4,9 @@ export interface CreateMembershipPresenter {
   present(membership: Membership): MembershipStruct;
 }
 
-export class CreateMembershipPresenterImpl implements CreateMembershipPresenter {
+export class CreateMembershipPresenterImpl
+  implements CreateMembershipPresenter
+{
   present(membership: Membership): MembershipStruct {
     return {
       id: membership.id,

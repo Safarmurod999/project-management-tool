@@ -1,5 +1,8 @@
 import { Document } from 'mongoose';
-import { PermissionCode, PermissionStatus } from 'src/infrastructure/common/enum';
+import {
+  PermissionCode,
+  PermissionStatus,
+} from 'src/infrastructure/common/enum';
 
 export interface PermissionDocument extends Document {
   code: PermissionCode;

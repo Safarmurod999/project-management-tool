@@ -1,5 +1,5 @@
-import { Document } from "mongoose";
-import { RoleCode, RoleStatus } from "src/infrastructure/common/enum";
+import { Document } from 'mongoose';
+import { RoleCode, RoleStatus } from 'src/infrastructure/common/enum';
 
 export interface RoleDocument extends Document {
   name: string;

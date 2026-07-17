@@ -1,4 +1,4 @@
-import { User } from "src/domain";
+import { User } from 'src/domain';
 
 export interface GetUsersUsecaseParams {
   name?: string;

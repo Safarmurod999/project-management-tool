@@ -44,8 +44,12 @@ export interface MembershipGetPopulatedResponse {
 export interface MembershipRepository {
   create(data: MembershipCreateParams): Promise<Membership>;
   find(params: MembershipGetQuery): Promise<MembershipGetResponse>;
-  findAll(params: Omit<MembershipGetQuery, 'page' | 'limit'>): Promise<Membership[]>;
-  findAndPopulate(params: MembershipGetQuery): Promise<MembershipGetPopulatedResponse>;
+  findAll(
+    params: Omit<MembershipGetQuery, 'page' | 'limit'>,
+  ): Promise<Membership[]>;
+  findAndPopulate(
+    params: MembershipGetQuery,
+  ): Promise<MembershipGetPopulatedResponse>;
   findById(id: string): Promise<Membership>;
   update(data: MembershipUpdateParams & { id: string }): Promise<Membership>;
   delete(id: string): Promise<string>;
@@ -97,7 +101,9 @@ export class MembershipRepositoryImpl implements MembershipRepository {
     const filter = this.buildFilter(params);
     const membershipDataList = await this.membershipModel.find(filter).exec();
 
-    return membershipDataList.map((membership) => MembershipMapper.toDomain(membership));
+    return membershipDataList.map((membership) =>
+      MembershipMapper.toDomain(membership),
+    );
   }
 
   async findAndPopulate(
@@ -180,7 +186,10 @@ export class MembershipRepositoryImpl implements MembershipRepository {
   }
 
   private buildFilter(
-    params: Pick<MembershipGetQuery, 'userId' | 'scopeType' | 'scopeId' | 'roleId'>,
+    params: Pick<
+      MembershipGetQuery,
+      'userId' | 'scopeType' | 'scopeId' | 'roleId'
+    >,
   ): Record<string, unknown> {
     const filter: Record<string, unknown> = {};
     const { userId, scopeType, scopeId, roleId } = params;

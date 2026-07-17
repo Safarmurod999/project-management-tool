@@ -4,7 +4,9 @@ export interface CreatePermissionPresenter {
   present(permission: Permission): PermissionStruct;
 }
 
-export class CreatePermissionPresenterImpl implements CreatePermissionPresenter {
+export class CreatePermissionPresenterImpl
+  implements CreatePermissionPresenter
+{
   present(permission: Permission): PermissionStruct {
     return {
       id: permission.id,

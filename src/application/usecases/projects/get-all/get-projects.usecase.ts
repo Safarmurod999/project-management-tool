@@ -24,7 +24,9 @@ export class GetProjectsUsecaseImpl implements GetProjectsUsecase {
       this.findAllMemberships(params.userId, ScopeType.TEAM),
     ]);
 
-    const projectIds = projectMemberships.map((membership) => membership.scopeId);
+    const projectIds = projectMemberships.map(
+      (membership) => membership.scopeId,
+    );
     const teamIds = teamMemberships.map((membership) => membership.scopeId);
     const myProjectIds = new Set(
       projectMemberships
@@ -37,7 +39,10 @@ export class GetProjectsUsecaseImpl implements GetProjectsUsecase {
       this.projectRepository.findByTeamIds(teamIds, params.name),
     ]);
 
-    const deduplicatedProjects = new Map<string, (typeof projectsByTeam)[number]>();
+    const deduplicatedProjects = new Map<
+      string,
+      (typeof projectsByTeam)[number]
+    >();
     for (const project of [...projectsByMembership, ...projectsByTeam]) {
       deduplicatedProjects.set(project.id, project);
     }
@@ -45,7 +50,9 @@ export class GetProjectsUsecaseImpl implements GetProjectsUsecase {
     const allRelevantProjects = Array.from(deduplicatedProjects.values());
 
     return {
-      myProjects: allRelevantProjects.filter((project) => myProjectIds.has(project.id)),
+      myProjects: allRelevantProjects.filter((project) =>
+        myProjectIds.has(project.id),
+      ),
       participatedProjects: allRelevantProjects.filter(
         (project) => !myProjectIds.has(project.id),
       ),

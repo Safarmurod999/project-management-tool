@@ -4,9 +4,9 @@ export interface LoginUserUsecaseParams {
 }
 
 export interface LoginUserUsecaseResult {
-    access_token: string;
-    refresh_token: string;
-};
+  access_token: string;
+  refresh_token: string;
+}
 
 export interface LoginUserUsecase {
   execute(params: LoginUserUsecaseParams): Promise<LoginUserUsecaseResult>;

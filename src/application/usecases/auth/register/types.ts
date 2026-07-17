@@ -1,5 +1,5 @@
-import { User } from "src/domain";
-import { RoleCode } from "src/infrastructure/common/enum";
+import { User } from 'src/domain';
+import { RoleCode } from 'src/infrastructure/common/enum';
 
 export interface RegisterUserUsecaseParams {
   name: string;
@@ -10,5 +10,7 @@ export interface RegisterUserUsecaseParams {
 export type RegisterUserUsecaseResult = User;
 
 export interface RegisterUserUsecase {
-  execute(params: RegisterUserUsecaseParams): Promise<RegisterUserUsecaseResult>;
+  execute(
+    params: RegisterUserUsecaseParams,
+  ): Promise<RegisterUserUsecaseResult>;
 }

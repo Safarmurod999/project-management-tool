@@ -1,27 +1,27 @@
-import winston from "winston";
+import winston from 'winston';
 import { Global, Module } from '@nestjs/common';
-import { createLogger, LoggerAdapter } from "../../logger";
-import { CommonSymbols } from "src/infrastructure/dependency-injection/common/symbol";
-import { BcryptPasswordService } from "../../helpers/bcrypt-password-service/bcrypt-password-service";
-import { ServiceSymbols } from "../../dependency-injection/services/symbol";
+import { createLogger, LoggerAdapter } from '../../logger';
+import { CommonSymbols } from 'src/infrastructure/dependency-injection/common/symbol';
+import { BcryptPasswordService } from '../../helpers/bcrypt-password-service/bcrypt-password-service';
+import { ServiceSymbols } from '../../dependency-injection/services/symbol';
 
 @Global()
 @Module({
-    providers: [
-        {
-            provide: CommonSymbols.LoggerAdapter,
-            useFactory: () => createLogger(),
-        },
-        {
-            provide: CommonSymbols.Logger,
-            useFactory: (logger: winston.Logger) => new LoggerAdapter(logger),
-            inject: [CommonSymbols.LoggerAdapter],
-        },
-        {
-            provide: ServiceSymbols.PasswordService,
-            useClass: BcryptPasswordService,
-        },
-    ],
-    exports: [CommonSymbols.Logger, ServiceSymbols.PasswordService],
+  providers: [
+    {
+      provide: CommonSymbols.LoggerAdapter,
+      useFactory: () => createLogger(),
+    },
+    {
+      provide: CommonSymbols.Logger,
+      useFactory: (logger: winston.Logger) => new LoggerAdapter(logger),
+      inject: [CommonSymbols.LoggerAdapter],
+    },
+    {
+      provide: ServiceSymbols.PasswordService,
+      useClass: BcryptPasswordService,
+    },
+  ],
+  exports: [CommonSymbols.Logger, ServiceSymbols.PasswordService],
 })
 export class CommonModule {}

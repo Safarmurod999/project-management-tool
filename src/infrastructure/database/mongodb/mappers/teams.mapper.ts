@@ -1,5 +1,5 @@
-import { Team } from "src/domain";
-import { TeamDocument } from "../models";
+import { Team } from 'src/domain';
+import { TeamDocument } from '../models';
 
 export class TeamMapper {
   static toDomain(raw: TeamDocument): Team {
@@ -10,7 +10,7 @@ export class TeamMapper {
       raw.ownerId.toString(),
       raw.createdAt,
       raw.updatedAt,
-      raw.status
+      raw.status,
     );
   }
 

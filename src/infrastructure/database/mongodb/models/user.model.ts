@@ -1,6 +1,6 @@
-import { Document, Types } from "mongoose";
-import { RoleDocument } from "./role.model";
-import { UserStatus } from "src/infrastructure/common/enum";
+import { Document, Types } from 'mongoose';
+import { RoleDocument } from './role.model';
+import { UserStatus } from 'src/infrastructure/common/enum';
 
 export interface UserDocument extends Document {
   name: string;

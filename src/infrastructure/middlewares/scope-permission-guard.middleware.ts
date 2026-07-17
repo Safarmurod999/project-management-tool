@@ -8,10 +8,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { TokenService } from '../helpers/token-service';
 import { ServiceSymbols, RepositorySymbols } from '../dependency-injection';
-import {
-  MembershipRepository,
-  RolePermissionRepository,
-} from 'src/domain';
+import { MembershipRepository, RolePermissionRepository } from 'src/domain';
 import { SCOPE_PERMISSION_KEY, ScopePermissionMetadata } from '../decorators';
 
 @Injectable()
@@ -41,10 +38,10 @@ export class ScopePermissionGuard implements CanActivate {
     const authHeader = request.headers.authorization;
     if (!authHeader) return false;
 
-    const token = authHeader.split(' ')[1];    
+    const token = authHeader.split(' ')[1];
 
     let payload;
-    
+
     try {
       if (!this.tokenService.isValidToken(token, process.env.ACCESS_SECRET!)) {
         throw new UnauthorizedException();
@@ -56,8 +53,11 @@ export class ScopePermissionGuard implements CanActivate {
     }
 
     try {
-      const { scopeType, scopeIdParam, permissions: requiredPermissions } =
-        scopePermissionMetadata;
+      const {
+        scopeType,
+        scopeIdParam,
+        permissions: requiredPermissions,
+      } = scopePermissionMetadata;
 
       // Get the scope ID from route parameters
       const scopeId = request.params[scopeIdParam];
@@ -79,7 +79,7 @@ export class ScopePermissionGuard implements CanActivate {
         return false;
       }
 
-      const membership = membershipResult.data[0]
+      const membership = membershipResult.data[0];
 
       // Get permissions for the user's role in this scope
       const permissions =

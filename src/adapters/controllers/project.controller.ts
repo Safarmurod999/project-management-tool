@@ -43,7 +43,7 @@ import {
   CreateProjectPresenter,
   FindProjectByIdPresenter,
   GetProjectsPresenter,
-  GetProjectMembersPresenter
+  GetProjectMembersPresenter,
 } from '../presenters';
 
 export class CreateProjectDto {

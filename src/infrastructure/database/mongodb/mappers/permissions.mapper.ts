@@ -1,5 +1,5 @@
-import { Permission } from "src/domain";
-import { PermissionDocument } from "../models";
+import { Permission } from 'src/domain';
+import { PermissionDocument } from '../models';
 
 export class PermissionMapper {
   static toDomain(raw: PermissionDocument): Permission {
