@@ -1,6 +1,6 @@
 {
   "repository_name": ".codeboarding-target",
-  "timestamp": "2026-08-20T10:14:55.829092+00:00",
+  "timestamp": "2026-08-20T10:18:46.926525+00:00",
   "overall_score": 0.9863436123348018,
   "check_summaries": [
     {
@@ -269,13 +269,13 @@
       "description": "Detects circular dependencies between packages",
       "check_type": "circular_dependencies",
       "cycles": [
+        "src.domain.role-permissions -> src.infrastructure.database.mongodb.mappers -> src.domain.roles -> src.domain.role-permissions",
+        "src.domain.role-permissions -> src.infrastructure.database.mongodb.mappers -> src.domain.users -> src.domain.roles -> src.domain.role-permissions",
         "src.infrastructure.database.mongodb.mappers -> src.domain.boards -> src.infrastructure.database.mongodb.mappers",
         "src.infrastructure.database.mongodb.mappers -> src.domain.memberships -> src.infrastructure.database.mongodb.mappers",
         "src.infrastructure.database.mongodb.mappers -> src.domain.projects -> src.infrastructure.database.mongodb.mappers",
-        "src.infrastructure.database.mongodb.mappers -> src.domain.roles -> src.domain.role-permissions -> src.infrastructure.database.mongodb.mappers",
         "src.infrastructure.database.mongodb.mappers -> src.domain.roles -> src.infrastructure.database.mongodb.mappers",
         "src.infrastructure.database.mongodb.mappers -> src.domain.teams -> src.infrastructure.database.mongodb.mappers",
-        "src.infrastructure.database.mongodb.mappers -> src.domain.users -> src.domain.roles -> src.domain.role-permissions -> src.infrastructure.database.mongodb.mappers",
         "src.infrastructure.database.mongodb.mappers -> src.domain.users -> src.domain.roles -> src.infrastructure.database.mongodb.mappers",
         "src.infrastructure.database.mongodb.mappers -> src.domain.users -> src.infrastructure.database.mongodb.mappers"
       ],
