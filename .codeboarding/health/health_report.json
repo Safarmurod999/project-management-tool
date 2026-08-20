@@ -1,0 +1,531 @@
+{
+  "repository_name": ".codeboarding-target",
+  "timestamp": "2026-08-20T10:14:55.829092+00:00",
+  "overall_score": 0.9863436123348018,
+  "check_summaries": [
+    {
+      "check_name": "function_size",
+      "description": "Checks that functions/methods do not exceed line count thresholds",
+      "check_type": "standard",
+      "total_entities_checked": 570,
+      "findings_count": 0,
+      "warning_count": 0,
+      "score": 1.0,
+      "finding_groups": []
+    },
+    {
+      "check_name": "fan_out",
+      "description": "Checks efferent coupling: how many other functions each function calls",
+      "check_type": "standard",
+      "total_entities_checked": 761,
+      "findings_count": 15,
+      "warning_count": 15,
+      "score": 0.9802890932982917,
+      "finding_groups": [
+        {
+          "severity": "warning",
+          "threshold": 10,
+          "description": "Functions calling more than 10.0 other functions",
+          "entities": [
+            {
+              "entity_name": "src.application.usecases.auth.login.login-user.usecase.LoginUserUsecaseImpl.execute",
+              "file_path": "src/application/usecases/auth/login/login-user.usecase.ts",
+              "line_start": 28,
+              "line_end": 63,
+              "metric_value": 22
+            },
+            {
+              "entity_name": "src.application.usecases.auth.verify-user.verify-user.usecase.VerifyUserUsecaseImpl.execute",
+              "file_path": "src/application/usecases/auth/verify-user/verify-user.usecase.ts",
+              "line_start": 32,
+              "line_end": 66,
+              "metric_value": 20
+            },
+            {
+              "entity_name": "src.adapters.presenters.users.create-user.presenter.CreateUserPresenterImpl.present",
+              "file_path": "src/adapters/presenters/users/create-user.presenter.ts",
+              "line_start": 8,
+              "line_end": 28,
+              "metric_value": 16
+            },
+            {
+              "entity_name": "src.adapters.presenters.users.find-user-by-email.presenter.FindUserByEmailPresenterImpl.present",
+              "file_path": "src/adapters/presenters/users/find-user-by-email.presenter.ts",
+              "line_start": 8,
+              "line_end": 28,
+              "metric_value": 16
+            },
+            {
+              "entity_name": "src.adapters.presenters.users.find-user-by-id.presenter.FindUserByIdPresenterImpl.present",
+              "file_path": "src/adapters/presenters/users/find-user-by-id.presenter.ts",
+              "line_start": 8,
+              "line_end": 28,
+              "metric_value": 16
+            },
+            {
+              "entity_name": "src.adapters.presenters.users.get-users.presenter.GetUsersPresenterImpl.present.users.map() callback",
+              "file_path": "src/adapters/presenters/users/get-users.presenter.ts",
+              "line_start": 9,
+              "line_end": 27,
+              "metric_value": 16
+            },
+            {
+              "entity_name": "src.adapters.presenters.users.update-user.presenter.UpdateUserPresenterImpl.present",
+              "file_path": "src/adapters/presenters/users/update-user.presenter.ts",
+              "line_start": 8,
+              "line_end": 28,
+              "metric_value": 16
+            },
+            {
+              "entity_name": "src.application.usecases.auth.refresh-token.refresh-token.usecase.RefreshTokenUsecaseImpl.execute",
+              "file_path": "src/application/usecases/auth/refresh-token/refresh-token.usecase.ts",
+              "line_start": 22,
+              "line_end": 50,
+              "metric_value": 16
+            },
+            {
+              "entity_name": "src.adapters.presenters.boards.get-board-details.presenter.GetBoardDetailsPresenterImpl.present",
+              "file_path": "src/adapters/presenters/boards/get-board-details.presenter.ts",
+              "line_start": 11,
+              "line_end": 36,
+              "metric_value": 15
+            },
+            {
+              "entity_name": "src.application.usecases.otp.verify-otp.verify-otp.usecase.VerifyOtpUsecaseImpl.execute",
+              "file_path": "src/application/usecases/otp/verify-otp/verify-otp.usecase.ts",
+              "line_start": 17,
+              "line_end": 39,
+              "metric_value": 14
+            },
+            {
+              "entity_name": "src.adapters.presenters.auth.register-user.presenter.RegisterUserPresenterImpl.present",
+              "file_path": "src/adapters/presenters/auth/register-user.presenter.ts",
+              "line_start": 13,
+              "line_end": 30,
+              "metric_value": 13
+            },
+            {
+              "entity_name": "src.infrastructure.middlewares.role-guard.middleware.RolesPermissionsGuard.canActivate",
+              "file_path": "src/infrastructure/middlewares/role-guard.middleware.ts",
+              "line_start": 25,
+              "line_end": 91,
+              "metric_value": 13
+            },
+            {
+              "entity_name": "src.application.usecases.auth.get-me.get-me.usecase.GetMeUsecaseImpl.execute",
+              "file_path": "src/application/usecases/auth/get-me/get-me.usecase.ts",
+              "line_start": 18,
+              "line_end": 44,
+              "metric_value": 12
+            },
+            {
+              "entity_name": "src.infrastructure.database.mongodb.mongo.MongoDb.getConnectionString",
+              "file_path": "src/infrastructure/database/mongodb/mongo.ts",
+              "line_start": 37,
+              "line_end": 47,
+              "metric_value": 12
+            },
+            {
+              "entity_name": "src.application.usecases.boards.update.update-board.usecase.UpdateBoardUsecaseImpl.execute",
+              "file_path": "src/application/usecases/boards/update/update-board.usecase.ts",
+              "line_start": 13,
+              "line_end": 43,
+              "metric_value": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "check_name": "fan_in",
+      "description": "Checks afferent coupling: how many other functions call each function",
+      "check_type": "standard",
+      "total_entities_checked": 761,
+      "findings_count": 10,
+      "warning_count": 10,
+      "score": 0.9868593955321945,
+      "finding_groups": [
+        {
+          "severity": "warning",
+          "threshold": 10,
+          "description": "Functions called by more than 10.0 other functions",
+          "entities": [
+            {
+              "entity_name": "src.domain.roles.entity.Role.id",
+              "file_path": "src/domain/roles/entity.ts",
+              "line_start": 14,
+              "line_end": 16,
+              "metric_value": 16
+            },
+            {
+              "entity_name": "src.domain.roles.entity.Role.code",
+              "file_path": "src/domain/roles/entity.ts",
+              "line_start": 22,
+              "line_end": 24,
+              "metric_value": 12
+            },
+            {
+              "entity_name": "src.domain.users.entity.User.email",
+              "file_path": "src/domain/users/entity.ts",
+              "line_start": 25,
+              "line_end": 27,
+              "metric_value": 12
+            },
+            {
+              "entity_name": "src.domain.users.entity.User.role",
+              "file_path": "src/domain/users/entity.ts",
+              "line_start": 33,
+              "line_end": 35,
+              "metric_value": 12
+            },
+            {
+              "entity_name": "src.domain.roles.entity.Role.name",
+              "file_path": "src/domain/roles/entity.ts",
+              "line_start": 18,
+              "line_end": 20,
+              "metric_value": 11
+            },
+            {
+              "entity_name": "src.common.exceptions.global-exception.GlobalException.DatabaseError",
+              "file_path": "src/common/exceptions/global-exception.ts",
+              "line_start": 44,
+              "line_end": 48,
+              "metric_value": 10
+            },
+            {
+              "entity_name": "src.domain.roles.entity.Role.description",
+              "file_path": "src/domain/roles/entity.ts",
+              "line_start": 26,
+              "line_end": 28,
+              "metric_value": 10
+            },
+            {
+              "entity_name": "src.domain.roles.entity.Role.status",
+              "file_path": "src/domain/roles/entity.ts",
+              "line_start": 38,
+              "line_end": 40,
+              "metric_value": 10
+            },
+            {
+              "entity_name": "src.domain.users.entity.User.id",
+              "file_path": "src/domain/users/entity.ts",
+              "line_start": 17,
+              "line_end": 19,
+              "metric_value": 10
+            },
+            {
+              "entity_name": "src.domain.users.exception.UserException.constructor",
+              "file_path": "src/domain/users/exception.ts",
+              "line_start": 4,
+              "line_end": 8,
+              "metric_value": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "check_name": "god_class",
+      "description": "Detects classes with too many methods, too much code, or too many outgoing dependencies",
+      "check_type": "standard",
+      "total_entities_checked": 130,
+      "findings_count": 3,
+      "warning_count": 3,
+      "score": 0.9769230769230769,
+      "finding_groups": [
+        {
+          "severity": "warning",
+          "threshold": 25,
+          "description": "Classes exceeding god class criteria (methods, LOC, or fan-out)",
+          "entities": [
+            {
+              "entity_name": "src.adapters.controllers.team.controller.TeamController",
+              "metric_value": 35.0
+            },
+            {
+              "entity_name": "src.adapters.controllers.board.controller.BoardController",
+              "metric_value": 34.0
+            },
+            {
+              "entity_name": "src.adapters.controllers.user.controller.UserController",
+              "metric_value": 34.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "check_name": "inheritance_depth",
+      "description": "Checks that class inheritance hierarchies do not exceed depth thresholds",
+      "check_type": "standard",
+      "total_entities_checked": 410,
+      "findings_count": 0,
+      "warning_count": 0,
+      "score": 1.0,
+      "finding_groups": []
+    },
+    {
+      "check_name": "circular_dependencies",
+      "description": "Detects circular dependencies between packages",
+      "check_type": "circular_dependencies",
+      "cycles": [
+        "src.infrastructure.database.mongodb.mappers -> src.domain.boards -> src.infrastructure.database.mongodb.mappers",
+        "src.infrastructure.database.mongodb.mappers -> src.domain.memberships -> src.infrastructure.database.mongodb.mappers",
+        "src.infrastructure.database.mongodb.mappers -> src.domain.projects -> src.infrastructure.database.mongodb.mappers",
+        "src.infrastructure.database.mongodb.mappers -> src.domain.roles -> src.domain.role-permissions -> src.infrastructure.database.mongodb.mappers",
+        "src.infrastructure.database.mongodb.mappers -> src.domain.roles -> src.infrastructure.database.mongodb.mappers",
+        "src.infrastructure.database.mongodb.mappers -> src.domain.teams -> src.infrastructure.database.mongodb.mappers",
+        "src.infrastructure.database.mongodb.mappers -> src.domain.users -> src.domain.roles -> src.domain.role-permissions -> src.infrastructure.database.mongodb.mappers",
+        "src.infrastructure.database.mongodb.mappers -> src.domain.users -> src.domain.roles -> src.infrastructure.database.mongodb.mappers",
+        "src.infrastructure.database.mongodb.mappers -> src.domain.users -> src.infrastructure.database.mongodb.mappers"
+      ],
+      "packages_checked": 128,
+      "packages_in_cycles": 8
+    },
+    {
+      "check_name": "package_instability",
+      "description": "Computes Martin's instability metric (I = Ce / (Ca + Ce)) per package",
+      "check_type": "standard",
+      "total_entities_checked": 84,
+      "findings_count": 6,
+      "warning_count": 6,
+      "score": 0.9285714285714286,
+      "finding_groups": [
+        {
+          "severity": "warning",
+          "threshold": 0.8,
+          "description": "Packages with instability >= 0.8 that are depended on by others",
+          "entities": [
+            {
+              "entity_name": "src.application.usecases.auth.verify-user",
+              "metric_value": 0.875
+            },
+            {
+              "entity_name": "src.application.usecases.auth.login",
+              "metric_value": 0.857
+            },
+            {
+              "entity_name": "src.application.usecases.auth.refresh-token",
+              "metric_value": 0.857
+            },
+            {
+              "entity_name": "src.application.usecases.auth.get-me",
+              "metric_value": 0.8
+            },
+            {
+              "entity_name": "src.application.usecases.auth.register",
+              "metric_value": 0.8
+            },
+            {
+              "entity_name": "src.application.usecases.boards.create",
+              "metric_value": 0.8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "check_name": "unused_code_diagnostics",
+      "description": "Detects unused imports, variables, functions, and dead code via LSP diagnostics",
+      "check_type": "standard",
+      "total_entities_checked": 8,
+      "findings_count": 8,
+      "warning_count": 0,
+      "score": 0.6,
+      "finding_groups": [
+        {
+          "severity": "info",
+          "threshold": 0,
+          "description": "Variables declared but never used",
+          "entities": [
+            {
+              "entity_name": "[unused_variable] 'req' is declared but its value is never read.",
+              "file_path": "src/adapters/controllers/auth.controller.ts",
+              "line_start": 165,
+              "line_end": 165,
+              "metric_value": 0.0
+            },
+            {
+              "entity_name": "[unused_variable] 'RoleCode' is declared but its value is never read.",
+              "file_path": "src/application/usecases/auth/register/types.ts",
+              "line_start": 2,
+              "line_end": 2,
+              "metric_value": 0.0
+            },
+            {
+              "entity_name": "[unused_variable] 'User' is declared but its value is never read.",
+              "file_path": "src/domain/teams/entity.ts",
+              "line_start": 2,
+              "line_end": 2,
+              "metric_value": 0.0
+            },
+            {
+              "entity_name": "[unused_variable] 'RoleDocument' is declared but its value is never read.",
+              "file_path": "src/infrastructure/database/mongodb/models/user.model.ts",
+              "line_start": 2,
+              "line_end": 2,
+              "metric_value": 0.0
+            },
+            {
+              "entity_name": "[unused_variable] 'ConfigSymbols' is declared but its value is never read.",
+              "file_path": "src/infrastructure/queue/bullmq.service.ts",
+              "line_start": 5,
+              "line_end": 5,
+              "metric_value": 0.0
+            }
+          ]
+        },
+        {
+          "severity": "info",
+          "threshold": 0,
+          "description": "Function parameters that are not used",
+          "entities": [
+            {
+              "entity_name": "[unused_parameter] Property 'getProjectMembersUsecase' is declared but its value is never read.",
+              "file_path": "src/adapters/controllers/project.controller.ts",
+              "line_start": 77,
+              "line_end": 77,
+              "metric_value": 0.0
+            },
+            {
+              "entity_name": "[unused_parameter] Property 'getProjectMembersPresenter' is declared but its value is never read.",
+              "file_path": "src/adapters/controllers/project.controller.ts",
+              "line_start": 79,
+              "line_end": 79,
+              "metric_value": 0.0
+            },
+            {
+              "entity_name": "[unused_parameter] Property 'emailClient' is declared but its value is never read.",
+              "file_path": "src/application/usecases/otp/send-otp/send-otp.usecase.ts",
+              "line_start": 23,
+              "line_end": 23,
+              "metric_value": 0.0
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "file_summaries": [
+    {
+      "file_path": "src/domain/roles/entity.ts",
+      "total_findings": 5,
+      "warning_findings": 5,
+      "composite_risk_score": 75.0
+    },
+    {
+      "file_path": "src/domain/users/entity.ts",
+      "total_findings": 3,
+      "warning_findings": 3,
+      "composite_risk_score": 45.0
+    },
+    {
+      "file_path": "src/adapters/controllers/project.controller.ts",
+      "total_findings": 2,
+      "warning_findings": 0,
+      "composite_risk_score": 20.0
+    },
+    {
+      "file_path": "src/application/usecases/auth/login/login-user.usecase.ts",
+      "total_findings": 1,
+      "warning_findings": 1,
+      "composite_risk_score": 15.0
+    },
+    {
+      "file_path": "src/application/usecases/auth/verify-user/verify-user.usecase.ts",
+      "total_findings": 1,
+      "warning_findings": 1,
+      "composite_risk_score": 15.0
+    },
+    {
+      "file_path": "src/adapters/presenters/users/create-user.presenter.ts",
+      "total_findings": 1,
+      "warning_findings": 1,
+      "composite_risk_score": 15.0
+    },
+    {
+      "file_path": "src/adapters/presenters/users/find-user-by-email.presenter.ts",
+      "total_findings": 1,
+      "warning_findings": 1,
+      "composite_risk_score": 15.0
+    },
+    {
+      "file_path": "src/adapters/presenters/users/find-user-by-id.presenter.ts",
+      "total_findings": 1,
+      "warning_findings": 1,
+      "composite_risk_score": 15.0
+    },
+    {
+      "file_path": "src/adapters/presenters/users/get-users.presenter.ts",
+      "total_findings": 1,
+      "warning_findings": 1,
+      "composite_risk_score": 15.0
+    },
+    {
+      "file_path": "src/adapters/presenters/users/update-user.presenter.ts",
+      "total_findings": 1,
+      "warning_findings": 1,
+      "composite_risk_score": 15.0
+    },
+    {
+      "file_path": "src/application/usecases/auth/refresh-token/refresh-token.usecase.ts",
+      "total_findings": 1,
+      "warning_findings": 1,
+      "composite_risk_score": 15.0
+    },
+    {
+      "file_path": "src/adapters/presenters/boards/get-board-details.presenter.ts",
+      "total_findings": 1,
+      "warning_findings": 1,
+      "composite_risk_score": 15.0
+    },
+    {
+      "file_path": "src/application/usecases/otp/verify-otp/verify-otp.usecase.ts",
+      "total_findings": 1,
+      "warning_findings": 1,
+      "composite_risk_score": 15.0
+    },
+    {
+      "file_path": "src/adapters/presenters/auth/register-user.presenter.ts",
+      "total_findings": 1,
+      "warning_findings": 1,
+      "composite_risk_score": 15.0
+    },
+    {
+      "file_path": "src/infrastructure/middlewares/role-guard.middleware.ts",
+      "total_findings": 1,
+      "warning_findings": 1,
+      "composite_risk_score": 15.0
+    },
+    {
+      "file_path": "src/application/usecases/auth/get-me/get-me.usecase.ts",
+      "total_findings": 1,
+      "warning_findings": 1,
+      "composite_risk_score": 15.0
+    },
+    {
+      "file_path": "src/infrastructure/database/mongodb/mongo.ts",
+      "total_findings": 1,
+      "warning_findings": 1,
+      "composite_risk_score": 15.0
+    },
+    {
+      "file_path": "src/application/usecases/boards/update/update-board.usecase.ts",
+      "total_findings": 1,
+      "warning_findings": 1,
+      "composite_risk_score": 15.0
+    },
+    {
+      "file_path": "src/common/exceptions/global-exception.ts",
+      "total_findings": 1,
+      "warning_findings": 1,
+      "composite_risk_score": 15.0
+    },
+    {
+      "file_path": "src/domain/users/exception.ts",
+      "total_findings": 1,
+      "warning_findings": 1,
+      "composite_risk_score": 15.0
+    }
+  ]
+}
