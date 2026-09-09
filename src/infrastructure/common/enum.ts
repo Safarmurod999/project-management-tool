@@ -29,6 +29,12 @@ export enum PermissionCode {
   COLUMN_EDIT = 'column:edit',
   COLUMN_DELETE = 'column:delete',
 
+  // CARD
+  CARD_CREATE = 'card:create',
+  CARD_GET = 'card:get',
+  CARD_EDIT = 'card:edit',
+  CARD_DELETE = 'card:delete',
+
   // TEAM
   TEAM_CREATE = 'team:create',
   TEAM_GET = 'team:get',
@@ -96,6 +102,13 @@ export enum ProjectStatus {
 
 export enum BoardStatus {
   ACTIVE = 'active',
+  ARCHIVED = 'archived',
+}
+
+export enum CardStatus {
+  TODO = 'todo',
+  IN_PROGRESS = 'in_progress',
+  DONE = 'done',
   ARCHIVED = 'archived',
 }
 

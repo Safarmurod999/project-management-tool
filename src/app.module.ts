@@ -13,6 +13,7 @@ import {
   MembershipsModule,
   BoardsModule,
   ColumnsModule,
+  CardsModule,
   QueueModule,
 } from './infrastructure/modules';
 
@@ -32,6 +33,7 @@ import {
     MembershipsModule,
     BoardsModule,
     ColumnsModule,
+    CardsModule,
   ],
 })
 export class AppModule {}

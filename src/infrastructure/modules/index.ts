@@ -11,4 +11,5 @@ export * from './teams/teams.module';
 export * from './projects/projects.module';
 export * from './boards/boards.module';
 export * from './columns/columns.module';
+export * from './cards/cards.module';
 export * from './queue/queue.module';

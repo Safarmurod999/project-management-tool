@@ -13,6 +13,10 @@
 | **Project** | A high-level container for work, belonging to a Team. Owns one or multiple Boards. |
 | **Board** | A specific workspace within a Project (e.g., a Kanban board or Sprint board). |
 | **Column** | A workflow stage inside a Board (e.g., To Do, In Progress, Done) used to group related work items. |
+| **Card** | A single actionable task or work item contained within a Column on a Board. It can include an assignee, assigner, and story-point estimate. |
+| **Assignee** | The user currently responsible for completing a task or card. |
+| **Assigner** | The user who assigned or delegated a task to another team member. |
+| **Story Points** | A relative estimate of the effort or complexity required to complete a task. |
 | **OTP** | One-Time Password. A temporary, 6-digit code sent via email to verify user ownership during registration. |
 | **Symbol-based DI** | The practice of using `Symbol.for('Token')` to wire up interfaces to their concrete implementations inside NestJS modules, preventing hard-coupling. |
 | **Mapper** | A utility class in the Infrastructure layer that converts Mongoose Documents into pure Domain Entities, and vice versa. |

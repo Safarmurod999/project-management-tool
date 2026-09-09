@@ -9,6 +9,7 @@ import {
   UserDocument,
   BoardDocument,
   ColumnDocument,
+  CardDocument,
 } from './mongodb/models';
 
 export interface Database {
@@ -25,4 +26,5 @@ export interface Database {
   membershipModel(): Model<MembershipDocument>;
   boardModel(): Model<BoardDocument>;
   columnModel(): Model<ColumnDocument>;
+  cardModel(): Model<CardDocument>;
 }

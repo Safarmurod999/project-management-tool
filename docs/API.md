@@ -1581,6 +1581,221 @@ Authorization: ******
 
 ---
 
+## 🃏 Cards Endpoints
+
+### 1. Create Card
+
+Create a new card inside a column.
+
+**Endpoint:** `POST /cards`
+
+**Headers:**
+```
+Authorization: ******
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`  
+**Required Permissions:** `CARD_CREATE`
+
+**Request:**
+```json
+{
+  "columnId": "60c72b2f9b1d8b001c8e4b5d",
+  "title": "Build dashboard widgets",
+  "description": "Create KPI panels for the analytics page",
+  "order": 0,
+  "status": "todo",
+  "assigneeId": "507f1f77bcf86cd799439011",
+  "assignerId": "507f1f77bcf86cd799439012",
+  "points": 5
+}
+```
+
+**Response:** `201 Created`
+```json
+{
+  "status": 201,
+  "data": {
+    "id": "60c72b2f9b1d8b001c8e4b60",
+    "columnId": "60c72b2f9b1d8b001c8e4b5d",
+    "title": "Build dashboard widgets",
+    "description": "Create KPI panels for the analytics page",
+    "order": 0,
+    "status": "todo",
+    "assigneeId": "507f1f77bcf86cd799439011",
+    "assignerId": "507f1f77bcf86cd799439012",
+    "points": 5,
+    "version": 1,
+    "createdAt": "2026-07-17T10:00:00Z",
+    "updatedAt": null
+  }
+}
+```
+
+---
+
+### 2. Get All Cards
+
+Retrieve cards for a specific column with pagination and filtering.
+
+**Endpoint:** `GET /cards`
+
+**Headers:**
+```
+Authorization: ******
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`, `USER`  
+**Required Permissions:** `CARD_GET`
+
+**Query Parameters:**
+- `columnId` (required): Parent column ID
+- `page` (optional): Page number (default: 1)
+- `limit` (optional): Items per page (default: 10)
+- `title` (optional): Filter by card title
+
+**Example:** `GET /cards?columnId=60c72b2f9b1d8b001c8e4b5d&page=1&limit=10`
+
+**Response:** `200 OK`
+```json
+{
+  "status": 200,
+  "data": [
+    {
+      "id": "60c72b2f9b1d8b001c8e4b60",
+      "columnId": "60c72b2f9b1d8b001c8e4b5d",
+      "title": "Build dashboard widgets",
+      "description": "Create KPI panels for the analytics page",
+      "order": 0,
+      "status": "todo",
+      "assigneeId": "507f1f77bcf86cd799439011",
+      "assignerId": "507f1f77bcf86cd799439012",
+      "points": 5,
+      "version": 1,
+      "createdAt": "2026-07-17T10:00:00Z",
+      "updatedAt": null
+    }
+  ],
+  "totalCount": 1,
+  "page": 1,
+  "limit": 10
+}
+```
+
+---
+
+### 3. Get Card by ID
+
+Fetch a single card.
+
+**Endpoint:** `GET /cards/:id`
+
+**Headers:**
+```
+Authorization: ******
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`, `USER`  
+**Required Permissions:** `CARD_GET`
+
+**Response:** `200 OK`
+```json
+{
+  "status": 200,
+  "data": {
+    "id": "60c72b2f9b1d8b001c8e4b60",
+    "columnId": "60c72b2f9b1d8b001c8e4b5d",
+    "title": "Build dashboard widgets",
+    "description": "Create KPI panels for the analytics page",
+    "order": 0,
+    "status": "todo",
+    "assigneeId": "507f1f77bcf86cd799439011",
+    "assignerId": "507f1f77bcf86cd799439012",
+    "points": 5,
+    "version": 1,
+    "createdAt": "2026-07-17T10:00:00Z",
+    "updatedAt": "2026-07-17T10:05:00Z"
+  }
+}
+```
+
+---
+
+### 4. Update Card
+
+Update a card's column, title, description, order, or status.
+
+**Endpoint:** `PUT /cards/:id`
+
+**Headers:**
+```
+Authorization: ******
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`  
+**Required Permissions:** `CARD_EDIT`
+
+**Request:**
+```json
+{
+  "title": "Build dashboard widgets v2",
+  "status": "in_progress",
+  "assigneeId": "507f1f77bcf86cd799439013",
+  "assignerId": "507f1f77bcf86cd799439012",
+  "points": 8,
+  "order": 1
+}
+```
+
+**Response:** `200 OK`
+```json
+{
+  "status": 200,
+  "data": {
+    "id": "60c72b2f9b1d8b001c8e4b60",
+    "columnId": "60c72b2f9b1d8b001c8e4b5d",
+    "title": "Build dashboard widgets v2",
+    "description": "Create KPI panels for the analytics page",
+    "order": 1,
+    "status": "in_progress",
+    "assigneeId": "507f1f77bcf86cd799439013",
+    "assignerId": "507f1f77bcf86cd799439012",
+    "points": 8,
+    "version": 2,
+    "createdAt": "2026-07-17T10:00:00Z",
+    "updatedAt": "2026-07-17T11:00:00Z"
+  }
+}
+```
+
+---
+
+### 5. Delete Card
+
+Delete a card by ID.
+
+**Endpoint:** `DELETE /cards/:id`
+
+**Headers:**
+```
+Authorization: ******
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`  
+**Required Permissions:** `CARD_DELETE`
+
+**Response:** `200 OK`
+```json
+{
+  "status": 200,
+  "data": {
+    "id": "60c72b2f9b1d8b001c8e4b60"
+  }
+}
+```
+
+---
+
 ## ❗ Error Codes
 
 | Status Code | Description |
@@ -1630,6 +1845,50 @@ Endpoints that return lists support pagination:
   "page": 1,
   "limit": 10,
   "totalPages": 15
+}
+```
+
+---
+
+### 6. Reorder Card Across Columns
+
+Move a card from one column to another and reorder it at the same time.
+
+**Endpoint:** `PATCH /cards/reorder`
+
+**Headers:**
+```
+Authorization: ******
+```
+
+**Request:**
+```json
+{
+  "cardId": "507f1f77bcf86cd799439090",
+  "sourceColumnId": "507f1f77bcf86cd799439050",
+  "targetColumnId": "507f1f77bcf86cd799439051",
+  "newIndex": 1,
+  "status": "done"
+}
+```
+
+**Behavior:**
+- Removes the card from its source column and reindexes the remaining cards.
+- Inserts the card into the target column at the requested index.
+- Reindexes cards in both columns to keep order numbers sequential.
+- Updates the card status when a new status is supplied.
+
+**Response:** `200 OK`
+```json
+{
+  "status": 200,
+  "data": {
+    "id": "507f1f77bcf86cd799439090",
+    "columnId": "507f1f77bcf86cd799439051",
+    "title": "Ship release candidate",
+    "status": "done",
+    "order": 1
+  }
 }
 ```
 

@@ -67,4 +67,11 @@ export const PresenterSymbols = {
     UpdateColumnPresenter: Symbol('UpdateColumnPresenter'),
     DeleteColumnPresenter: Symbol('DeleteColumnPresenter'),
   },
+  Card: {
+    CreateCardPresenter: Symbol('CreateCardPresenter'),
+    FindCardByIdPresenter: Symbol('FindCardByIdPresenter'),
+    GetCardsPresenter: Symbol('GetCardsPresenter'),
+    UpdateCardPresenter: Symbol('UpdateCardPresenter'),
+    DeleteCardPresenter: Symbol('DeleteCardPresenter'),
+  },
 };
