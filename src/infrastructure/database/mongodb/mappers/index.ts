@@ -5,4 +5,5 @@ export * from './user.mapper';
 export * from './project.mapper';
 export * from './board.mapper';
 export * from './column.mapper';
+export * from './card.mapper';
 export * from './membership.mapper';

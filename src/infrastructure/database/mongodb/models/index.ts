@@ -7,3 +7,4 @@ export * from './project.model';
 export * from './board.model';
 export * from './membership.model';
 export * from './column.model';
+export * from './card.model';

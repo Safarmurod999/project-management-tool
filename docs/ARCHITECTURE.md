@@ -356,6 +356,24 @@ async getProtectedData(@Request() req) {
 }
 ```
 
+#### Card
+```typescript
+{
+  _id: ObjectId,
+  columnId: ObjectId (ref: Column),
+  title: string,
+  description?: string | null,
+  order: number,
+  status: 'todo' | 'in_progress' | 'done' | 'archived',
+  assigneeId?: ObjectId | null (ref: User),
+  assignerId?: ObjectId | null (ref: User),
+  points: number (default: 0, min: 0),
+  version: number,
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
 #### Membership
 ```typescript
 {
