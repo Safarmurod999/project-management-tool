@@ -18,6 +18,7 @@ The application is built on **NestJS** and structured using **Clean Architecture
 ## Module Interactions
 - `AuthModule` orchestrates `UserModule`, `OtpModule`, and `RolesModule` for authentication.
 - `BoardsModule` interacts with `ProjectsModule` to validate parent project constraints.
+- `ColumnsModule` extends each `Board` with ordered workflow lanes such as `todo`, `in_progress`, and `done`.
 - `MembershipsModule` acts as the pivot for cross-cutting access control (assigning Roles to Users for specific Scopes like Teams or Projects).
 
 ## Authentication & Authorization
@@ -35,7 +36,7 @@ The application is built on **NestJS** and structured using **Clean Architecture
 7. Controller formats response via Presenter.
 
 ## Database & Caching
-- **Database**: MongoDB (Mongoose ODM). Collections include `users`, `roles`, `permissions`, `role_permissions`, `teams`, `projects`, `boards`, `memberships`, `otps`.
+- **Database**: MongoDB (Mongoose ODM). Collections include `users`, `roles`, `permissions`, `role_permissions`, `teams`, `projects`, `boards`, `columns`, `memberships`, `otps`.
 - **Caching**: Redis is used to reduce DB load (e.g., caching frequently accessed permissions).
 
 ## Background Processing (Events & Realtime)
@@ -49,4 +50,4 @@ The application is built on **NestJS** and structured using **Clean Architecture
 ## Future Extension Points
 - Implementing robust caching mechanisms within the `RolesPermissionsGuard`.
 - Fully fleshing out the `RealtimeModule` to push board/task updates to clients.
-- Expanding the domain hierarchy downward (e.g., adding `Tasks`, `Columns`, `Comments` inside Boards).
+- Extending the board workflow further with `Tasks`, `Comments`, and richer drag-and-drop interactions across `Columns`.

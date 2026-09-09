@@ -64,4 +64,11 @@ export const UsecaseSymbols = {
     GetBoardDetailsUsecase: Symbol.for('GetBoardDetailsUsecase'),
     DeleteBoardUsecase: Symbol.for('DeleteBoardUsecase'),
   },
+  Column: {
+    CreateColumnUsecase: Symbol.for('CreateColumnUsecase'),
+    GetColumnsUsecase: Symbol.for('GetColumnsUsecase'),
+    FindColumnByIdUsecase: Symbol.for('FindColumnByIdUsecase'),
+    UpdateColumnUsecase: Symbol.for('UpdateColumnUsecase'),
+    DeleteColumnUsecase: Symbol.for('DeleteColumnUsecase'),
+  },
 };

@@ -8,6 +8,7 @@ import {
   TeamDocument,
   UserDocument,
   BoardDocument,
+  ColumnDocument,
 } from './mongodb/models';
 
 export interface Database {
@@ -23,4 +24,5 @@ export interface Database {
   projectModel(): Model<ProjectDocument>;
   membershipModel(): Model<MembershipDocument>;
   boardModel(): Model<BoardDocument>;
+  columnModel(): Model<ColumnDocument>;
 }

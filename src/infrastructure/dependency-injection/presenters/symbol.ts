@@ -60,4 +60,11 @@ export const PresenterSymbols = {
     GetBoardDetailsPresenter: Symbol('GetBoardDetailsPresenter'),
     DeleteBoardPresenter: Symbol('DeleteBoardPresenter'),
   },
+  Column: {
+    CreateColumnPresenter: Symbol('CreateColumnPresenter'),
+    FindColumnByIdPresenter: Symbol('FindColumnByIdPresenter'),
+    GetColumnsPresenter: Symbol('GetColumnsPresenter'),
+    UpdateColumnPresenter: Symbol('UpdateColumnPresenter'),
+    DeleteColumnPresenter: Symbol('DeleteColumnPresenter'),
+  },
 };

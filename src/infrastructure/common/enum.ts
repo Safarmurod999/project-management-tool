@@ -23,6 +23,12 @@ export enum PermissionCode {
   BOARD_EDIT = 'board:edit',
   BOARD_DELETE = 'board:delete',
 
+  // COLUMN
+  COLUMN_CREATE = 'column:create',
+  COLUMN_GET = 'column:get',
+  COLUMN_EDIT = 'column:edit',
+  COLUMN_DELETE = 'column:delete',
+
   // TEAM
   TEAM_CREATE = 'team:create',
   TEAM_GET = 'team:get',

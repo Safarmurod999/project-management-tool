@@ -1389,6 +1389,198 @@ Authorization: Bearer {accessToken}
 
 ---
 
+## 🧱 Columns Endpoints
+
+### 1. Create Column
+
+Create a new workflow column inside a board.
+
+**Endpoint:** `POST /columns`
+
+**Headers:**
+``` 
+Authorization: ******
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`  
+**Required Permissions:** `COLUMN_CREATE`
+
+**Request:**
+```json
+{
+  "boardId": "60c72b2f9b1d8b001c8e4b5a",
+  "name": "In Progress",
+  "order": 1,
+  "status": "active"
+}
+```
+
+**Response:** `201 Created`
+```json
+{
+  "status": 201,
+  "data": {
+    "id": "60c72b2f9b1d8b001c8e4b5d",
+    "boardId": "60c72b2f9b1d8b001c8e4b5a",
+    "name": "In Progress",
+    "order": 1,
+    "status": "active",
+    "version": 1,
+    "createdAt": "2026-07-17T10:00:00Z",
+    "updatedAt": null
+  }
+}
+```
+
+---
+
+### 2. Get All Columns
+
+Retrieve columns for a specific board with pagination and optional name filtering.
+
+**Endpoint:** `GET /columns`
+
+**Headers:**
+```
+Authorization: ******
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`, `USER`  
+**Required Permissions:** `COLUMN_GET`
+
+**Query Parameters:**
+- `boardId` (required): Parent board ID
+- `page` (optional): Page number (default: 1)
+- `limit` (optional): Items per page (default: 10)
+- `name` (optional): Filter by column name
+
+**Example:** `GET /columns?boardId=60c72b2f9b1d8b001c8e4b5a&page=1&limit=10`
+
+**Response:** `200 OK`
+```json
+{
+  "status": 200,
+  "data": [
+    {
+      "id": "60c72b2f9b1d8b001c8e4b5d",
+      "boardId": "60c72b2f9b1d8b001c8e4b5a",
+      "name": "To Do",
+      "order": 0,
+      "status": "active",
+      "version": 1,
+      "createdAt": "2026-07-17T10:00:00Z",
+      "updatedAt": null
+    }
+  ],
+  "totalCount": 1,
+  "page": 1,
+  "limit": 10
+}
+```
+
+---
+
+### 3. Get Column by ID
+
+Get detailed information for a single column.
+
+**Endpoint:** `GET /columns/:id`
+
+**Headers:**
+```
+Authorization: ******
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`, `USER`  
+**Required Permissions:** `COLUMN_GET`
+
+**Response:** `200 OK`
+```json
+{
+  "status": 200,
+  "data": {
+    "id": "60c72b2f9b1d8b001c8e4b5d",
+    "boardId": "60c72b2f9b1d8b001c8e4b5a",
+    "name": "In Progress",
+    "order": 1,
+    "status": "active",
+    "version": 1,
+    "createdAt": "2026-07-17T10:00:00Z",
+    "updatedAt": "2026-07-17T10:30:00Z"
+  }
+}
+```
+
+---
+
+### 4. Update Column
+
+Update a column's board assignment, name, ordering, or status.
+
+**Endpoint:** `PUT /columns/:id`
+
+**Headers:**
+```
+Authorization: ******
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`  
+**Required Permissions:** `COLUMN_EDIT`
+
+**Request:**
+```json
+{
+  "name": "Doing",
+  "order": 2,
+  "status": "active"
+}
+```
+
+**Response:** `200 OK`
+```json
+{
+  "status": 200,
+  "data": {
+    "id": "60c72b2f9b1d8b001c8e4b5d",
+    "boardId": "60c72b2f9b1d8b001c8e4b5a",
+    "name": "Doing",
+    "order": 2,
+    "status": "active",
+    "version": 2,
+    "createdAt": "2026-07-17T10:00:00Z",
+    "updatedAt": "2026-07-17T11:00:00Z"
+  }
+}
+```
+
+---
+
+### 5. Delete Column
+
+Delete a column by ID.
+
+**Endpoint:** `DELETE /columns/:id`
+
+**Headers:**
+```
+Authorization: ******
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`  
+**Required Permissions:** `COLUMN_DELETE`
+
+**Response:** `200 OK`
+```json
+{
+  "status": 200,
+  "data": {
+    "id": "60c72b2f9b1d8b001c8e4b5d"
+  }
+}
+```
+
+---
+
 ## ❗ Error Codes
 
 | Status Code | Description |
