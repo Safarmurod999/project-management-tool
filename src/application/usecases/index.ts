@@ -7,3 +7,4 @@ export * from './memberships';
 export * from './teams';
 export * from './projects';
 export * from './boards';
+export * from './columns';

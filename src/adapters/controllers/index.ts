@@ -10,3 +10,4 @@ export * from './membership.controller';
 export * from './team.controller';
 export * from './project.controller';
 export * from './board.controller';
+export * from './column.controller';

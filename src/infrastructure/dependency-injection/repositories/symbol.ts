@@ -8,4 +8,5 @@ export const RepositorySymbols = {
   TeamRepository: Symbol.for('TeamRepository'),
   ProjectRepository: Symbol.for('ProjectRepository'),
   BoardRepository: Symbol.for('BoardRepository'),
+  ColumnRepository: Symbol.for('ColumnRepository'),
 };

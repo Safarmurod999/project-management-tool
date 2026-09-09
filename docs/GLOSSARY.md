@@ -12,6 +12,7 @@
 | **Team** | A grouping of Users working together. Owns one or multiple Projects. |
 | **Project** | A high-level container for work, belonging to a Team. Owns one or multiple Boards. |
 | **Board** | A specific workspace within a Project (e.g., a Kanban board or Sprint board). |
+| **Column** | A workflow stage inside a Board (e.g., To Do, In Progress, Done) used to group related work items. |
 | **OTP** | One-Time Password. A temporary, 6-digit code sent via email to verify user ownership during registration. |
 | **Symbol-based DI** | The practice of using `Symbol.for('Token')` to wire up interfaces to their concrete implementations inside NestJS modules, preventing hard-coupling. |
 | **Mapper** | A utility class in the Infrastructure layer that converts Mongoose Documents into pure Domain Entities, and vice versa. |

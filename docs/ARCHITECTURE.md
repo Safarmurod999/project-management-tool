@@ -328,6 +328,34 @@ async getProtectedData(@Request() req) {
 }
 ```
 
+#### Board
+```typescript
+{
+  _id: ObjectId,
+  projectId: ObjectId (ref: Project),
+  name: string,
+  description?: string,
+  status: 'active' | 'archived',
+  version: number,
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
+#### Column
+```typescript
+{
+  _id: ObjectId,
+  boardId: ObjectId (ref: Board),
+  name: string,
+  order: number,
+  status: 'active' | 'archived',
+  version: number,
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
 #### Membership
 ```typescript
 {
