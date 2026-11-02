@@ -12,7 +12,7 @@ export class GetCardsPresenterImpl implements GetCardsPresenter {
       title: card.title,
       description: card.description,
       order: card.order,
-      status: card.status,
+      statusId: card.statusId,
       assigneeId: card.assigneeId,
       assignerId: card.assignerId,
       points: card.points,

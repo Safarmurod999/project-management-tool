@@ -5,6 +5,7 @@ export interface GetCardsUsecaseParams {
   limit?: number;
   columnId: string;
   title?: string;
+  statusId?: string;
 }
 
 export interface GetCardsUsecase {

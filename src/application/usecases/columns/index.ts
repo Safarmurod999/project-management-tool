@@ -3,3 +3,6 @@ export * from './find-by-id';
 export * from './get-all';
 export * from './update';
 export * from './delete';
+export * from './get-statuses';
+export * from './add-status';
+export * from './remove-status';

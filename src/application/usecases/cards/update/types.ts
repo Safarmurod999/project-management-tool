@@ -1,4 +1,3 @@
-import { CardStatus } from 'src/infrastructure/common/enum';
 import { Card } from 'src/domain';
 
 export interface UpdateCardUsecaseParams {
@@ -7,7 +6,7 @@ export interface UpdateCardUsecaseParams {
   title?: string;
   description?: string | null;
   order?: number;
-  status?: CardStatus;
+  statusId?: string;
   assigneeId?: string | null;
   assignerId?: string | null;
   points?: number;

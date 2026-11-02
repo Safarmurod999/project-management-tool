@@ -70,6 +70,9 @@ export const UsecaseSymbols = {
     FindColumnByIdUsecase: Symbol.for('FindColumnByIdUsecase'),
     UpdateColumnUsecase: Symbol.for('UpdateColumnUsecase'),
     DeleteColumnUsecase: Symbol.for('DeleteColumnUsecase'),
+    GetColumnStatusesUsecase: Symbol.for('GetColumnStatusesUsecase'),
+    AddColumnStatusUsecase: Symbol.for('AddColumnStatusUsecase'),
+    RemoveColumnStatusUsecase: Symbol.for('RemoveColumnStatusUsecase'),
   },
   Card: {
     CreateCardUsecase: Symbol.for('CreateCardUsecase'),
@@ -78,5 +81,12 @@ export const UsecaseSymbols = {
     UpdateCardUsecase: Symbol.for('UpdateCardUsecase'),
     ReorderCardUsecase: Symbol.for('ReorderCardUsecase'),
     DeleteCardUsecase: Symbol.for('DeleteCardUsecase'),
+  },
+  Status: {
+    CreateStatusUsecase: Symbol.for('CreateStatusUsecase'),
+    GetStatusesUsecase: Symbol.for('GetStatusesUsecase'),
+    FindStatusByIdUsecase: Symbol.for('FindStatusByIdUsecase'),
+    UpdateStatusUsecase: Symbol.for('UpdateStatusUsecase'),
+    DeleteStatusUsecase: Symbol.for('DeleteStatusUsecase'),
   },
 };

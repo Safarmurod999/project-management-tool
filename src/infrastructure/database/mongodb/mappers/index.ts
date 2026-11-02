@@ -6,4 +6,6 @@ export * from './project.mapper';
 export * from './board.mapper';
 export * from './column.mapper';
 export * from './card.mapper';
+export * from './status.mapper';
+export * from './column-status.mapper';
 export * from './membership.mapper';

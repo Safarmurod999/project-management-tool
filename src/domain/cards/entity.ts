@@ -1,5 +1,3 @@
-import { CardStatus } from 'src/infrastructure/common/enum';
-
 export class Card {
   constructor(
     private readonly _id: string,
@@ -7,7 +5,7 @@ export class Card {
     private readonly _title: string,
     private readonly _description: string | null,
     private readonly _order: number,
-    private readonly _status: CardStatus,
+    private readonly _statusId: string,
     private readonly _assigneeId: string | null = null,
     private readonly _assignerId: string | null = null,
     private readonly _points: number = 0,
@@ -36,8 +34,8 @@ export class Card {
     return this._order;
   }
 
-  public get status(): CardStatus {
-    return this._status;
+  public get statusId(): string {
+    return this._statusId;
   }
 
   public get assigneeId(): string | null {

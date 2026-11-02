@@ -4,7 +4,6 @@ import { Database } from 'src/infrastructure/database/database';
 import { DatabaseSymbols } from 'src/infrastructure/dependency-injection/databases/symbol';
 import { CardDocument } from 'src/infrastructure/database/mongodb/models';
 import { CardMapper } from 'src/infrastructure/database/mongodb/mappers';
-import { CardStatus } from 'src/infrastructure/common/enum';
 import { Card } from './entity';
 import { CardStruct } from './factory';
 import { CardException } from './exception';
@@ -12,7 +11,7 @@ import { CardException } from './exception';
 export type CardCreateParams = Omit<
   CardStruct,
   'id' | 'createdAt' | 'updatedAt' | 'version'
-> & { status?: CardStruct['status'] };
+>;
 
 export type CardUpdateParams = Partial<Omit<CardStruct, 'createdAt'>>;
 
@@ -21,6 +20,7 @@ export interface CardGetQuery {
   limit?: number;
   columnId: string;
   title?: string;
+  statusId?: string;
 }
 
 export interface CardGetResponse {
@@ -35,7 +35,7 @@ export interface CardReorderParams {
   sourceColumnId: string;
   targetColumnId: string;
   newIndex: number;
-  status?: CardStatus;
+  statusId?: string;
 }
 
 export interface CardRepository {
@@ -44,6 +44,8 @@ export interface CardRepository {
   findById(id: string): Promise<Card>;
   update(card: CardUpdateParams & { id: string }): Promise<Card>;
   reorder(params: CardReorderParams): Promise<Card>;
+  /** Counts cards using a status, optionally limited to one column. */
+  countByStatusId(statusId: string, columnId?: string): Promise<number>;
   delete(id: string): Promise<string>;
 }
 
@@ -54,23 +56,38 @@ export class CardRepositoryImpl implements CardRepository {
   ) {}
 
   async create(card: CardCreateParams): Promise<Card> {
-    const column = await this.database.columnModel().findById(card.columnId).exec();
+    const column = await this.database
+      .columnModel()
+      .findById(card.columnId)
+      .exec();
 
     if (!column) {
       throw CardException.InvalidColumnId(card.columnId);
     }
 
     if (card.assigneeId) {
-      const assignee = await this.database.userModel().findById(card.assigneeId).exec();
+      const assignee = await this.database
+        .userModel()
+        .findById(card.assigneeId)
+        .exec();
       if (!assignee) {
-        throw new CardException(`User with ID ${card.assigneeId} not found.`, 404);
+        throw new CardException(
+          `User with ID ${card.assigneeId} not found.`,
+          404,
+        );
       }
     }
 
     if (card.assignerId) {
-      const assigner = await this.database.userModel().findById(card.assignerId).exec();
+      const assigner = await this.database
+        .userModel()
+        .findById(card.assignerId)
+        .exec();
       if (!assigner) {
-        throw new CardException(`User with ID ${card.assignerId} not found.`, 404);
+        throw new CardException(
+          `User with ID ${card.assignerId} not found.`,
+          404,
+        );
       }
     }
 
@@ -79,7 +96,10 @@ export class CardRepositoryImpl implements CardRepository {
     }
 
     const duplicate = await this.cardModel
-      .findOne({ columnId: new Types.ObjectId(card.columnId), title: card.title })
+      .findOne({
+        columnId: new Types.ObjectId(card.columnId),
+        title: card.title,
+      })
       .exec();
 
     if (duplicate) {
@@ -89,6 +109,7 @@ export class CardRepositoryImpl implements CardRepository {
     const cardData = await this.cardModel.create({
       ...card,
       columnId: new Types.ObjectId(card.columnId),
+      statusId: new Types.ObjectId(card.statusId),
       assigneeId: card.assigneeId ? new Types.ObjectId(card.assigneeId) : null,
       assignerId: card.assignerId ? new Types.ObjectId(card.assignerId) : null,
       points: card.points ?? 0,
@@ -98,12 +119,18 @@ export class CardRepositoryImpl implements CardRepository {
   }
 
   async find(params: CardGetQuery): Promise<CardGetResponse> {
-    const { page = 1, limit = 10, columnId, title } = params;
+    const { page = 1, limit = 10, columnId, title, statusId } = params;
 
-    const filter: Record<string, any> = { columnId: new Types.ObjectId(columnId) };
+    const filter: Record<string, any> = {
+      columnId: new Types.ObjectId(columnId),
+    };
 
     if (title) {
       filter.title = { $regex: title, $options: 'i' };
+    }
+
+    if (statusId) {
+      filter.statusId = new Types.ObjectId(statusId);
     }
 
     const totalCount = await this.cardModel.countDocuments(filter);
@@ -141,7 +168,10 @@ export class CardRepositoryImpl implements CardRepository {
     }
 
     if (card.columnId) {
-      const column = await this.database.columnModel().findById(card.columnId).exec();
+      const column = await this.database
+        .columnModel()
+        .findById(card.columnId)
+        .exec();
       if (!column) {
         throw CardException.InvalidColumnId(card.columnId);
       }
@@ -167,14 +197,22 @@ export class CardRepositoryImpl implements CardRepository {
       existingCard.title = card.title;
     }
 
-    if (card.description !== undefined) existingCard.description = card.description;
+    if (card.description !== undefined)
+      existingCard.description = card.description;
     if (card.order !== undefined) existingCard.order = card.order;
-    if (card.status) existingCard.status = card.status;
+    if (card.statusId)
+      existingCard.statusId = new Types.ObjectId(card.statusId);
     if (card.assigneeId !== undefined) {
       if (card.assigneeId) {
-        const assignee = await this.database.userModel().findById(card.assigneeId).exec();
+        const assignee = await this.database
+          .userModel()
+          .findById(card.assigneeId)
+          .exec();
         if (!assignee) {
-          throw new CardException(`User with ID ${card.assigneeId} not found.`, 404);
+          throw new CardException(
+            `User with ID ${card.assigneeId} not found.`,
+            404,
+          );
         }
         existingCard.assigneeId = new Types.ObjectId(card.assigneeId);
       } else {
@@ -183,9 +221,15 @@ export class CardRepositoryImpl implements CardRepository {
     }
     if (card.assignerId !== undefined) {
       if (card.assignerId) {
-        const assigner = await this.database.userModel().findById(card.assignerId).exec();
+        const assigner = await this.database
+          .userModel()
+          .findById(card.assignerId)
+          .exec();
         if (!assigner) {
-          throw new CardException(`User with ID ${card.assignerId} not found.`, 404);
+          throw new CardException(
+            `User with ID ${card.assignerId} not found.`,
+            404,
+          );
         }
         existingCard.assignerId = new Types.ObjectId(card.assignerId);
       } else {
@@ -207,7 +251,8 @@ export class CardRepositoryImpl implements CardRepository {
   }
 
   async reorder(params: CardReorderParams): Promise<Card> {
-    const { cardId, sourceColumnId, targetColumnId, newIndex, status } = params;
+    const { cardId, sourceColumnId, targetColumnId, newIndex, statusId } =
+      params;
 
     const existingCard = await this.cardModel.findById(cardId).exec();
 
@@ -222,7 +267,10 @@ export class CardRepositoryImpl implements CardRepository {
       );
     }
 
-    const targetColumn = await this.database.columnModel().findById(targetColumnId).exec();
+    const targetColumn = await this.database
+      .columnModel()
+      .findById(targetColumnId)
+      .exec();
 
     if (!targetColumn) {
       throw CardException.InvalidColumnId(targetColumnId);
@@ -246,11 +294,11 @@ export class CardRepositoryImpl implements CardRepository {
         item.updatedAt = new Date();
       });
 
-      if (status) {
-        existingCard.status = status;
+      if (statusId) {
+        existingCard.statusId = new Types.ObjectId(statusId);
       }
 
-      await Promise.all(reorderedList.map((item) => item.save()));
+      await this.saveSequentially(reorderedList);
       return CardMapper.toDomain(existingCard);
     }
 
@@ -266,7 +314,7 @@ export class CardRepositoryImpl implements CardRepository {
 
     targetList.splice(insertionIndex, 0, existingCard);
     existingCard.columnId = new Types.ObjectId(targetColumnId);
-    if (status) existingCard.status = status;
+    if (statusId) existingCard.statusId = new Types.ObjectId(statusId);
     existingCard.updatedAt = new Date();
 
     sourceList.forEach((item, index) => {
@@ -279,11 +327,21 @@ export class CardRepositoryImpl implements CardRepository {
       item.updatedAt = new Date();
     });
 
-    await Promise.all(
-      [...sourceList, ...targetList].map((item) => item.save()),
-    );
+    await this.saveSequentially([...sourceList, ...targetList]);
 
     return CardMapper.toDomain(existingCard);
+  }
+
+  async countByStatusId(statusId: string, columnId?: string): Promise<number> {
+    const filter: Record<string, any> = {
+      statusId: new Types.ObjectId(statusId),
+    };
+
+    if (columnId) {
+      filter.columnId = new Types.ObjectId(columnId);
+    }
+
+    return await this.cardModel.countDocuments(filter);
   }
 
   async delete(id: string): Promise<string> {
@@ -295,6 +353,14 @@ export class CardRepositoryImpl implements CardRepository {
 
     await this.cardModel.findByIdAndDelete(id).exec();
     return id;
+  }
+
+  // A MongoDB session does not support concurrent operations, so saves made
+  // inside a transaction must not run in parallel.
+  private async saveSequentially(cards: CardDocument[]): Promise<void> {
+    for (const item of cards) {
+      await item.save();
+    }
   }
 
   private get cardModel(): Model<CardDocument> {

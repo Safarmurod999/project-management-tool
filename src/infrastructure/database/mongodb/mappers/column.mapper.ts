@@ -8,7 +8,6 @@ export class ColumnMapper {
       data.boardId.toString(),
       data.name,
       data.order,
-      data.status,
       data.version,
       data.createdAt,
       data.updatedAt,

@@ -8,3 +8,5 @@ export * from './board.schema';
 export * from './membership.schema';
 export * from './column.schema';
 export * from './card.schema';
+export * from './status.schema';
+export * from './column-status.schema';

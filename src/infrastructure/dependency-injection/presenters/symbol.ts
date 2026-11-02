@@ -66,6 +66,7 @@ export const PresenterSymbols = {
     GetColumnsPresenter: Symbol('GetColumnsPresenter'),
     UpdateColumnPresenter: Symbol('UpdateColumnPresenter'),
     DeleteColumnPresenter: Symbol('DeleteColumnPresenter'),
+    GetColumnStatusesPresenter: Symbol('GetColumnStatusesPresenter'),
   },
   Card: {
     CreateCardPresenter: Symbol('CreateCardPresenter'),
@@ -73,5 +74,12 @@ export const PresenterSymbols = {
     GetCardsPresenter: Symbol('GetCardsPresenter'),
     UpdateCardPresenter: Symbol('UpdateCardPresenter'),
     DeleteCardPresenter: Symbol('DeleteCardPresenter'),
+  },
+  Status: {
+    CreateStatusPresenter: Symbol('CreateStatusPresenter'),
+    FindStatusByIdPresenter: Symbol('FindStatusByIdPresenter'),
+    GetStatusesPresenter: Symbol('GetStatusesPresenter'),
+    UpdateStatusPresenter: Symbol('UpdateStatusPresenter'),
+    DeleteStatusPresenter: Symbol('DeleteStatusPresenter'),
   },
 };

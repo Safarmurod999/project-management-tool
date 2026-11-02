@@ -29,11 +29,20 @@ The gateway validates the JWT using `ACCESS_SECRET` and joins the user room `use
 
 - `ping`
   - payload: `{ clientTime?: string }`
+- `project:join`
+  - payload: `projectId` (string). Joins the room `project:{projectId}` to receive the project events below.
 
 ### Server -> Client
 
 - `pong`
   - payload: `{ serverTime: string, clientTime?: string }`
+
+Emitted to `project:{projectId}`:
+
+- `board:created` — the new board. Its default columns (To Do / In Progress / Done) and status mappings already exist when this fires.
+- `status:created` — `{ id, projectId, name, code, color, order, isDefault, version, createdAt, updatedAt }`
+- `status:updated` — same payload as `status:created`
+- `status:deleted` — `{ id, projectId }`
 
 ## Server-side Emitting
 

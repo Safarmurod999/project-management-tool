@@ -8,3 +8,5 @@ export * from './board.model';
 export * from './membership.model';
 export * from './column.model';
 export * from './card.model';
+export * from './status.model';
+export * from './column-status.model';

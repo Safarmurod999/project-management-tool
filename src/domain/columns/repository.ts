@@ -11,9 +11,7 @@ import { ColumnException } from './exception';
 export type ColumnCreateParams = Omit<
   ColumnStruct,
   'id' | 'createdAt' | 'updatedAt' | 'version'
-> & {
-  status?: ColumnStruct['status'];
-};
+>;
 
 export type ColumnUpdateParams = Partial<Omit<ColumnStruct, 'createdAt'>>;
 
@@ -46,14 +44,20 @@ export class ColumnRepositoryImpl implements ColumnRepository {
   ) {}
 
   async create(column: ColumnCreateParams): Promise<Column> {
-    const board = await this.database.boardModel().findById(column.boardId).exec();
+    const board = await this.database
+      .boardModel()
+      .findById(column.boardId)
+      .exec();
 
     if (!board) {
       throw ColumnException.InvalidBoardId(column.boardId);
     }
 
     const existing = await this.columnModel
-      .findOne({ boardId: new Types.ObjectId(column.boardId), name: column.name })
+      .findOne({
+        boardId: new Types.ObjectId(column.boardId),
+        name: column.name,
+      })
       .exec();
 
     if (existing) {
@@ -71,7 +75,9 @@ export class ColumnRepositoryImpl implements ColumnRepository {
   async find(params: ColumnGetQuery): Promise<ColumnGetResponse> {
     const { page = 1, limit = 10, boardId, name } = params;
 
-    const filter: Record<string, any> = { boardId: new Types.ObjectId(boardId) };
+    const filter: Record<string, any> = {
+      boardId: new Types.ObjectId(boardId),
+    };
 
     if (name) {
       filter.name = { $regex: name, $options: 'i' };
@@ -112,7 +118,10 @@ export class ColumnRepositoryImpl implements ColumnRepository {
     }
 
     if (column.boardId) {
-      const board = await this.database.boardModel().findById(column.boardId).exec();
+      const board = await this.database
+        .boardModel()
+        .findById(column.boardId)
+        .exec();
       if (!board) {
         throw ColumnException.InvalidBoardId(column.boardId);
       }
@@ -139,7 +148,6 @@ export class ColumnRepositoryImpl implements ColumnRepository {
     }
 
     if (column.order !== undefined) existingColumn.order = column.order;
-    if (column.status) existingColumn.status = column.status;
     if (column.version) existingColumn.version = column.version;
     existingColumn.updatedAt = new Date();
 

@@ -1,3 +1,4 @@
+import * as mongoose from 'mongoose';
 import { Connection, createConnection, Model } from 'mongoose';
 import {
   UserSchema,
@@ -10,6 +11,8 @@ import {
   BoardSchema,
   ColumnSchema,
   CardSchema,
+  StatusSchema,
+  ColumnStatusSchema,
 } from './schemas';
 import {
   UserDocument,
@@ -22,6 +25,8 @@ import {
   BoardDocument,
   ColumnDocument,
   CardDocument,
+  StatusDocument,
+  ColumnStatusDocument,
 } from './models';
 import { Database } from '../database';
 import { Inject, Injectable } from '@nestjs/common';
@@ -55,6 +60,10 @@ export class MongoDb implements Database {
 
     const uri = this.getConnectionString();
 
+    // Lets every query inside `connection.transaction()` pick up the session
+    // implicitly, so repositories don't need to thread a session parameter.
+    mongoose.set('transactionAsyncLocalStorage', true);
+
     this._client = createConnection(uri, {
       maxPoolSize: 10,
       minPoolSize: 2,
@@ -75,6 +84,11 @@ export class MongoDb implements Database {
     this._client.model<BoardDocument>('Board', BoardSchema);
     this._client.model<ColumnDocument>('Column', ColumnSchema);
     this._client.model<CardDocument>('Card', CardSchema);
+    this._client.model<StatusDocument>('Status', StatusSchema);
+    this._client.model<ColumnStatusDocument>(
+      'ColumnStatus',
+      ColumnStatusSchema,
+    );
 
     console.log('[MongoDB] Connected.');
   }
@@ -149,5 +163,17 @@ export class MongoDb implements Database {
     if (!this._client)
       throw GlobalException.DatabaseError('MongoDB not connected');
     return this._client.model<CardDocument>('Card');
+  }
+
+  public statusModel(): Model<StatusDocument> {
+    if (!this._client)
+      throw GlobalException.DatabaseError('MongoDB not connected');
+    return this._client.model<StatusDocument>('Status');
+  }
+
+  public columnStatusModel(): Model<ColumnStatusDocument> {
+    if (!this._client)
+      throw GlobalException.DatabaseError('MongoDB not connected');
+    return this._client.model<ColumnStatusDocument>('ColumnStatus');
   }
 }

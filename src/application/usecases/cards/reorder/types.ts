@@ -1,4 +1,3 @@
-import { CardStatus } from 'src/infrastructure/common/enum';
 import { Card } from 'src/domain';
 
 export interface ReorderCardUsecaseParams {
@@ -6,7 +5,8 @@ export interface ReorderCardUsecaseParams {
   sourceColumnId: string;
   targetColumnId: string;
   newIndex: number;
-  status?: CardStatus;
+  /** Must be mapped to the target column; resolved automatically when omitted. */
+  statusId?: string;
 }
 
 export interface ReorderCardUsecase {

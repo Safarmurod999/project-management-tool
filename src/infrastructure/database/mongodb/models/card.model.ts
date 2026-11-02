@@ -1,5 +1,4 @@
 import { Document, Types } from 'mongoose';
-import { CardStatus } from 'src/infrastructure/common/enum';
 
 export interface CardDocument extends Document {
   _id: Types.ObjectId;
@@ -7,7 +6,7 @@ export interface CardDocument extends Document {
   title: string;
   description: string | null;
   order: number;
-  status: CardStatus;
+  statusId: Types.ObjectId;
   assigneeId: Types.ObjectId | null;
   assignerId: Types.ObjectId | null;
   points: number;

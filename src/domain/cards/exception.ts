@@ -27,6 +27,33 @@ export class CardException extends Error {
     return new CardException(`Column with ID ${columnId} not found.`, 404);
   }
 
+  static StatusNotMappedToColumn(
+    statusId: string,
+    columnId: string,
+  ): CardException {
+    return new CardException(
+      `Status ${statusId} is not mapped to column ${columnId}.`,
+      400,
+    );
+  }
+
+  static StatusProjectMismatch(
+    statusId: string,
+    projectId: string,
+  ): CardException {
+    return new CardException(
+      `Status ${statusId} does not belong to project ${projectId}.`,
+      400,
+    );
+  }
+
+  static ColumnHasNoStatuses(columnId: string): CardException {
+    return new CardException(
+      `Column ${columnId} has no statuses mapped. Map a status to the column before adding cards.`,
+      409,
+    );
+  }
+
   static CardAlreadyExists(title: string, columnId: string): CardException {
     return new CardException(
       `Card with title "${title}" already exists in column ${columnId}.`,

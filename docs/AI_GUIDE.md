@@ -18,8 +18,10 @@ The application is built on **NestJS** and structured using **Clean Architecture
 ## Module Interactions
 - `AuthModule` orchestrates `UserModule`, `OtpModule`, and `RolesModule` for authentication.
 - `BoardsModule` interacts with `ProjectsModule` to validate parent project constraints.
-- `ColumnsModule` extends each `Board` with ordered workflow lanes such as `todo`, `in_progress`, and `done`.
-- `CardsModule` sits beneath each `Column` and stores the actual actionable work items for a board workflow, including assignee/assigner metadata and story-point estimates.
+- `StatusesModule` owns project-scoped `Status` records and the `ColumnStatus` mappings. It imports no feature module, so Projects, Boards, Columns and Cards can all depend on it without cycles.
+- `ColumnsModule` extends each `Board` with ordered visual lanes. Which statuses a lane shows is defined by `ColumnStatus` (`/columns/:id/statuses`).
+- `CardsModule` sits beneath each `Column` and stores the actual actionable work items, including assignee/assigner metadata and story-point estimates. Every card has a `statusId` that must be mapped to its column; `resolveCardStatusId` (application/usecases/cards/shared) enforces this for create, update and reorder.
+- Creating a project seeds 8 default statuses; creating a board creates the default columns and mappings (`src/domain/statuses/defaults.ts`), both inside a transaction.
 - `MembershipsModule` acts as the pivot for cross-cutting access control (assigning Roles to Users for specific Scopes like Teams or Projects).
 
 ## Authentication & Authorization
@@ -37,7 +39,9 @@ The application is built on **NestJS** and structured using **Clean Architecture
 7. Controller formats response via Presenter.
 
 ## Database & Caching
-- **Database**: MongoDB (Mongoose ODM). Collections include `users`, `roles`, `permissions`, `role_permissions`, `teams`, `projects`, `boards`, `columns`, `cards`, `memberships`, `otps`.
+- **Database**: MongoDB (Mongoose ODM). Collections include `users`, `roles`, `permissions`, `role_permissions`, `teams`, `projects`, `boards`, `columns`, `status`, `columnstatuses`, `cards`, `memberships`, `otps`.
+- **Transactions**: multi-record writes go through `TransactionManager` (`ServiceSymbols.TransactionManager`). They are atomic only on a replica set; standalone MongoDB runs them without a transaction.
+- **Migrations**: `npm run migrate` (see `docs/DEVELOPMENT.md`).
 - **Caching**: Redis is used to reduce DB load (e.g., caching frequently accessed permissions).
 
 ## Background Processing (Events & Realtime)

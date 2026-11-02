@@ -1,5 +1,4 @@
 import { Schema } from 'mongoose';
-import { CardStatus } from 'src/infrastructure/common/enum';
 
 export const CardSchema = new Schema(
   {
@@ -11,10 +10,11 @@ export const CardSchema = new Schema(
     title: { type: String, required: true },
     description: { type: String, default: null },
     order: { type: Number, required: true, default: 0 },
-    status: {
-      type: String,
-      enum: Object.values(CardStatus),
-      default: CardStatus.TODO,
+    statusId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Status',
+      required: true,
+      index: true,
     },
     assigneeId: {
       type: Schema.Types.ObjectId,

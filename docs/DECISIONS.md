@@ -23,5 +23,14 @@ Instead of embedding permissions directly into the Role document (which causes d
 ## Why dynamic Permission resolution instead of JWT storage?
 Storing permissions in the JWT means a user's permissions cannot be revoked until the token expires. By querying the database dynamically in the `RolesPermissionsGuard` for every request, the system guarantees real-time security revocation at the cost of a slight performance overhead.
 
+## Why project-scoped Statuses separate from Columns?
+Columns used to double as workflow states, and cards carried a hard-coded `CardStatus` enum. Teams need different workflows and several statuses per lane (e.g. "In Progress" showing `in_progress`, `pending`, `testing`). Statuses are therefore records owned by a Project and reused by all its Boards; Columns are purely visual and display the statuses mapped to them via `ColumnStatus`. `BoardStatus` keeps describing only the board lifecycle.
+
+## Why is `boardId` stored on ColumnStatus?
+The rule "a status belongs to only one column per board" spans two collections (column -> board). Copying `boardId` onto the mapping lets MongoDB enforce it with a unique `{ boardId, statusId }` index instead of relying on application checks that can race. It is persistence-only and not part of the domain entity; columns with mappings cannot change board.
+
+## Why a TransactionManager with implicit sessions?
+Several operations write related records together (project + statuses, board + columns + mappings, column delete + mappings, card reorder). `TransactionManager.run()` wraps them in a MongoDB transaction, and Mongoose's `transactionAsyncLocalStorage` binds every repository call inside it to the session, so repository signatures did not need a session parameter. Transactions require a replica set: on a standalone `mongod` (typical local setup) the work runs non-transactionally and a warning is logged once.
+
 ## Why Mappers?
 Mongoose Documents carry heavy framework-specific methods (`.save()`, `.populate()`). By mapping them to pure TypeScript objects (Domain Entities/Structs) via `Mappers`, we ensure the Application layer remains completely ignorant of the fact that MongoDB is being used.

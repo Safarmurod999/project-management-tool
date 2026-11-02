@@ -21,7 +21,7 @@ import {
   ReorderCardUsecase,
   UpdateCardUsecase,
 } from 'src/application';
-import { CardStatus, PermissionCode, RoleCode } from 'src/infrastructure/common/enum';
+import { PermissionCode, RoleCode } from 'src/infrastructure/common/enum';
 import { PresenterSymbols } from 'src/infrastructure/dependency-injection/presenters/symbol';
 import { UsecaseSymbols } from 'src/infrastructure/dependency-injection/usecases/symbol';
 import {
@@ -40,7 +40,7 @@ export class CreateCardDto {
   title: string;
   description?: string | null;
   order?: number;
-  status?: CardStatus;
+  statusId?: string;
   assigneeId?: string | null;
   assignerId?: string | null;
   points?: number;
@@ -51,7 +51,7 @@ export class UpdateCardDto {
   title?: string;
   description?: string | null;
   order?: number;
-  status?: CardStatus;
+  statusId?: string;
   assigneeId?: string | null;
   assignerId?: string | null;
   points?: number;
@@ -63,6 +63,7 @@ export class GetCardsQuery {
   limit?: number;
   columnId?: string;
   title?: string;
+  statusId?: string;
 }
 
 export class ReorderCardDto {
@@ -70,7 +71,7 @@ export class ReorderCardDto {
   sourceColumnId: string;
   targetColumnId: string;
   newIndex: number;
-  status?: CardStatus;
+  statusId?: string;
 }
 
 @Controller('cards')
@@ -111,7 +112,7 @@ export class CardController {
         title: dto.title,
         description: dto.description,
         order: dto.order,
-        status: dto.status,
+        statusId: dto.statusId,
         assigneeId: dto.assigneeId,
         assignerId: dto.assignerId,
         points: dto.points,
@@ -140,6 +141,7 @@ export class CardController {
         limit: query.limit ? Number(query.limit) : undefined,
         columnId: query.columnId ?? '',
         title: query.title,
+        statusId: query.statusId,
       });
 
       res.status(HttpStatus.OK).send({
@@ -194,7 +196,7 @@ export class CardController {
         title: dto.title,
         description: dto.description,
         order: dto.order,
-        status: dto.status,
+        statusId: dto.statusId,
         assigneeId: dto.assigneeId,
         assignerId: dto.assignerId,
         points: dto.points,
@@ -224,7 +226,7 @@ export class CardController {
         sourceColumnId: dto.sourceColumnId,
         targetColumnId: dto.targetColumnId,
         newIndex: dto.newIndex,
-        status: dto.status,
+        statusId: dto.statusId,
       });
 
       res.status(HttpStatus.OK).send({

@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### ⚠️ Breaking API changes
+- Cards: `status` (enum) is replaced by `statusId` in requests and responses (`POST/PUT /cards`, `PATCH /cards/reorder`, card payloads).
+- Columns: `status` is removed from requests and responses.
+- Run `npm run migrate` before deploying (migration `001-dynamic-statuses`).
+
+### 🎉 New Features
+- ✅ **Dynamic Statuses** - project-scoped `Status` records (`/statuses` CRUD) with name, code, color, order and a project default.
+- ✅ **Column Statuses** - map several statuses onto a column (`GET/POST /columns/:id/statuses`, `DELETE /columns/:id/statuses/:statusId`); a status sits in one column per board.
+- ✅ **Default workflow** - new projects get 8 statuses (planning, todo, in_progress, pending, testing, to_realize, rejected, done); new boards get To Do / In Progress / Done columns mapped to them, reusing the project's statuses.
+- ✅ **Card status validation** - a card's status must belong to its project and be mapped to its column; moves across columns re-resolve the status.
+- ✅ **Realtime** - `status:created`, `status:updated`, `status:deleted` events on `project:{projectId}`.
+- ✅ **Permissions** - `status:create`, `status:get`, `status:edit`, `status:delete`.
+
+### 🔧 Technical Improvements
+- ✅ **TransactionManager** - multi-record writes (project/board creation, column delete, card reorder, status default changes) run in MongoDB transactions when the server supports them.
+- ✅ **Migration runner** - `npm run migrate` with `--dry-run` and `--verify`.
+
 ## [3.1.0] - 2026-03-15
 
 ### 🎉 New Features

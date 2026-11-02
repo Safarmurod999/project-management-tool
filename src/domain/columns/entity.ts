@@ -1,12 +1,9 @@
-import { BoardStatus } from 'src/infrastructure/common/enum';
-
 export class Column {
   constructor(
     private readonly _id: string,
     private readonly _boardId: string,
     private readonly _name: string,
     private readonly _order: number,
-    private readonly _status: BoardStatus,
     private readonly _version: number,
     private readonly _createdAt: Date,
     private readonly _updatedAt: Date | null = null,
@@ -26,10 +23,6 @@ export class Column {
 
   public get order(): number {
     return this._order;
-  }
-
-  public get status(): BoardStatus {
-    return this._status;
   }
 
   public get version(): number {
