@@ -1389,16 +1389,146 @@ Authorization: Bearer {accessToken}
 
 ---
 
+## 🏷️ Statuses Endpoints
+
+Statuses are **project-scoped** and shared by every board of the project. A card's
+workflow state is a status; columns are only the visual lanes that statuses are
+mapped onto (see [Column Statuses](#6-get-column-statuses)).
+
+Every new project is seeded with these statuses (`todo` is the project default):
+
+| Code | Name | Default column on new boards |
+|------|------|------------------------------|
+| `planning` | Planning | To Do |
+| `todo` | To Do | To Do |
+| `in_progress` | In Progress | In Progress |
+| `pending` | Pending | In Progress |
+| `testing` | Testing | In Progress |
+| `to_realize` | To Realize | In Progress |
+| `rejected` | Rejected | Done |
+| `done` | Done | Done |
+
+### 1. Create Status
+
+**Endpoint:** `POST /statuses`
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`  
+**Required Permissions:** `STATUS_CREATE`
+
+**Request:**
+```json
+{
+  "projectId": "60c72b2f9b1d8b001c8e4b5b",
+  "name": "Code Review",
+  "code": "code_review",
+  "color": "#7E57C2",
+  "order": 8,
+  "isDefault": false
+}
+```
+
+- `code` (optional): lowercase letters, digits and `_`; derived from `name` when omitted. Unique per project.
+- `color` (optional): hex `#RRGGBB`, default `#9E9E9E`.
+- `isDefault` (optional): the status new cards get when none is given. Setting it clears the flag on the project's other statuses.
+
+**Response:** `201 Created`
+```json
+{
+  "status": 201,
+  "data": {
+    "id": "60c72b2f9b1d8b001c8e4b70",
+    "projectId": "60c72b2f9b1d8b001c8e4b5b",
+    "name": "Code Review",
+    "code": "code_review",
+    "color": "#7E57C2",
+    "order": 8,
+    "isDefault": false,
+    "version": 1,
+    "createdAt": "2026-11-02T10:00:00Z",
+    "updatedAt": null
+  }
+}
+```
+
+**Errors:** `404` project not found · `409` code already exists in the project · `400` invalid name/code/color/order
+
+---
+
+### 2. Get All Statuses
+
+**Endpoint:** `GET /statuses?projectId=:projectId`
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`, `USER`  
+**Required Permissions:** `STATUS_GET`
+
+**Query Parameters:**
+- `projectId` (required)
+- `page` (optional, default 1), `limit` (optional, default 50)
+- `name` (optional): case-insensitive filter
+- `code` (optional): exact match
+
+Returns statuses sorted by `order`, with `totalCount`, `page` and `limit`.
+
+---
+
+### 3. Get Status by ID
+
+**Endpoint:** `GET /statuses/:id`
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`, `USER`  
+**Required Permissions:** `STATUS_GET`
+
+---
+
+### 4. Update Status
+
+**Endpoint:** `PUT /statuses/:id`
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`  
+**Required Permissions:** `STATUS_EDIT`
+
+**Request** (all fields optional):
+```json
+{
+  "name": "Review",
+  "code": "review",
+  "color": "#5E35B1",
+  "order": 3,
+  "isDefault": true,
+  "version": 2
+}
+```
+
+---
+
+### 5. Delete Status
+
+**Endpoint:** `DELETE /statuses/:id`
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`  
+**Required Permissions:** `STATUS_DELETE`
+
+Removes the status and its column mappings in one transaction.
+
+**Errors:** `409` the status is used by cards · `409` the status is the project default (mark another status as default first)
+
+---
+
 ## 🧱 Columns Endpoints
+
+A column is a visual lane of a board. It has no workflow state of its own; the
+statuses mapped to it (Column Statuses) decide which card statuses it shows.
+Creating a board creates the default columns **To Do**, **In Progress** and
+**Done** with the mappings listed in [Statuses](#️-statuses-endpoints).
 
 ### 1. Create Column
 
-Create a new workflow column inside a board.
+Create a new column inside a board, optionally mapping statuses to it.
 
 **Endpoint:** `POST /columns`
 
 **Headers:**
-``` 
+```
 Authorization: ******
 ```
 
@@ -1409,11 +1539,15 @@ Authorization: ******
 ```json
 {
   "boardId": "60c72b2f9b1d8b001c8e4b5a",
-  "name": "In Progress",
-  "order": 1,
-  "status": "active"
+  "name": "Review",
+  "order": 3,
+  "statusIds": ["60c72b2f9b1d8b001c8e4b70"]
 }
 ```
+
+- `statusIds` (optional): statuses to map, in display order. The column and its
+  mappings are created in one transaction; if any status cannot be mapped
+  (other project, already mapped on this board) nothing is created.
 
 **Response:** `201 Created`
 ```json
@@ -1422,9 +1556,8 @@ Authorization: ******
   "data": {
     "id": "60c72b2f9b1d8b001c8e4b5d",
     "boardId": "60c72b2f9b1d8b001c8e4b5a",
-    "name": "In Progress",
-    "order": 1,
-    "status": "active",
+    "name": "Review",
+    "order": 3,
     "version": 1,
     "createdAt": "2026-07-17T10:00:00Z",
     "updatedAt": null
@@ -1445,7 +1578,7 @@ Retrieve columns for a specific board with pagination and optional name filterin
 Authorization: ******
 ```
 
-**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`, `USER`  
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`  
 **Required Permissions:** `COLUMN_GET`
 
 **Query Parameters:**
@@ -1466,7 +1599,6 @@ Authorization: ******
       "boardId": "60c72b2f9b1d8b001c8e4b5a",
       "name": "To Do",
       "order": 0,
-      "status": "active",
       "version": 1,
       "createdAt": "2026-07-17T10:00:00Z",
       "updatedAt": null
@@ -1491,7 +1623,7 @@ Get detailed information for a single column.
 Authorization: ******
 ```
 
-**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`, `USER`  
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`  
 **Required Permissions:** `COLUMN_GET`
 
 **Response:** `200 OK`
@@ -1503,7 +1635,6 @@ Authorization: ******
     "boardId": "60c72b2f9b1d8b001c8e4b5a",
     "name": "In Progress",
     "order": 1,
-    "status": "active",
     "version": 1,
     "createdAt": "2026-07-17T10:00:00Z",
     "updatedAt": "2026-07-17T10:30:00Z"
@@ -1515,7 +1646,7 @@ Authorization: ******
 
 ### 4. Update Column
 
-Update a column's board assignment, name, ordering, or status.
+Update a column's board assignment, name or ordering.
 
 **Endpoint:** `PUT /columns/:id`
 
@@ -1531,10 +1662,11 @@ Authorization: ******
 ```json
 {
   "name": "Doing",
-  "order": 2,
-  "status": "active"
+  "order": 2
 }
 ```
+
+**Errors:** `409` when `boardId` changes while the column still has mapped statuses (remove them first).
 
 **Response:** `200 OK`
 ```json
@@ -1545,7 +1677,6 @@ Authorization: ******
     "boardId": "60c72b2f9b1d8b001c8e4b5a",
     "name": "Doing",
     "order": 2,
-    "status": "active",
     "version": 2,
     "createdAt": "2026-07-17T10:00:00Z",
     "updatedAt": "2026-07-17T11:00:00Z"
@@ -1557,7 +1688,8 @@ Authorization: ******
 
 ### 5. Delete Column
 
-Delete a column by ID.
+Delete a column by ID. Its status mappings are removed in the same transaction,
+so those statuses can be mapped to another column of the board.
 
 **Endpoint:** `DELETE /columns/:id`
 
@@ -1581,7 +1713,86 @@ Authorization: ******
 
 ---
 
+### 6. Get Column Statuses
+
+List the statuses mapped to a column, in column order.
+
+**Endpoint:** `GET /columns/:id/statuses`
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`  
+**Required Permissions:** `COLUMN_GET`
+
+**Response:** `200 OK`
+```json
+{
+  "status": 200,
+  "data": [
+    {
+      "id": "60c72b2f9b1d8b001c8e4b80",
+      "columnId": "60c72b2f9b1d8b001c8e4b5d",
+      "statusId": "60c72b2f9b1d8b001c8e4b71",
+      "order": 0,
+      "status": {
+        "id": "60c72b2f9b1d8b001c8e4b71",
+        "projectId": "60c72b2f9b1d8b001c8e4b5b",
+        "name": "In Progress",
+        "code": "in_progress",
+        "color": "#FFA726",
+        "order": 2,
+        "isDefault": false,
+        "version": 1,
+        "createdAt": "2026-07-17T10:00:00Z",
+        "updatedAt": null
+      },
+      "createdAt": "2026-07-17T10:00:00Z",
+      "updatedAt": null
+    }
+  ]
+}
+```
+
+---
+
+### 7. Map Status to Column
+
+**Endpoint:** `POST /columns/:id/statuses`
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`  
+**Required Permissions:** `COLUMN_EDIT`
+
+**Request:**
+```json
+{
+  "statusId": "60c72b2f9b1d8b001c8e4b70",
+  "order": 1
+}
+```
+
+- `order` (optional): position inside the column; appended at the end when omitted.
+
+**Response:** `201 Created` — same shape as one item of *Get Column Statuses*.
+
+**Errors:** `400` status belongs to another project · `409` status already mapped to a column of this board (each status can be in only one column per board) · `404` column or status not found
+
+---
+
+### 8. Unmap Status from Column
+
+**Endpoint:** `DELETE /columns/:id/statuses/:statusId`
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`  
+**Required Permissions:** `COLUMN_EDIT`
+
+**Errors:** `409` cards in this column still use the status · `404` mapping not found
+
+To move a status to another column: unmap it, then map it to the target column.
+
+---
+
 ## 🃏 Cards Endpoints
+
+Every card has exactly one `statusId`. The status must belong to the board's
+project and be mapped to the card's column.
 
 ### 1. Create Card
 
@@ -1604,12 +1815,16 @@ Authorization: ******
   "title": "Build dashboard widgets",
   "description": "Create KPI panels for the analytics page",
   "order": 0,
-  "status": "todo",
+  "statusId": "60c72b2f9b1d8b001c8e4b72",
   "assigneeId": "507f1f77bcf86cd799439011",
   "assignerId": "507f1f77bcf86cd799439012",
   "points": 5
 }
 ```
+
+- `statusId` (optional): must be mapped to `columnId`. When omitted the card gets
+  the project default status if the column contains it, otherwise the column's
+  first status.
 
 **Response:** `201 Created`
 ```json
@@ -1621,7 +1836,7 @@ Authorization: ******
     "title": "Build dashboard widgets",
     "description": "Create KPI panels for the analytics page",
     "order": 0,
-    "status": "todo",
+    "statusId": "60c72b2f9b1d8b001c8e4b72",
     "assigneeId": "507f1f77bcf86cd799439011",
     "assignerId": "507f1f77bcf86cd799439012",
     "points": 5,
@@ -1631,6 +1846,8 @@ Authorization: ******
   }
 }
 ```
+
+**Errors:** `400` status not mapped to the column, or from another project · `409` the column has no statuses mapped
 
 ---
 
@@ -1653,6 +1870,7 @@ Authorization: ******
 - `page` (optional): Page number (default: 1)
 - `limit` (optional): Items per page (default: 10)
 - `title` (optional): Filter by card title
+- `statusId` (optional): Filter by status
 
 **Example:** `GET /cards?columnId=60c72b2f9b1d8b001c8e4b5d&page=1&limit=10`
 
@@ -1667,7 +1885,7 @@ Authorization: ******
       "title": "Build dashboard widgets",
       "description": "Create KPI panels for the analytics page",
       "order": 0,
-      "status": "todo",
+      "statusId": "60c72b2f9b1d8b001c8e4b72",
       "assigneeId": "507f1f77bcf86cd799439011",
       "assignerId": "507f1f77bcf86cd799439012",
       "points": 5,
@@ -1708,7 +1926,7 @@ Authorization: ******
     "title": "Build dashboard widgets",
     "description": "Create KPI panels for the analytics page",
     "order": 0,
-    "status": "todo",
+    "statusId": "60c72b2f9b1d8b001c8e4b72",
     "assigneeId": "507f1f77bcf86cd799439011",
     "assignerId": "507f1f77bcf86cd799439012",
     "points": 5,
@@ -1739,13 +1957,18 @@ Authorization: ******
 ```json
 {
   "title": "Build dashboard widgets v2",
-  "status": "in_progress",
+  "statusId": "60c72b2f9b1d8b001c8e4b73",
   "assigneeId": "507f1f77bcf86cd799439013",
   "assignerId": "507f1f77bcf86cd799439012",
   "points": 8,
   "order": 1
 }
 ```
+
+**Status rules:**
+- `statusId` must be mapped to the card's (new) column.
+- Changing `columnId` without `statusId` keeps the current status if the target
+  column contains it, otherwise uses the target column's default/first status.
 
 **Response:** `200 OK`
 ```json
@@ -1757,7 +1980,7 @@ Authorization: ******
     "title": "Build dashboard widgets v2",
     "description": "Create KPI panels for the analytics page",
     "order": 1,
-    "status": "in_progress",
+    "statusId": "60c72b2f9b1d8b001c8e4b73",
     "assigneeId": "507f1f77bcf86cd799439013",
     "assignerId": "507f1f77bcf86cd799439012",
     "points": 8,
@@ -1861,6 +2084,9 @@ Move a card from one column to another and reorder it at the same time.
 Authorization: ******
 ```
 
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`  
+**Required Permissions:** `CARD_EDIT`
+
 **Request:**
 ```json
 {
@@ -1868,7 +2094,7 @@ Authorization: ******
   "sourceColumnId": "507f1f77bcf86cd799439050",
   "targetColumnId": "507f1f77bcf86cd799439051",
   "newIndex": 1,
-  "status": "done"
+  "statusId": "60c72b2f9b1d8b001c8e4b74"
 }
 ```
 
@@ -1876,7 +2102,8 @@ Authorization: ******
 - Removes the card from its source column and reindexes the remaining cards.
 - Inserts the card into the target column at the requested index.
 - Reindexes cards in both columns to keep order numbers sequential.
-- Updates the card status when a new status is supplied.
+- Runs in a transaction, so both columns are reindexed atomically.
+- `statusId` (optional) must be mapped to the target column. When omitted, the card keeps its status if the target column contains it; otherwise it gets the target column's default (or first) status.
 
 **Response:** `200 OK`
 ```json
@@ -1886,7 +2113,7 @@ Authorization: ******
     "id": "507f1f77bcf86cd799439090",
     "columnId": "507f1f77bcf86cd799439051",
     "title": "Ship release candidate",
-    "status": "done",
+    "statusId": "60c72b2f9b1d8b001c8e4b74",
     "order": 1
   }
 }

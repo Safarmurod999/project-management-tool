@@ -22,8 +22,12 @@ import {
   RepositorySymbols,
   UsecaseSymbols,
 } from 'src/infrastructure/dependency-injection';
+import { StatusesModule } from '../statuses/statuses.module';
+import { ColumnsModule } from '../columns/columns.module';
+import { BoardsModule } from '../boards/boards.module';
 
 @Module({
+  imports: [StatusesModule, ColumnsModule, BoardsModule],
   controllers: [CardController],
   providers: [
     {

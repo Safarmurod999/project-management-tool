@@ -12,3 +12,4 @@ export * from './project.controller';
 export * from './board.controller';
 export * from './column.controller';
 export * from './card.controller';
+export * from './status.controller';

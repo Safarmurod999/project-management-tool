@@ -8,4 +8,6 @@ export * from './memberships';
 export * from './boards';
 export * from './columns';
 export * from './cards';
+export * from './statuses';
+export * from './column-statuses';
 export * from './otp';

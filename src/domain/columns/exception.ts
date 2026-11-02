@@ -23,6 +23,13 @@ export class ColumnException extends Error {
     return new ColumnException(`Board with ID ${boardId} not found.`, 404);
   }
 
+  static CannotMoveColumnWithStatuses(id: string): ColumnException {
+    return new ColumnException(
+      `Column with ID ${id} has mapped statuses and cannot be moved to another board. Remove its statuses first.`,
+      409,
+    );
+  }
+
   static ColumnAlreadyExists(name: string, boardId: string): ColumnException {
     return new ColumnException(
       `Column with name "${name}" already exists in board ${boardId}.`,

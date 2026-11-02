@@ -11,7 +11,6 @@ export class CreateColumnPresenterImpl implements CreateColumnPresenter {
       boardId: column.boardId,
       name: column.name,
       order: column.order,
-      status: column.status,
       version: column.version,
       createdAt: column.createdAt,
       updatedAt: column.updatedAt,

@@ -9,4 +9,5 @@ export const FactorySymbols = {
   BoardFactory: Symbol.for('BoardFactory'),
   ColumnFactory: Symbol.for('ColumnFactory'),
   CardFactory: Symbol.for('CardFactory'),
+  StatusFactory: Symbol.for('StatusFactory'),
 };

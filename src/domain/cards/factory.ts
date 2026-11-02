@@ -1,5 +1,3 @@
-import { CardStatus } from 'src/infrastructure/common/enum';
-import { Card } from './entity';
 import { CardException } from './exception';
 
 export interface CardStruct {
@@ -8,7 +6,7 @@ export interface CardStruct {
   title: string;
   description: string | null;
   order: number;
-  status: CardStatus;
+  statusId: string;
   assigneeId?: string | null;
   assignerId?: string | null;
   points?: number;
@@ -18,11 +16,15 @@ export interface CardStruct {
 }
 
 export interface CardFactory {
-  create(data: Omit<CardStruct, 'id' | 'createdAt' | 'updatedAt' | 'version'>): CardStruct;
+  create(
+    data: Omit<CardStruct, 'id' | 'createdAt' | 'updatedAt' | 'version'>,
+  ): CardStruct;
 }
 
 export class CardFactoryImpl implements CardFactory {
-  create(data: Omit<CardStruct, 'id' | 'createdAt' | 'updatedAt' | 'version'>): CardStruct {
+  create(
+    data: Omit<CardStruct, 'id' | 'createdAt' | 'updatedAt' | 'version'>,
+  ): CardStruct {
     if (!data.title || data.title.trim().length === 0) {
       throw CardException.InvalidTitle();
     }

@@ -343,17 +343,62 @@ async getProtectedData(@Request() req) {
 ```
 
 #### Column
+A visual lane of a board. It carries no workflow state; board lifecycle lives in
+`Board.status` (`BoardStatus`) and card workflow lives in `Status`.
 ```typescript
 {
   _id: ObjectId,
   boardId: ObjectId (ref: Board),
   name: string,
   order: number,
-  status: 'active' | 'archived',
   version: number,
   createdAt: Date,
   updatedAt: Date
 }
+```
+
+#### Status
+Project-scoped workflow state, shared by all boards of the project.
+```typescript
+{
+  _id: ObjectId,
+  projectId: ObjectId (ref: Project),
+  name: string,
+  code: string,          // unique per project, /^[a-z0-9_]+$/
+  color: string,         // #RRGGBB
+  order: number,
+  isDefault: boolean,    // status for new cards; at most one per project
+  version: number,
+  createdAt: Date,
+  updatedAt: Date
+}
+// unique index: { projectId, code }
+```
+
+#### ColumnStatus
+Maps a status onto a column. A column holds many statuses; a status sits in at
+most one column per board.
+```typescript
+{
+  _id: ObjectId,
+  boardId: ObjectId (ref: Board),   // denormalized from the column, persistence only
+  columnId: ObjectId (ref: Column),
+  statusId: ObjectId (ref: Status),
+  order: number,                    // position inside the column
+  createdAt: Date,
+  updatedAt: Date
+}
+// unique index: { boardId, statusId }
+```
+
+```
+Project 1──* Status
+   │            │
+   1            │ (mapped per board)
+   *            *
+ Board 1──* Column 1──* ColumnStatus *──1 Status
+                │
+                1──* Card ──(statusId)──> Status   // must be mapped to Card.columnId
 ```
 
 #### Card
@@ -364,7 +409,7 @@ async getProtectedData(@Request() req) {
   title: string,
   description?: string | null,
   order: number,
-  status: 'todo' | 'in_progress' | 'done' | 'archived',
+  statusId: ObjectId (ref: Status),   // same project as the board, mapped to columnId
   assigneeId?: ObjectId | null (ref: User),
   assignerId?: ObjectId | null (ref: User),
   points: number (default: 0, min: 0),

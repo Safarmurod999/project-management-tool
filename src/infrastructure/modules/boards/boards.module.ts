@@ -24,9 +24,11 @@ import {
 } from 'src/infrastructure/dependency-injection';
 
 import { ProjectsModule } from '../projects/projects.module';
+import { StatusesModule } from '../statuses/statuses.module';
+import { ColumnsModule } from '../columns/columns.module';
 
 @Module({
-  imports: [ProjectsModule],
+  imports: [ProjectsModule, StatusesModule, ColumnsModule],
   controllers: [BoardController],
   providers: [
     {

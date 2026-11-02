@@ -19,6 +19,7 @@ import { Cache } from 'src/infrastructure/cache/cache';
 import { RedisCache } from 'src/infrastructure/cache/redis/cache';
 import { Database } from 'src/infrastructure/database/database';
 import { MongoDb } from 'src/infrastructure/database/mongodb/mongo';
+import { MongoTransactionManager } from 'src/infrastructure/database/mongodb/transaction-manager';
 import {
   CacheSymbols,
   ClientSymbols,
@@ -77,9 +78,14 @@ import { TokenServiceImpl } from 'src/infrastructure/helpers';
       provide: ServiceSymbols.TokenService,
       useClass: TokenServiceImpl,
     },
+    {
+      provide: ServiceSymbols.TransactionManager,
+      useClass: MongoTransactionManager,
+    },
   ],
   exports: [
     DatabaseSymbols.MongoDb,
+    ServiceSymbols.TransactionManager,
     CacheSymbols.RedisCache,
     ClientSymbols.EmailClient,
     ConfigSymbols.EmailClient,

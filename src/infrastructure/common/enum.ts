@@ -35,6 +35,12 @@ export enum PermissionCode {
   CARD_EDIT = 'card:edit',
   CARD_DELETE = 'card:delete',
 
+  // STATUS
+  STATUS_CREATE = 'status:create',
+  STATUS_GET = 'status:get',
+  STATUS_EDIT = 'status:edit',
+  STATUS_DELETE = 'status:delete',
+
   // TEAM
   TEAM_CREATE = 'team:create',
   TEAM_GET = 'team:get',
@@ -106,10 +112,14 @@ export enum BoardStatus {
 }
 
 export enum CardStatus {
+  PLANNING = 'planning',
   TODO = 'todo',
   IN_PROGRESS = 'in_progress',
+  PENDING = 'pending',
+  TESTING = 'testing',
+  REJECTED = 'rejected',
   DONE = 'done',
-  ARCHIVED = 'archived',
+  TO_REALIZE = 'to_realize',
 }
 
 export enum ScopeType {

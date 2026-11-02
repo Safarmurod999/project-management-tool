@@ -29,9 +29,10 @@ import {
 import { UserModule } from '../users/user.module';
 import { RolesModule } from '../roles/roles.module';
 import { MembershipsModule } from '../memberships/memberships.module';
+import { StatusesModule } from '../statuses/statuses.module';
 
 @Module({
-  imports: [UserModule, RolesModule, MembershipsModule],
+  imports: [UserModule, RolesModule, MembershipsModule, StatusesModule],
   controllers: [ProjectController],
   providers: [
     {

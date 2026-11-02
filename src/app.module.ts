@@ -14,6 +14,7 @@ import {
   BoardsModule,
   ColumnsModule,
   CardsModule,
+  StatusesModule,
   QueueModule,
 } from './infrastructure/modules';
 
@@ -34,6 +35,7 @@ import {
     BoardsModule,
     ColumnsModule,
     CardsModule,
+    StatusesModule,
   ],
 })
 export class AppModule {}

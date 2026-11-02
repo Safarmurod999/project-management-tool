@@ -13,19 +13,23 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
+  AddColumnStatusUsecase,
   CreateColumnUsecase,
   DeleteColumnUsecase,
   FindColumnByIdUsecase,
+  GetColumnStatusesUsecase,
   GetColumnsUsecase,
+  RemoveColumnStatusUsecase,
   UpdateColumnUsecase,
 } from 'src/application';
-import { BoardStatus, PermissionCode, RoleCode } from 'src/infrastructure/common/enum';
+import { PermissionCode, RoleCode } from 'src/infrastructure/common/enum';
 import { PresenterSymbols } from 'src/infrastructure/dependency-injection/presenters/symbol';
 import { UsecaseSymbols } from 'src/infrastructure/dependency-injection/usecases/symbol';
 import {
   CreateColumnPresenter,
   DeleteColumnPresenter,
   FindColumnByIdPresenter,
+  GetColumnStatusesPresenter,
   GetColumnsPresenter,
   UpdateColumnPresenter,
 } from '../presenters';
@@ -37,15 +41,19 @@ export class CreateColumnDto {
   boardId: string;
   name: string;
   order?: number;
-  status?: BoardStatus;
+  statusIds?: string[];
 }
 
 export class UpdateColumnDto {
   boardId?: string;
   name?: string;
   order?: number;
-  status?: BoardStatus;
   version?: number;
+}
+
+export class AddColumnStatusDto {
+  statusId: string;
+  order?: number;
 }
 
 export class GetColumnsQuery {
@@ -79,6 +87,14 @@ export class ColumnController {
     private readonly deleteColumnUsecase: DeleteColumnUsecase,
     @Inject(PresenterSymbols.Column.DeleteColumnPresenter)
     private readonly deleteColumnPresenter: DeleteColumnPresenter,
+    @Inject(UsecaseSymbols.Column.GetColumnStatusesUsecase)
+    private readonly getColumnStatusesUsecase: GetColumnStatusesUsecase,
+    @Inject(UsecaseSymbols.Column.AddColumnStatusUsecase)
+    private readonly addColumnStatusUsecase: AddColumnStatusUsecase,
+    @Inject(UsecaseSymbols.Column.RemoveColumnStatusUsecase)
+    private readonly removeColumnStatusUsecase: RemoveColumnStatusUsecase,
+    @Inject(PresenterSymbols.Column.GetColumnStatusesPresenter)
+    private readonly getColumnStatusesPresenter: GetColumnStatusesPresenter,
   ) {}
 
   @Post()
@@ -90,7 +106,7 @@ export class ColumnController {
         boardId: dto.boardId,
         name: dto.name,
         order: dto.order,
-        status: dto.status,
+        statusIds: dto.statusIds,
       });
 
       res.status(HttpStatus.CREATED).send({
@@ -155,6 +171,83 @@ export class ColumnController {
     }
   }
 
+  @Get(':id/statuses')
+  @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN)
+  @Permissions(PermissionCode.COLUMN_GET)
+  async getStatuses(@Res() res: Response, @Param('id') id: string) {
+    try {
+      const items = await this.getColumnStatusesUsecase.execute({
+        columnId: id,
+      });
+
+      res.status(HttpStatus.OK).send({
+        status: HttpStatus.OK,
+        data: this.getColumnStatusesPresenter.present(items),
+      });
+    } catch (error: any) {
+      res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
+        status: error.statusCode || HttpStatus.BAD_REQUEST,
+        success: false,
+        message: error.message,
+      });
+    }
+  }
+
+  @Post(':id/statuses')
+  @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN)
+  @Permissions(PermissionCode.COLUMN_EDIT)
+  async addStatus(
+    @Res() res: Response,
+    @Param('id') id: string,
+    @Body() dto: AddColumnStatusDto,
+  ) {
+    try {
+      const item = await this.addColumnStatusUsecase.execute({
+        columnId: id,
+        statusId: dto.statusId,
+        order: dto.order,
+      });
+
+      res.status(HttpStatus.CREATED).send({
+        status: HttpStatus.CREATED,
+        data: this.getColumnStatusesPresenter.presentOne(item),
+      });
+    } catch (error: any) {
+      res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
+        status: error.statusCode || HttpStatus.BAD_REQUEST,
+        success: false,
+        message: error.message,
+      });
+    }
+  }
+
+  @Delete(':id/statuses/:statusId')
+  @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN)
+  @Permissions(PermissionCode.COLUMN_EDIT)
+  async removeStatus(
+    @Res() res: Response,
+    @Param('id') id: string,
+    @Param('statusId') statusId: string,
+  ) {
+    try {
+      const deletedId = await this.removeColumnStatusUsecase.execute({
+        columnId: id,
+        statusId,
+      });
+
+      res.status(HttpStatus.OK).send({
+        status: HttpStatus.OK,
+        data: { id: deletedId },
+      });
+    } catch (error: any) {
+      res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
+        status: error.statusCode || HttpStatus.BAD_REQUEST,
+        success: false,
+        message: error.message,
+      });
+    }
+  }
+
   @Put(':id')
   @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN)
   @Permissions(PermissionCode.COLUMN_EDIT)
@@ -169,7 +262,6 @@ export class ColumnController {
         boardId: dto.boardId,
         name: dto.name,
         order: dto.order,
-        status: dto.status,
         version: dto.version,
       });
 

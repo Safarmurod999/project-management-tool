@@ -12,8 +12,11 @@
 | **Team** | A grouping of Users working together. Owns one or multiple Projects. |
 | **Project** | A high-level container for work, belonging to a Team. Owns one or multiple Boards. |
 | **Board** | A specific workspace within a Project (e.g., a Kanban board or Sprint board). |
-| **Column** | A workflow stage inside a Board (e.g., To Do, In Progress, Done) used to group related work items. |
-| **Card** | A single actionable task or work item contained within a Column on a Board. It can include an assignee, assigner, and story-point estimate. |
+| **Column** | A visual lane inside a Board (e.g., To Do, In Progress, Done). It has no workflow state of its own; it displays the Statuses mapped to it. |
+| **Status** | A project-scoped workflow state (e.g., `todo`, `testing`, `done`) with a name, code, color and order. Shared by every Board of the Project; one Status per Project is the default for new Cards. |
+| **ColumnStatus** | The mapping of a Status onto a Column. A Column can hold many Statuses; a Status belongs to at most one Column per Board. |
+| **Board Status** | The lifecycle of a Board itself (`active` / `archived`), unrelated to card workflow. |
+| **Card** | A single actionable task or work item contained within a Column on a Board. It always has one Status, which must be mapped to its Column. It can include an assignee, assigner, and story-point estimate. |
 | **Assignee** | The user currently responsible for completing a task or card. |
 | **Assigner** | The user who assigned or delegated a task to another team member. |
 | **Story Points** | A relative estimate of the effort or complexity required to complete a task. |

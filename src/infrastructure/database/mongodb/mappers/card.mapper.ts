@@ -9,7 +9,7 @@ export class CardMapper {
       data.title,
       data.description,
       data.order,
-      data.status,
+      data.statusId.toString(),
       data.assigneeId?.toString() ?? null,
       data.assignerId?.toString() ?? null,
       data.points ?? 0,

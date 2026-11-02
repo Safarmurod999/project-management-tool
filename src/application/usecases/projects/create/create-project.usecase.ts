@@ -1,6 +1,14 @@
 import { Inject } from '@nestjs/common';
-import { MembershipRepository, Project, ProjectRepository } from 'src/domain';
+import {
+  buildDefaultStatuses,
+  MembershipRepository,
+  Project,
+  ProjectRepository,
+  StatusRepository,
+} from 'src/domain';
+import { TransactionManager } from 'src/application/services';
 import { RepositorySymbols } from 'src/infrastructure/dependency-injection/repositories/symbol';
+import { ServiceSymbols } from 'src/infrastructure/dependency-injection/services/symbol';
 import { CreateProjectUsecase, CreateProjectUsecaseParams } from './types';
 import { ScopeType } from 'src/infrastructure/common/enum';
 
@@ -11,6 +19,12 @@ export class CreateProjectUsecaseImpl implements CreateProjectUsecase {
 
     @Inject(RepositorySymbols.MembershipRepository)
     private readonly membershipRepository: MembershipRepository,
+
+    @Inject(RepositorySymbols.StatusRepository)
+    private readonly statusRepository: StatusRepository,
+
+    @Inject(ServiceSymbols.TransactionManager)
+    private readonly transactionManager: TransactionManager,
   ) {}
 
   async execute(params: CreateProjectUsecaseParams): Promise<Project> {
@@ -25,16 +39,22 @@ export class CreateProjectUsecaseImpl implements CreateProjectUsecase {
       roleId: params.roleId,
     };
 
-    const projectData = await this.projectRepository.create(project);
+    return await this.transactionManager.run(async () => {
+      const projectData = await this.projectRepository.create(project);
 
-    await this.membershipRepository.create({
-      userId: String(project.userId),
-      scopeType: ScopeType.PROJECT,
-      scopeId: projectData.id,
-      roleId: project.roleId,
-      override: true,
+      await this.membershipRepository.create({
+        userId: String(project.userId),
+        scopeType: ScopeType.PROJECT,
+        scopeId: projectData.id,
+        roleId: project.roleId,
+        override: true,
+      });
+
+      await this.statusRepository.createMany(
+        buildDefaultStatuses(projectData.id),
+      );
+
+      return projectData;
     });
-
-    return projectData;
   }
 }
