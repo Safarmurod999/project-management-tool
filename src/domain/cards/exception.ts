@@ -54,6 +54,58 @@ export class CardException extends Error {
     );
   }
 
+  static StatusNotInWorkflow(
+    statusId: string,
+    workflowId: string,
+  ): CardException {
+    return new CardException(
+      `Status ${statusId} is not part of workflow ${workflowId}.`,
+      400,
+    );
+  }
+
+  static NoAllowedStatusInColumn(columnId: string): CardException {
+    return new CardException(
+      `No status of column ${columnId} can be reached under the project workflow.`,
+      409,
+    );
+  }
+
+  static StatusNotOnBoard(statusId: string, boardId: string): CardException {
+    return new CardException(
+      `Status ${statusId} is not mapped to any column of board ${boardId}.`,
+      409,
+    );
+  }
+
+  static CurrentStatusMismatch(
+    cardId: string,
+    expectedStatusId: string,
+  ): CardException {
+    return new CardException(
+      `Card ${cardId} is no longer in status ${expectedStatusId}. Reload it and try again.`,
+      409,
+    );
+  }
+
+  static TransitionFromMismatch(
+    cardId: string,
+    currentStatusId: string,
+    fromStatusId: string,
+  ): CardException {
+    return new CardException(
+      `Card ${cardId} is in status ${currentStatusId}, but the transition starts at ${fromStatusId}.`,
+      409,
+    );
+  }
+
+  static TransitionTargetRequired(): CardException {
+    return new CardException(
+      'Provide either transitionId or toStatusId.',
+      400,
+    );
+  }
+
   static CardAlreadyExists(title: string, columnId: string): CardException {
     return new CardException(
       `Card with title "${title}" already exists in column ${columnId}.`,

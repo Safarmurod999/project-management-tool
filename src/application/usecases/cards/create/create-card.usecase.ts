@@ -6,6 +6,9 @@ import {
   ColumnRepository,
   ColumnStatusRepository,
   StatusRepository,
+  WorkflowRepository,
+  WorkflowStatusRepository,
+  WorkflowTransitionRepository,
 } from 'src/domain';
 import { RepositorySymbols } from 'src/infrastructure/dependency-injection/repositories/symbol';
 import { CardStatusResolverDeps, resolveCardStatusId } from '../shared';
@@ -23,6 +26,12 @@ export class CreateCardUsecaseImpl implements CreateCardUsecase {
     private readonly statusRepository: StatusRepository,
     @Inject(RepositorySymbols.ColumnStatusRepository)
     private readonly columnStatusRepository: ColumnStatusRepository,
+    @Inject(RepositorySymbols.WorkflowRepository)
+    private readonly workflowRepository: WorkflowRepository,
+    @Inject(RepositorySymbols.WorkflowStatusRepository)
+    private readonly workflowStatusRepository: WorkflowStatusRepository,
+    @Inject(RepositorySymbols.WorkflowTransitionRepository)
+    private readonly workflowTransitionRepository: WorkflowTransitionRepository,
   ) {}
 
   async execute(params: CreateCardUsecaseParams): Promise<Card> {
@@ -49,6 +58,9 @@ export class CreateCardUsecaseImpl implements CreateCardUsecase {
       boardRepository: this.boardRepository,
       statusRepository: this.statusRepository,
       columnStatusRepository: this.columnStatusRepository,
+      workflowRepository: this.workflowRepository,
+      workflowStatusRepository: this.workflowStatusRepository,
+      workflowTransitionRepository: this.workflowTransitionRepository,
     };
   }
 }

@@ -13,7 +13,10 @@ export type CardCreateParams = Omit<
   'id' | 'createdAt' | 'updatedAt' | 'version'
 >;
 
-export type CardUpdateParams = Partial<Omit<CardStruct, 'createdAt'>>;
+export type CardUpdateParams = Partial<Omit<CardStruct, 'createdAt'>> & {
+  /** When set, the update fails if the card's stored status differs (checked inside the write). */
+  expectedStatusId?: string;
+};
 
 export interface CardGetQuery {
   page?: number;
@@ -36,6 +39,8 @@ export interface CardReorderParams {
   targetColumnId: string;
   newIndex: number;
   statusId?: string;
+  /** When set, the move fails if the card's stored status differs (checked inside the write). */
+  expectedStatusId?: string;
 }
 
 export interface CardRepository {
@@ -167,6 +172,16 @@ export class CardRepositoryImpl implements CardRepository {
       throw CardException.CardNotFound(card.id);
     }
 
+    if (
+      card.expectedStatusId &&
+      existingCard.statusId.toString() !== card.expectedStatusId
+    ) {
+      throw CardException.CurrentStatusMismatch(
+        card.id,
+        card.expectedStatusId,
+      );
+    }
+
     if (card.columnId) {
       const column = await this.database
         .columnModel()
@@ -258,6 +273,16 @@ export class CardRepositoryImpl implements CardRepository {
 
     if (!existingCard) {
       throw CardException.CardNotFound(cardId);
+    }
+
+    if (
+      params.expectedStatusId &&
+      existingCard.statusId.toString() !== params.expectedStatusId
+    ) {
+      throw CardException.CurrentStatusMismatch(
+        cardId,
+        params.expectedStatusId,
+      );
     }
 
     if (existingCard.columnId.toString() !== sourceColumnId) {

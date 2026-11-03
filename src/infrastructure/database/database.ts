@@ -12,6 +12,9 @@ import {
   CardDocument,
   StatusDocument,
   ColumnStatusDocument,
+  WorkflowDocument,
+  WorkflowStatusDocument,
+  WorkflowTransitionDocument,
 } from './mongodb/models';
 
 export interface Database {
@@ -31,4 +34,7 @@ export interface Database {
   cardModel(): Model<CardDocument>;
   statusModel(): Model<StatusDocument>;
   columnStatusModel(): Model<ColumnStatusDocument>;
+  workflowModel(): Model<WorkflowDocument>;
+  workflowStatusModel(): Model<WorkflowStatusDocument>;
+  workflowTransitionModel(): Model<WorkflowTransitionDocument>;
 }

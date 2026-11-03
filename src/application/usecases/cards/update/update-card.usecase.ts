@@ -7,8 +7,13 @@ import {
   ColumnRepository,
   ColumnStatusRepository,
   StatusRepository,
+  WorkflowRepository,
+  WorkflowStatusRepository,
+  WorkflowTransitionRepository,
 } from 'src/domain';
+import { TransactionManager } from 'src/application/services';
 import { RepositorySymbols } from 'src/infrastructure/dependency-injection/repositories/symbol';
+import { ServiceSymbols } from 'src/infrastructure/dependency-injection/services/symbol';
 import { CardStatusResolverDeps, resolveCardStatusId } from '../shared';
 import { UpdateCardUsecase, UpdateCardUsecaseParams } from './types';
 
@@ -24,6 +29,14 @@ export class UpdateCardUsecaseImpl implements UpdateCardUsecase {
     private readonly statusRepository: StatusRepository,
     @Inject(RepositorySymbols.ColumnStatusRepository)
     private readonly columnStatusRepository: ColumnStatusRepository,
+    @Inject(RepositorySymbols.WorkflowRepository)
+    private readonly workflowRepository: WorkflowRepository,
+    @Inject(RepositorySymbols.WorkflowStatusRepository)
+    private readonly workflowStatusRepository: WorkflowStatusRepository,
+    @Inject(RepositorySymbols.WorkflowTransitionRepository)
+    private readonly workflowTransitionRepository: WorkflowTransitionRepository,
+    @Inject(ServiceSymbols.TransactionManager)
+    private readonly transactionManager: TransactionManager,
   ) {}
 
   async execute(params: UpdateCardUsecaseParams): Promise<Card> {
@@ -57,18 +70,26 @@ export class UpdateCardUsecaseImpl implements UpdateCardUsecase {
       });
     }
 
-    return await this.cardRepository.update({
-      id: params.id,
-      columnId: params.columnId,
-      title: params.title,
-      description: params.description,
-      order: params.order,
-      statusId,
-      assigneeId: params.assigneeId,
-      assignerId: params.assignerId,
-      points: params.points,
-      version: params.version,
-    });
+    const statusChanged =
+      statusId !== undefined && statusId !== existingCard.statusId;
+
+    // A status change was validated against the status read above; the write
+    // runs in a transaction and is refused if the card left that status since.
+    return await this.transactionManager.run(() =>
+      this.cardRepository.update({
+        id: params.id,
+        columnId: params.columnId,
+        title: params.title,
+        description: params.description,
+        order: params.order,
+        statusId,
+        assigneeId: params.assigneeId,
+        assignerId: params.assignerId,
+        points: params.points,
+        version: params.version,
+        expectedStatusId: statusChanged ? existingCard.statusId : undefined,
+      }),
+    );
   }
 
   private get statusDeps(): CardStatusResolverDeps {
@@ -77,6 +98,9 @@ export class UpdateCardUsecaseImpl implements UpdateCardUsecase {
       boardRepository: this.boardRepository,
       statusRepository: this.statusRepository,
       columnStatusRepository: this.columnStatusRepository,
+      workflowRepository: this.workflowRepository,
+      workflowStatusRepository: this.workflowStatusRepository,
+      workflowTransitionRepository: this.workflowTransitionRepository,
     };
   }
 }

@@ -12,4 +12,7 @@ export const RepositorySymbols = {
   CardRepository: Symbol.for('CardRepository'),
   StatusRepository: Symbol.for('StatusRepository'),
   ColumnStatusRepository: Symbol.for('ColumnStatusRepository'),
+  WorkflowRepository: Symbol.for('WorkflowRepository'),
+  WorkflowStatusRepository: Symbol.for('WorkflowStatusRepository'),
+  WorkflowTransitionRepository: Symbol.for('WorkflowTransitionRepository'),
 };

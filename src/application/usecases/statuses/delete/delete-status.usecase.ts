@@ -4,6 +4,8 @@ import {
   ColumnStatusRepository,
   StatusException,
   StatusRepository,
+  WorkflowStatusRepository,
+  WorkflowTransitionRepository,
 } from 'src/domain';
 import { RealtimeService, TransactionManager } from 'src/application/services';
 import { RepositorySymbols } from 'src/infrastructure/dependency-injection/repositories/symbol';
@@ -20,6 +22,12 @@ export class DeleteStatusUsecaseImpl implements DeleteStatusUsecase {
 
     @Inject(RepositorySymbols.CardRepository)
     private readonly cardRepository: CardRepository,
+
+    @Inject(RepositorySymbols.WorkflowStatusRepository)
+    private readonly workflowStatusRepository: WorkflowStatusRepository,
+
+    @Inject(RepositorySymbols.WorkflowTransitionRepository)
+    private readonly workflowTransitionRepository: WorkflowTransitionRepository,
 
     @Inject(ServiceSymbols.TransactionManager)
     private readonly transactionManager: TransactionManager,
@@ -42,6 +50,8 @@ export class DeleteStatusUsecaseImpl implements DeleteStatusUsecase {
 
     const deletedId = await this.transactionManager.run(async () => {
       await this.columnStatusRepository.deleteByStatusId(params.id);
+      await this.workflowTransitionRepository.deleteByStatusId(params.id);
+      await this.workflowStatusRepository.deleteByStatusId(params.id);
       return await this.statusRepository.delete(params.id);
     });
 

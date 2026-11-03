@@ -19,6 +19,7 @@ import {
   FindCardByIdUsecase,
   GetCardsUsecase,
   ReorderCardUsecase,
+  TransitionCardUsecase,
   UpdateCardUsecase,
 } from 'src/application';
 import { PermissionCode, RoleCode } from 'src/infrastructure/common/enum';
@@ -74,6 +75,13 @@ export class ReorderCardDto {
   statusId?: string;
 }
 
+export class TransitionCardDto {
+  /** The workflow rule to apply; must start at the card's current status. */
+  transitionId?: string;
+  /** Alternative to transitionId: the target status. */
+  toStatusId?: string;
+}
+
 @Controller('cards')
 @UseGuards(RolesPermissionsGuard)
 export class CardController {
@@ -94,6 +102,8 @@ export class CardController {
     private readonly updateCardUsecase: UpdateCardUsecase,
     @Inject(UsecaseSymbols.Card.ReorderCardUsecase)
     private readonly reorderCardUsecase: ReorderCardUsecase,
+    @Inject(UsecaseSymbols.Card.TransitionCardUsecase)
+    private readonly transitionCardUsecase: TransitionCardUsecase,
     @Inject(PresenterSymbols.Card.UpdateCardPresenter)
     private readonly updateCardPresenter: UpdateCardPresenter,
     @Inject(UsecaseSymbols.Card.DeleteCardUsecase)
@@ -227,6 +237,34 @@ export class CardController {
         targetColumnId: dto.targetColumnId,
         newIndex: dto.newIndex,
         statusId: dto.statusId,
+      });
+
+      res.status(HttpStatus.OK).send({
+        status: HttpStatus.OK,
+        data: this.updateCardPresenter.present(card),
+      });
+    } catch (error: any) {
+      res.status(error.statusCode || HttpStatus.BAD_REQUEST).send({
+        status: error.statusCode || HttpStatus.BAD_REQUEST,
+        success: false,
+        message: error.message,
+      });
+    }
+  }
+
+  @Post(':id/transition')
+  @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
+  @Permissions(PermissionCode.CARD_EDIT)
+  async transition(
+    @Res() res: Response,
+    @Param('id') id: string,
+    @Body() dto: TransitionCardDto,
+  ) {
+    try {
+      const card = await this.transitionCardUsecase.execute({
+        cardId: id,
+        transitionId: dto.transitionId,
+        toStatusId: dto.toStatusId,
       });
 
       res.status(HttpStatus.OK).send({

@@ -8,4 +8,7 @@ export * from './column.mapper';
 export * from './card.mapper';
 export * from './status.mapper';
 export * from './column-status.mapper';
+export * from './workflow.mapper';
+export * from './workflow-status.mapper';
+export * from './workflow-transition.mapper';
 export * from './membership.mapper';

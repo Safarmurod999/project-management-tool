@@ -7,6 +7,9 @@ import {
   ColumnRepository,
   ColumnStatusRepository,
   StatusRepository,
+  WorkflowRepository,
+  WorkflowStatusRepository,
+  WorkflowTransitionRepository,
 } from 'src/domain';
 import { TransactionManager } from 'src/application/services';
 import { RepositorySymbols } from 'src/infrastructure/dependency-injection/repositories/symbol';
@@ -26,6 +29,12 @@ export class ReorderCardUsecaseImpl implements ReorderCardUsecase {
     private readonly statusRepository: StatusRepository,
     @Inject(RepositorySymbols.ColumnStatusRepository)
     private readonly columnStatusRepository: ColumnStatusRepository,
+    @Inject(RepositorySymbols.WorkflowRepository)
+    private readonly workflowRepository: WorkflowRepository,
+    @Inject(RepositorySymbols.WorkflowStatusRepository)
+    private readonly workflowStatusRepository: WorkflowStatusRepository,
+    @Inject(RepositorySymbols.WorkflowTransitionRepository)
+    private readonly workflowTransitionRepository: WorkflowTransitionRepository,
     @Inject(ServiceSymbols.TransactionManager)
     private readonly transactionManager: TransactionManager,
   ) {}
@@ -53,6 +62,7 @@ export class ReorderCardUsecaseImpl implements ReorderCardUsecase {
         targetColumnId: params.targetColumnId,
         newIndex: params.newIndex,
         statusId,
+        expectedStatusId: params.expectedStatusId,
       }),
     );
   }
@@ -63,6 +73,9 @@ export class ReorderCardUsecaseImpl implements ReorderCardUsecase {
       boardRepository: this.boardRepository,
       statusRepository: this.statusRepository,
       columnStatusRepository: this.columnStatusRepository,
+      workflowRepository: this.workflowRepository,
+      workflowStatusRepository: this.workflowStatusRepository,
+      workflowTransitionRepository: this.workflowTransitionRepository,
     };
   }
 }

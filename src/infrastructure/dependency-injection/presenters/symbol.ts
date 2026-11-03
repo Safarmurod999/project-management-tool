@@ -82,4 +82,9 @@ export const PresenterSymbols = {
     UpdateStatusPresenter: Symbol('UpdateStatusPresenter'),
     DeleteStatusPresenter: Symbol('DeleteStatusPresenter'),
   },
+  Workflow: {
+    GetWorkflowsPresenter: Symbol('GetWorkflowsPresenter'),
+    WorkflowDetailsPresenter: Symbol('WorkflowDetailsPresenter'),
+    DeleteWorkflowPresenter: Symbol('DeleteWorkflowPresenter'),
+  },
 };
