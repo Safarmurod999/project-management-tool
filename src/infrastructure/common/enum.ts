@@ -41,6 +41,12 @@ export enum PermissionCode {
   STATUS_EDIT = 'status:edit',
   STATUS_DELETE = 'status:delete',
 
+  // WORKFLOW
+  WORKFLOW_CREATE = 'workflow:create',
+  WORKFLOW_GET = 'workflow:get',
+  WORKFLOW_EDIT = 'workflow:edit',
+  WORKFLOW_DELETE = 'workflow:delete',
+
   // TEAM
   TEAM_CREATE = 'team:create',
   TEAM_GET = 'team:get',

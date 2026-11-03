@@ -7,7 +7,17 @@ import { MongoDb } from '../mongo';
 import {
   DynamicStatusesMigration,
   MIGRATION_ID,
+  VerificationResult,
 } from './001-dynamic-statuses.migration';
+import {
+  WORKFLOW_PERMISSIONS_MIGRATION_ID,
+  WorkflowPermissionsMigration,
+} from './002-workflow-permissions.migration';
+
+interface Migration {
+  run(options: { dryRun: boolean }): Promise<object>;
+  verify(): Promise<VerificationResult>;
+}
 
 /**
  * Usage:
@@ -40,39 +50,48 @@ async function main() {
   await database.getClient().asPromise();
 
   const migrations = database.getClient().collection('migrations');
-  const migration = new DynamicStatusesMigration(database, logger);
+  // Applied in order; each runs once and is recorded in `migrations`.
+  const pending: Array<{ id: string; migration: Migration }> = [
+    {
+      id: MIGRATION_ID,
+      migration: new DynamicStatusesMigration(database, logger),
+    },
+    {
+      id: WORKFLOW_PERMISSIONS_MIGRATION_ID,
+      migration: new WorkflowPermissionsMigration(database, logger),
+    },
+  ];
 
   try {
-    if (!verifyOnly) {
-      const applied = await migrations.findOne({ _id: MIGRATION_ID as any });
+    for (const { id, migration } of pending) {
+      if (!verifyOnly) {
+        const applied = await migrations.findOne({ _id: id as any });
 
-      if (applied) {
-        logger.info(
-          `${MIGRATION_ID} already applied at ${applied.appliedAt.toISOString()}`,
-        );
-      } else {
-        const report = await migration.run({ dryRun });
-        logger.info(
-          `${MIGRATION_ID} ${dryRun ? 'plan (dry run)' : 'report'}`,
-          report,
-        );
+        if (applied) {
+          logger.info(
+            `${id} already applied at ${applied.appliedAt.toISOString()}`,
+          );
+        } else {
+          const report = await migration.run({ dryRun });
+          logger.info(`${id} ${dryRun ? 'plan (dry run)' : 'report'}`, report);
 
-        if (!dryRun) {
-          await migrations.insertOne({
-            _id: MIGRATION_ID as any,
-            appliedAt: new Date(),
-            report,
-          });
+          if (!dryRun) {
+            await migrations.insertOne({
+              _id: id as any,
+              appliedAt: new Date(),
+              report,
+            });
+          }
         }
       }
-    }
 
-    if (!dryRun) {
-      const result = await migration.verify();
-      logger.info('verification', result);
+      if (!dryRun) {
+        const result = await migration.verify();
+        logger.info(`${id} verification`, result);
 
-      if (!result.ok) {
-        process.exitCode = 1;
+        if (!result.ok) {
+          process.exitCode = 1;
+        }
       }
     }
   } finally {

@@ -64,6 +64,8 @@ The runner reads `.env.<NODE_ENV>` (default `development`); environment variable
 
 It aborts before writing if any card would end up without a valid status (e.g. orphaned cards). Writes run in one transaction per project on a replica set; on standalone MongoDB they are not atomic, which is why the backup is written first. It is safe to re-run.
 
+**002-workflow-permissions** creates the workflow collections' indexes and the `workflow:*` permissions, granting each to roles that hold the matching `status:*` permission. It creates no workflows: projects stay unrestricted until one is created. Every write is an idempotent upsert.
+
 To get transactions locally, run MongoDB as a single-node replica set (`mongod --replSet rs0`, then `rs.initiate()` once).
 
 ## 9. Perform Self-Review

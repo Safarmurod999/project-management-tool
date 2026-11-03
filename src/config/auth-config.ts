@@ -19,9 +19,9 @@ export class AuthConfigImpl extends AbstractConfig implements AuthConfig {
     super();
 
     this.accessSecret = process.env.ACCESS_SECRET!;
-    this.accessSecretExpiresIn = 3600; // 1 hour
+    this.accessSecretExpiresIn = parseInt(process.env.ACCESS_SECRET_EXPIRES_IN!); // 1 hour
     this.refreshSecret = process.env.REFRESH_SECRET!;
-    this.refreshSecretExpiresIn = 86400; // 24 hours
+    this.refreshSecretExpiresIn = parseInt(process.env.REFRESH_SECRET_EXPIRES_IN!); // 24 hours
 
     this.validateEnvs();
   }

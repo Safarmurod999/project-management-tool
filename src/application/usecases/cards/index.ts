@@ -4,3 +4,4 @@ export * from './get-all';
 export * from './update';
 export * from './delete';
 export * from './reorder';
+export * from './transition';

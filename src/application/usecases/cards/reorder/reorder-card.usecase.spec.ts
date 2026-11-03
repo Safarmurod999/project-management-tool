@@ -9,6 +9,9 @@ import {
   ColumnStatusRepository,
   Status,
   StatusRepository,
+  WorkflowRepository,
+  WorkflowStatusRepository,
+  WorkflowTransitionRepository,
 } from 'src/domain';
 import { TransactionManager } from 'src/application/services';
 import { BoardStatus } from 'src/infrastructure/common/enum';
@@ -78,6 +81,12 @@ describe('ReorderCardUsecaseImpl (card transitions)', () => {
           mappings.filter((m) => m.columnId === columnId),
         ),
       } as unknown as ColumnStatusRepository,
+      // No workflow: the project is not restricted.
+      {
+        findDefaultByProjectId: jest.fn().mockResolvedValue(null),
+      } as unknown as WorkflowRepository,
+      {} as WorkflowStatusRepository,
+      {} as WorkflowTransitionRepository,
       transactionManager,
     );
   });

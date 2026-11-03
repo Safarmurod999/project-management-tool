@@ -13,6 +13,7 @@ import {
   GetCardsUsecaseImpl,
   UpdateCardUsecaseImpl,
   ReorderCardUsecaseImpl,
+  TransitionCardUsecaseImpl,
   DeleteCardUsecaseImpl,
 } from 'src/application';
 import { CardFactoryImpl, CardRepositoryImpl } from 'src/domain';
@@ -25,9 +26,10 @@ import {
 import { StatusesModule } from '../statuses/statuses.module';
 import { ColumnsModule } from '../columns/columns.module';
 import { BoardsModule } from '../boards/boards.module';
+import { WorkflowsModule } from '../workflows/workflows.module';
 
 @Module({
-  imports: [StatusesModule, ColumnsModule, BoardsModule],
+  imports: [StatusesModule, ColumnsModule, BoardsModule, WorkflowsModule],
   controllers: [CardController],
   providers: [
     {
@@ -57,6 +59,10 @@ import { BoardsModule } from '../boards/boards.module';
     {
       provide: UsecaseSymbols.Card.ReorderCardUsecase,
       useClass: ReorderCardUsecaseImpl,
+    },
+    {
+      provide: UsecaseSymbols.Card.TransitionCardUsecase,
+      useClass: TransitionCardUsecaseImpl,
     },
     {
       provide: UsecaseSymbols.Card.DeleteCardUsecase,

@@ -19,6 +19,8 @@ import {
   ColumnStatusRepositoryImpl,
   StatusFactoryImpl,
   StatusRepositoryImpl,
+  WorkflowStatusRepositoryImpl,
+  WorkflowTransitionRepositoryImpl,
 } from 'src/domain';
 import {
   FactorySymbols,
@@ -50,6 +52,16 @@ import {
     {
       provide: RepositorySymbols.CardRepository,
       useClass: CardRepositoryImpl,
+    },
+    // Local instances for DeleteStatus; importing WorkflowsModule would be
+    // circular because it depends on this module.
+    {
+      provide: RepositorySymbols.WorkflowStatusRepository,
+      useClass: WorkflowStatusRepositoryImpl,
+    },
+    {
+      provide: RepositorySymbols.WorkflowTransitionRepository,
+      useClass: WorkflowTransitionRepositoryImpl,
     },
     {
       provide: UsecaseSymbols.Status.CreateStatusUsecase,

@@ -13,6 +13,9 @@ import {
   CardSchema,
   StatusSchema,
   ColumnStatusSchema,
+  WorkflowSchema,
+  WorkflowStatusSchema,
+  WorkflowTransitionSchema,
 } from './schemas';
 import {
   UserDocument,
@@ -27,6 +30,9 @@ import {
   CardDocument,
   StatusDocument,
   ColumnStatusDocument,
+  WorkflowDocument,
+  WorkflowStatusDocument,
+  WorkflowTransitionDocument,
 } from './models';
 import { Database } from '../database';
 import { Inject, Injectable } from '@nestjs/common';
@@ -88,6 +94,15 @@ export class MongoDb implements Database {
     this._client.model<ColumnStatusDocument>(
       'ColumnStatus',
       ColumnStatusSchema,
+    );
+    this._client.model<WorkflowDocument>('Workflow', WorkflowSchema);
+    this._client.model<WorkflowStatusDocument>(
+      'WorkflowStatus',
+      WorkflowStatusSchema,
+    );
+    this._client.model<WorkflowTransitionDocument>(
+      'WorkflowTransition',
+      WorkflowTransitionSchema,
     );
 
     console.log('[MongoDB] Connected.');
@@ -175,5 +190,23 @@ export class MongoDb implements Database {
     if (!this._client)
       throw GlobalException.DatabaseError('MongoDB not connected');
     return this._client.model<ColumnStatusDocument>('ColumnStatus');
+  }
+
+  public workflowModel(): Model<WorkflowDocument> {
+    if (!this._client)
+      throw GlobalException.DatabaseError('MongoDB not connected');
+    return this._client.model<WorkflowDocument>('Workflow');
+  }
+
+  public workflowStatusModel(): Model<WorkflowStatusDocument> {
+    if (!this._client)
+      throw GlobalException.DatabaseError('MongoDB not connected');
+    return this._client.model<WorkflowStatusDocument>('WorkflowStatus');
+  }
+
+  public workflowTransitionModel(): Model<WorkflowTransitionDocument> {
+    if (!this._client)
+      throw GlobalException.DatabaseError('MongoDB not connected');
+    return this._client.model<WorkflowTransitionDocument>('WorkflowTransition');
   }
 }

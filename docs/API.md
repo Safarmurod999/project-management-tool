@@ -1508,9 +1508,154 @@ Returns statuses sorted by `order`, with `totalCount`, `page` and `limit`.
 **Required Roles:** `SUPER_ADMIN`, `ADMIN`  
 **Required Permissions:** `STATUS_DELETE`
 
-Removes the status and its column mappings in one transaction.
+Removes the status, its column mappings and its workflow entries (statuses and transitions) in one transaction.
 
 **Errors:** `409` the status is used by cards · `409` the status is the project default (mark another status as default first)
+
+---
+
+## 🔀 Workflows Endpoints
+
+A workflow belongs to a project and defines **which statuses cards may use and
+which status changes are allowed**. Each transition is a one-way rule
+`fromStatusId -> toStatusId`; a two-way transition is stored as two rules.
+
+- A project can have several workflows; exactly one is the **default**, and it
+  governs every card of the project. The first workflow created for a project
+  becomes the default automatically.
+- **Projects without a workflow are unrestricted** (status changes behave as
+  before). Creating the first workflow turns enforcement on.
+- With a workflow, a card status must be part of it, and changing an existing
+  card's status needs a rule from its current status. Keeping the same status
+  (e.g. reordering inside a column) never needs a rule. This applies to
+  `POST /cards`, `PUT /cards/:id`, `PATCH /cards/reorder` and
+  `POST /cards/:id/transition`.
+
+Endpoints that return a workflow return its full configuration:
+
+```json
+{
+  "status": 200,
+  "data": {
+    "id": "60c72b2f9b1d8b001c8e4c10",
+    "projectId": "60c72b2f9b1d8b001c8e4b5b",
+    "name": "Delivery",
+    "description": null,
+    "isDefault": true,
+    "version": 1,
+    "createdAt": "2026-11-03T10:00:00Z",
+    "updatedAt": null,
+    "statuses": [
+      { "id": "60c72b2f9b1d8b001c8e4b71", "code": "todo", "name": "To Do", "color": "#42A5F5", "order": 1, "isDefault": true, "projectId": "60c72b2f9b1d8b001c8e4b5b", "version": 1, "createdAt": "2026-11-02T10:00:00Z", "updatedAt": null }
+    ],
+    "transitions": [
+      { "id": "60c72b2f9b1d8b001c8e4c20", "workflowId": "60c72b2f9b1d8b001c8e4c10", "fromStatusId": "60c72b2f9b1d8b001c8e4b71", "toStatusId": "60c72b2f9b1d8b001c8e4b72", "createdAt": "2026-11-03T10:00:00Z", "updatedAt": null }
+    ]
+  }
+}
+```
+
+**Roles:** read endpoints `SUPER_ADMIN`, `ADMIN`, `MANAGER`, `USER` with `WORKFLOW_GET`;
+write endpoints `SUPER_ADMIN`, `ADMIN` with `WORKFLOW_CREATE` / `WORKFLOW_EDIT` / `WORKFLOW_DELETE`.
+
+### 1. Create Workflow
+
+**Endpoint:** `POST /workflows` · **Permission:** `WORKFLOW_CREATE`
+
+```json
+{
+  "projectId": "60c72b2f9b1d8b001c8e4b5b",
+  "name": "Delivery",
+  "description": "Main delivery flow",
+  "isDefault": true,
+  "statusIds": ["<todo>", "<in_progress>", "<done>"],
+  "transitions": [
+    { "fromStatusId": "<todo>", "toStatusId": "<in_progress>", "bidirectional": true },
+    { "fromStatusId": "<in_progress>", "toStatusId": "<done>" }
+  ]
+}
+```
+
+Everything is written in one transaction. `isDefault: true` replaces the
+current default. **Errors:** `404` project or status not found · `409` name
+already used in the project (case-insensitive) · `400` status of another
+project, a status listed twice, a transition to the same status, or a
+transition whose status is not in `statusIds`.
+
+### 2. Get Workflows
+
+**Endpoint:** `GET /workflows?projectId=:projectId` (`page`, `limit`, `name` optional) — workflows without statuses/transitions.
+
+### 3. Get the Project Workflow
+
+**Endpoint:** `GET /workflows/default?projectId=:projectId` — the default workflow with its statuses and transitions. `404` when the project has none.
+
+### 4. Get Workflow by ID
+
+**Endpoint:** `GET /workflows/:id` — the workflow with its statuses and transitions.
+
+### 5. Update Workflow
+
+**Endpoint:** `PUT /workflows/:id` · **Permission:** `WORKFLOW_EDIT`
+
+```json
+{ "name": "Delivery v2", "description": null, "isDefault": true, "version": 2 }
+```
+
+`isDefault: true` makes this workflow the project default (the previous one is
+unset in the same transaction). `409` for `isDefault: false` on the current
+default: promote another workflow instead.
+
+### 6. Delete Workflow
+
+**Endpoint:** `DELETE /workflows/:id` · **Permission:** `WORKFLOW_DELETE`
+
+Deletes the workflow with its statuses and transitions in one transaction.
+`409` when it is the default and the project has other workflows. Deleting a
+project's only workflow makes its cards unrestricted again.
+
+### 7. Add Status to Workflow
+
+**Endpoint:** `POST /workflows/:id/statuses` · **Permission:** `WORKFLOW_EDIT`
+
+```json
+{ "statusId": "60c72b2f9b1d8b001c8e4b75" }
+```
+
+`400` status of another project · `404` status not found · `409` already in the workflow.
+
+### 8. Remove Status from Workflow
+
+**Endpoint:** `DELETE /workflows/:id/statuses/:statusId` · **Permission:** `WORKFLOW_EDIT`
+
+Also removes every transition that starts or ends at the status (one
+transaction). `409` when the workflow is the default and cards use the status.
+
+### 9. Add Transition
+
+**Endpoint:** `POST /workflows/:id/transitions` · **Permission:** `WORKFLOW_EDIT`
+
+```json
+{ "fromStatusId": "<testing>", "toStatusId": "<done>", "bidirectional": false }
+```
+
+With `bidirectional: true` both rules are created together; a direction that
+already exists is kept. `409` when every requested rule already exists ·
+`400` same status on both ends, or a status that is not in the workflow.
+
+### 10. Update Transition
+
+**Endpoint:** `PUT /workflows/:id/transitions/:transitionId` · **Permission:** `WORKFLOW_EDIT`
+
+```json
+{ "fromStatusId": "<testing>", "toStatusId": "<rejected>" }
+```
+
+Validated like a new rule. `404` when the transition belongs to another workflow · `409` duplicate rule.
+
+### 11. Delete Transition
+
+**Endpoint:** `DELETE /workflows/:id/transitions/:transitionId` · **Permission:** `WORKFLOW_EDIT`
 
 ---
 
@@ -1792,7 +1937,9 @@ To move a status to another column: unmap it, then map it to the target column.
 ## 🃏 Cards Endpoints
 
 Every card has exactly one `statusId`. The status must belong to the board's
-project and be mapped to the card's column.
+project and be mapped to the card's column. When the project has a workflow,
+the status must also be part of it and status changes must follow its
+transitions (see [Workflows](#-workflows-endpoints)).
 
 ### 1. Create Card
 
@@ -1969,6 +2116,10 @@ Authorization: ******
 - `statusId` must be mapped to the card's (new) column.
 - Changing `columnId` without `statusId` keeps the current status if the target
   column contains it, otherwise uses the target column's default/first status.
+- With a project workflow, a new status needs a transition from the current one
+  (`409` otherwise), and automatic picks only consider reachable statuses.
+- A status change is written in a transaction and refused with `409` if the
+  card's status changed after it was read.
 
 **Response:** `200 OK`
 ```json
@@ -2104,6 +2255,7 @@ Authorization: ******
 - Reindexes cards in both columns to keep order numbers sequential.
 - Runs in a transaction, so both columns are reindexed atomically.
 - `statusId` (optional) must be mapped to the target column. When omitted, the card keeps its status if the target column contains it; otherwise it gets the target column's default (or first) status.
+- With a project workflow, a status change needs a transition rule; when `statusId` is omitted only statuses reachable from the current one are picked (`409` if none in the target column).
 
 **Response:** `200 OK`
 ```json
@@ -2118,6 +2270,36 @@ Authorization: ******
   }
 }
 ```
+
+### 7. Transition Card
+
+Change a card's status by applying a workflow transition.
+
+**Endpoint:** `POST /cards/:id/transition`
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`
+**Required Permissions:** `CARD_EDIT`
+
+**Request** (one of):
+```json
+{ "transitionId": "60c72b2f9b1d8b001c8e4c20" }
+```
+```json
+{ "toStatusId": "60c72b2f9b1d8b001c8e4b72" }
+```
+
+**Behavior:**
+- The transition must belong to the project's default workflow, and its
+  `fromStatusId` must be the card's current status. With `toStatusId`, the
+  rule from the current status to that status is used.
+- The card moves to the board column that holds the target status (appended at
+  the end), or keeps its position when the column does not change.
+- The write runs in a transaction and fails with `409` if the card's status
+  changed after it was read.
+
+**Response:** `200 OK` with the updated card (same shape as Update Card).
+
+**Errors:** `400` neither `transitionId` nor `toStatusId` · `404` project has no workflow, or the transition belongs to another workflow · `409` no rule from the current status (`not allowed by its workflow`), the transition starts at another status, the target status is not mapped on the board, or the card changed concurrently
 
 ---
 

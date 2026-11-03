@@ -21,6 +21,7 @@ The application is built on **NestJS** and structured using **Clean Architecture
 - `StatusesModule` owns project-scoped `Status` records and the `ColumnStatus` mappings. It imports no feature module, so Projects, Boards, Columns and Cards can all depend on it without cycles.
 - `ColumnsModule` extends each `Board` with ordered visual lanes. Which statuses a lane shows is defined by `ColumnStatus` (`/columns/:id/statuses`).
 - `CardsModule` sits beneath each `Column` and stores the actual actionable work items, including assignee/assigner metadata and story-point estimates. Every card has a `statusId` that must be mapped to its column; `resolveCardStatusId` (application/usecases/cards/shared) enforces this for create, update and reorder.
+- `WorkflowsModule` owns project workflows (`/workflows`): allowed statuses (`WorkflowStatus`) and one-way transition rules (`WorkflowTransition`). The project's default workflow governs cards; `resolveCardStatusId` enforces it, and `POST /cards/:id/transition` applies a rule. It imports only `StatusesModule`.
 - Creating a project seeds 8 default statuses; creating a board creates the default columns and mappings (`src/domain/statuses/defaults.ts`), both inside a transaction.
 - `MembershipsModule` acts as the pivot for cross-cutting access control (assigning Roles to Users for specific Scopes like Teams or Projects).
 

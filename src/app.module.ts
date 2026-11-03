@@ -15,6 +15,7 @@ import {
   ColumnsModule,
   CardsModule,
   StatusesModule,
+  WorkflowsModule,
   QueueModule,
 } from './infrastructure/modules';
 
@@ -36,6 +37,7 @@ import {
     ColumnsModule,
     CardsModule,
     StatusesModule,
+    WorkflowsModule,
   ],
 })
 export class AppModule {}

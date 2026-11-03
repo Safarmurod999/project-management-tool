@@ -80,6 +80,7 @@ export const UsecaseSymbols = {
     FindCardByIdUsecase: Symbol.for('FindCardByIdUsecase'),
     UpdateCardUsecase: Symbol.for('UpdateCardUsecase'),
     ReorderCardUsecase: Symbol.for('ReorderCardUsecase'),
+    TransitionCardUsecase: Symbol.for('TransitionCardUsecase'),
     DeleteCardUsecase: Symbol.for('DeleteCardUsecase'),
   },
   Status: {
@@ -88,5 +89,24 @@ export const UsecaseSymbols = {
     FindStatusByIdUsecase: Symbol.for('FindStatusByIdUsecase'),
     UpdateStatusUsecase: Symbol.for('UpdateStatusUsecase'),
     DeleteStatusUsecase: Symbol.for('DeleteStatusUsecase'),
+  },
+  Workflow: {
+    CreateWorkflowUsecase: Symbol.for('CreateWorkflowUsecase'),
+    GetWorkflowsUsecase: Symbol.for('GetWorkflowsUsecase'),
+    FindWorkflowByIdUsecase: Symbol.for('FindWorkflowByIdUsecase'),
+    FindProjectWorkflowUsecase: Symbol.for('FindProjectWorkflowUsecase'),
+    UpdateWorkflowUsecase: Symbol.for('UpdateWorkflowUsecase'),
+    DeleteWorkflowUsecase: Symbol.for('DeleteWorkflowUsecase'),
+    AddWorkflowStatusUsecase: Symbol.for('AddWorkflowStatusUsecase'),
+    RemoveWorkflowStatusUsecase: Symbol.for('RemoveWorkflowStatusUsecase'),
+    CreateWorkflowTransitionUsecase: Symbol.for(
+      'CreateWorkflowTransitionUsecase',
+    ),
+    UpdateWorkflowTransitionUsecase: Symbol.for(
+      'UpdateWorkflowTransitionUsecase',
+    ),
+    DeleteWorkflowTransitionUsecase: Symbol.for(
+      'DeleteWorkflowTransitionUsecase',
+    ),
   },
 };

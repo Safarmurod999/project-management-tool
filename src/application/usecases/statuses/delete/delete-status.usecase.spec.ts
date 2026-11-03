@@ -3,6 +3,8 @@ import {
   ColumnStatusRepository,
   Status,
   StatusRepository,
+  WorkflowStatusRepository,
+  WorkflowTransitionRepository,
 } from 'src/domain';
 import { TransactionManager } from 'src/application/services';
 import { DeleteStatusUsecaseImpl } from './delete-status.usecase';
@@ -11,6 +13,8 @@ describe('DeleteStatusUsecaseImpl', () => {
   let statusRepository: jest.Mocked<StatusRepository>;
   let columnStatusRepository: jest.Mocked<ColumnStatusRepository>;
   let cardRepository: jest.Mocked<CardRepository>;
+  let workflowStatusRepository: jest.Mocked<WorkflowStatusRepository>;
+  let workflowTransitionRepository: jest.Mocked<WorkflowTransitionRepository>;
   let usecase: DeleteStatusUsecaseImpl;
 
   const setup = (isDefault: boolean, cardsUsingIt: number) => {
@@ -38,6 +42,12 @@ describe('DeleteStatusUsecaseImpl', () => {
     cardRepository = {
       countByStatusId: jest.fn().mockResolvedValue(cardsUsingIt),
     } as unknown as jest.Mocked<CardRepository>;
+    workflowStatusRepository = {
+      deleteByStatusId: jest.fn().mockResolvedValue(1),
+    } as unknown as jest.Mocked<WorkflowStatusRepository>;
+    workflowTransitionRepository = {
+      deleteByStatusId: jest.fn().mockResolvedValue(2),
+    } as unknown as jest.Mocked<WorkflowTransitionRepository>;
     const transactionManager: TransactionManager = {
       run: jest.fn((work) => work()),
     };
@@ -46,6 +56,8 @@ describe('DeleteStatusUsecaseImpl', () => {
       statusRepository,
       columnStatusRepository,
       cardRepository,
+      workflowStatusRepository,
+      workflowTransitionRepository,
       transactionManager,
       {
         emitToRoom: jest.fn(),
@@ -55,11 +67,15 @@ describe('DeleteStatusUsecaseImpl', () => {
     );
   };
 
-  it('removes the status together with its column mappings', async () => {
+  it('removes the status together with its column mappings and workflow rules', async () => {
     setup(false, 0);
 
     await expect(usecase.execute({ id: 's1' })).resolves.toBe('s1');
     expect(columnStatusRepository.deleteByStatusId).toHaveBeenCalledWith('s1');
+    expect(workflowTransitionRepository.deleteByStatusId).toHaveBeenCalledWith(
+      's1',
+    );
+    expect(workflowStatusRepository.deleteByStatusId).toHaveBeenCalledWith('s1');
     expect(statusRepository.delete).toHaveBeenCalledWith('s1');
   });
 

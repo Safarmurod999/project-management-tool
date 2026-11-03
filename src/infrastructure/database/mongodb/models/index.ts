@@ -10,3 +10,6 @@ export * from './column.model';
 export * from './card.model';
 export * from './status.model';
 export * from './column-status.model';
+export * from './workflow.model';
+export * from './workflow-status.model';
+export * from './workflow-transition.model';

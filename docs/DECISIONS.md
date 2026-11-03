@@ -32,5 +32,17 @@ The rule "a status belongs to only one column per board" spans two collections (
 ## Why a TransactionManager with implicit sessions?
 Several operations write related records together (project + statuses, board + columns + mappings, column delete + mappings, card reorder). `TransactionManager.run()` wraps them in a MongoDB transaction, and Mongoose's `transactionAsyncLocalStorage` binds every repository call inside it to the session, so repository signatures did not need a session parameter. Transactions require a replica set: on a standalone `mongod` (typical local setup) the work runs non-transactionally and a warning is logged once.
 
+## Why does the project's default Workflow govern cards (and not a per-board workflow)?
+Workflows belong to a project. Cards find their workflow through column -> board -> project -> default workflow, so neither Board nor Card stores a workflow reference and no Board change or data migration was needed. A project may keep several workflows (e.g. to prepare a new one) but only the default is enforced. Per-board workflows can be added later with a `workflowId` on Board that falls back to the default.
+
+## Why are projects without a workflow unrestricted?
+Existing projects have no workflow. Enforcing an empty workflow would block every status change, and seeding one would have to guess the allowed transitions. Enforcement therefore starts when a project's first workflow is created, which makes it the default.
+
+## Why is a transition a one-way rule?
+"Two-way" is two independent permissions that teams often want to remove separately (e.g. allow `testing -> done` but not back). Storing one record per direction keeps the check a single indexed lookup on `{ workflowId, fromStatusId, toStatusId }`; the API offers `bidirectional` only as a shortcut for creating both.
+
+## Why is the card transition written through the reorder flow?
+A status decides the card's column (a status sits in one column per board), so a transition is a move. `TransitionCardUsecase` validates the rule and delegates to `ReorderCardUsecase`, which re-validates and writes inside a transaction. The repository re-checks the card's status inside that write (`expectedStatusId`) so a concurrent change cannot slip in between validation and update.
+
 ## Why Mappers?
 Mongoose Documents carry heavy framework-specific methods (`.save()`, `.populate()`). By mapping them to pure TypeScript objects (Domain Entities/Structs) via `Mappers`, we ensure the Application layer remains completely ignorant of the fact that MongoDB is being used.

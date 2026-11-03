@@ -43,6 +43,9 @@ Emitted to `project:{projectId}`:
 - `status:created` — `{ id, projectId, name, code, color, order, isDefault, version, createdAt, updatedAt }`
 - `status:updated` — same payload as `status:created`
 - `status:deleted` — `{ id, projectId }`
+- `workflow:created` — the workflow with `statuses` and `transitions` (same shape as `GET /workflows/:id`)
+- `workflow:updated` — same payload; sent for configuration changes and for added/removed statuses and transitions
+- `workflow:deleted` — `{ id, projectId }`
 
 ## Server-side Emitting
 

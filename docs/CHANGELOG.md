@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### 🎉 Workflows
+- ✅ **Workflows** - project-scoped workflows (`/workflows` CRUD, `GET /workflows/default?projectId=`) defining allowed statuses and one-way transition rules; `bidirectional` creates both directions.
+- ✅ **Card transitions** - `POST /cards/:id/transition` applies a rule; the card's current status must match the rule's `fromStatusId` and the update runs in a transaction.
+- ✅ **Enforcement** - with a project workflow, card create/update/reorder only accept workflow statuses and allowed transitions (`409` otherwise). Projects without a workflow are unaffected.
+- ✅ **Permissions** - `workflow:create`, `workflow:get`, `workflow:edit`, `workflow:delete` (migration `002-workflow-permissions`).
+- ✅ **Realtime** - `workflow:created`, `workflow:updated`, `workflow:deleted` on `project:{projectId}`.
+- Deleting a status now also removes it from workflows.
+- `PUT /cards/:id` status changes run in a transaction and fail with `409` if the card's status changed concurrently.
+
 ### ⚠️ Breaking API changes
 - Cards: `status` (enum) is replaced by `statusId` in requests and responses (`POST/PUT /cards`, `PATCH /cards/reorder`, card payloads).
 - Columns: `status` is removed from requests and responses.

@@ -10,3 +10,6 @@ export * from './column.schema';
 export * from './card.schema';
 export * from './status.schema';
 export * from './column-status.schema';
+export * from './workflow.schema';
+export * from './workflow-status.schema';
+export * from './workflow-transition.schema';
