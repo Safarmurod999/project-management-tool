@@ -89,6 +89,8 @@ describe('Card status changes under a project workflow', () => {
       })),
       update: jest.fn(async (params) => {
         assertStored(params.expectedStatusId);
+        // A successful write is what later reads return.
+        storedStatusId = readStatusId = params.statusId ?? storedStatusId;
         return new Card(
           params.id,
           params.columnId ?? 'col-todo',
@@ -100,6 +102,8 @@ describe('Card status changes under a project workflow', () => {
       }),
       reorder: jest.fn(async (params) => {
         assertStored(params.expectedStatusId);
+        // A successful write is what later reads return.
+        storedStatusId = readStatusId = params.statusId ?? storedStatusId;
         return new Card(
           params.cardId,
           params.targetColumnId,
@@ -222,14 +226,32 @@ describe('Card status changes under a project workflow', () => {
       });
     });
 
-    it('does not need a rule or a status guard when the status is unchanged', async () => {
+    it('does not guard the status when an update does not write one', async () => {
       await update.execute({ id: 'card-1', title: 'Renamed' });
-      await changeStatus('todo');
 
       expect(cardRepository.update).toHaveBeenLastCalledWith(
         expect.objectContaining({
-          statusId: 'todo',
+          statusId: undefined,
           expectedStatusId: undefined,
+        }),
+      );
+    });
+
+    it('does not need a rule when the status is unchanged, but still guards it', async () => {
+      await changeStatus('todo');
+
+      expect(cardRepository.update).toHaveBeenLastCalledWith(
+        expect.objectContaining({ statusId: 'todo', expectedStatusId: 'todo' }),
+      );
+    });
+
+    it('passes the status it validated from to the repository on a move', async () => {
+      await move('col-progress', 'in_progress');
+
+      expect(cardRepository.reorder).toHaveBeenCalledWith(
+        expect.objectContaining({
+          statusId: 'in_progress',
+          expectedStatusId: 'todo',
         }),
       );
     });
@@ -325,6 +347,73 @@ describe('Card status changes under a project workflow', () => {
     it('refuses a move when the card left the status it was validated from', async () => {
       storedStatusId = 'testing';
 
+      // A plain PATCH /cards/reorder: no expectedStatusId from the caller.
+      await expect(move('col-progress', 'in_progress')).rejects.toMatchObject({
+        statusCode: 409,
+        message: expect.stringContaining('no longer in status todo'),
+      });
+      expect(storedStatusId).toBe('testing');
+    });
+  });
+
+  describe('concurrent status changes during reorder', () => {
+    /** Runs `work` between the card read and the write, like a concurrent request. */
+    const interleave = (work: () => Promise<unknown>) => {
+      cardRepository.findById.mockImplementationOnce(async (id: string) => {
+        const card = new Card(id, 'col-todo', 'Card', null, 0, readStatusId);
+        await work();
+        return card;
+      });
+    };
+
+    it('cannot apply a rule of the stale status after a concurrent move', async () => {
+      // todo -> done is allowed, in_progress -> done is not.
+      rules.push(['todo', 'done']);
+      // Both requests read todo; the other one moves the card to in_progress first.
+      interleave(() => move('col-progress', 'in_progress'));
+
+      await expect(move('col-done', 'done')).rejects.toMatchObject({
+        statusCode: 409,
+        message: expect.stringContaining('no longer in status todo'),
+      });
+      expect(storedStatusId).toBe('in_progress');
+      expect(cardRepository.reorder).toHaveBeenCalledTimes(2);
+    });
+
+    it('refuses the move when the card changed status after it was read', async () => {
+      interleave(async () => {
+        storedStatusId = 'testing';
+      });
+
+      await expect(move('col-progress', 'in_progress')).rejects.toMatchObject({
+        statusCode: 409,
+      });
+      // testing -> in_progress has no rule, and it was not written.
+      expect(storedStatusId).toBe('testing');
+    });
+
+    it('does not let a stale move that keeps the status revert a concurrent change', async () => {
+      // Reordering inside col-todo resolves the status read (todo) again.
+      interleave(async () => {
+        storedStatusId = 'in_progress';
+      });
+
+      await expect(move('col-todo')).rejects.toMatchObject({ statusCode: 409 });
+      expect(storedStatusId).toBe('in_progress');
+    });
+
+    it('does not let a stale update that keeps the status revert a concurrent change', async () => {
+      interleave(async () => {
+        storedStatusId = 'in_progress';
+      });
+
+      await expect(
+        update.execute({ id: 'card-1', columnId: 'col-todo' }),
+      ).rejects.toMatchObject({ statusCode: 409 });
+      expect(storedStatusId).toBe('in_progress');
+    });
+
+    it("refuses a caller's expected status that the card is no longer in", async () => {
       await expect(
         reorder.execute({
           cardId: 'card-1',
@@ -332,9 +421,33 @@ describe('Card status changes under a project workflow', () => {
           targetColumnId: 'col-progress',
           newIndex: 0,
           statusId: 'in_progress',
-          expectedStatusId: 'todo',
+          expectedStatusId: 'testing',
         }),
-      ).rejects.toMatchObject({ statusCode: 409 });
+      ).rejects.toMatchObject({
+        statusCode: 409,
+        message: expect.stringContaining('no longer in status testing'),
+      });
+      expect(cardRepository.reorder).not.toHaveBeenCalled();
+    });
+
+    it('rejects an invalid transition during reorder without writing', async () => {
+      await expect(move('col-done', 'done')).rejects.toMatchObject({
+        statusCode: 409,
+        message: expect.stringContaining('not allowed by its workflow'),
+      });
+      await expect(move('col-progress', 'testing')).rejects.toMatchObject({
+        statusCode: 409,
+      });
+      expect(cardRepository.reorder).not.toHaveBeenCalled();
+      expect(storedStatusId).toBe('todo');
+    });
+
+    it('still succeeds when nothing changed concurrently', async () => {
+      await expect(move('col-progress', 'in_progress')).resolves.toMatchObject({
+        statusId: 'in_progress',
+      });
+      expect(storedStatusId).toBe('in_progress');
+      expect(transactionManager.run).toHaveBeenCalledTimes(1);
     });
   });
 

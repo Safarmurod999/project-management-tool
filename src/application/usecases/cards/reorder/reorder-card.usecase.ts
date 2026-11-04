@@ -46,6 +46,13 @@ export class ReorderCardUsecaseImpl implements ReorderCardUsecase {
 
     const card = await this.cardRepository.findById(params.cardId);
 
+    if (params.expectedStatusId && card.statusId !== params.expectedStatusId) {
+      throw CardException.CurrentStatusMismatch(
+        card.id,
+        params.expectedStatusId,
+      );
+    }
+
     // Moving to another column keeps the card's status only if the target
     // column contains it; otherwise the target column's default is used.
     const statusId = await resolveCardStatusId(this.statusDeps, {
@@ -55,6 +62,8 @@ export class ReorderCardUsecaseImpl implements ReorderCardUsecase {
     });
 
     // Reordering rewrites the order of every card in the affected columns.
+    // The status was validated against the one read above and is always
+    // written, so the write is refused if the card left that status since.
     return await this.transactionManager.run(() =>
       this.cardRepository.reorder({
         cardId: params.cardId,
@@ -62,7 +71,7 @@ export class ReorderCardUsecaseImpl implements ReorderCardUsecase {
         targetColumnId: params.targetColumnId,
         newIndex: params.newIndex,
         statusId,
-        expectedStatusId: params.expectedStatusId,
+        expectedStatusId: card.statusId,
       }),
     );
   }

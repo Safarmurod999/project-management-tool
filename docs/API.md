@@ -2256,6 +2256,7 @@ Authorization: ******
 - Runs in a transaction, so both columns are reindexed atomically.
 - `statusId` (optional) must be mapped to the target column. When omitted, the card keeps its status if the target column contains it; otherwise it gets the target column's default (or first) status.
 - With a project workflow, a status change needs a transition rule; when `statusId` is omitted only statuses reachable from the current one are picked (`409` if none in the target column).
+- The status is validated against the one the card had when the request read it, and the write is refused with `409` (`is no longer in status ...`) if another request changed it in between. Nothing is written in that case; reload the card and retry.
 
 **Response:** `200 OK`
 ```json

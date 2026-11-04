@@ -13,6 +13,10 @@ import {
   WORKFLOW_PERMISSIONS_MIGRATION_ID,
   WorkflowPermissionsMigration,
 } from './002-workflow-permissions.migration';
+import {
+  SUPER_ADMIN_PERMISSIONS_MIGRATION_ID,
+  SuperAdminPermissionsMigration,
+} from './003-super-admin-permissions.migration';
 
 interface Migration {
   run(options: { dryRun: boolean }): Promise<object>;
@@ -24,6 +28,7 @@ interface Migration {
  *   npm run migrate                 # apply pending migrations
  *   npm run migrate -- --dry-run    # print the plan, write nothing
  *   npm run migrate -- --verify     # only check data invariants
+ *   npm run migrate -- --only <id>  # limit to one migration, e.g. 003-super-admin-permissions
  *
  * Reads `.env.${NODE_ENV}` (default: development) like the application.
  * `DATABASE_NAME` can be overridden to target a copy of the database.
@@ -43,6 +48,8 @@ async function main() {
   const args = new Set(process.argv.slice(2));
   const dryRun = args.has('--dry-run');
   const verifyOnly = args.has('--verify');
+  const onlyIndex = process.argv.indexOf('--only');
+  const only = onlyIndex >= 0 ? process.argv[onlyIndex + 1] : undefined;
 
   const logger = new LoggerAdapter(createLogger());
   const database = new MongoDb(new MongoDbConfigImpl());
@@ -60,7 +67,15 @@ async function main() {
       id: WORKFLOW_PERMISSIONS_MIGRATION_ID,
       migration: new WorkflowPermissionsMigration(database, logger),
     },
-  ];
+    {
+      id: SUPER_ADMIN_PERMISSIONS_MIGRATION_ID,
+      migration: new SuperAdminPermissionsMigration(database, logger),
+    },
+  ].filter((item) => !only || item.id === only);
+
+  if (only && pending.length === 0) {
+    throw new Error(`Unknown migration: ${only}`);
+  }
 
   try {
     for (const { id, migration } of pending) {

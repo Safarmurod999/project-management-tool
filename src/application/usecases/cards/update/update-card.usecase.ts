@@ -70,11 +70,9 @@ export class UpdateCardUsecaseImpl implements UpdateCardUsecase {
       });
     }
 
-    const statusChanged =
-      statusId !== undefined && statusId !== existingCard.statusId;
-
-    // A status change was validated against the status read above; the write
-    // runs in a transaction and is refused if the card left that status since.
+    // A written status was validated against the status read above; the write
+    // runs in a transaction and is refused if the card left that status since,
+    // so a stale request cannot overwrite a concurrent status change.
     return await this.transactionManager.run(() =>
       this.cardRepository.update({
         id: params.id,
@@ -87,7 +85,8 @@ export class UpdateCardUsecaseImpl implements UpdateCardUsecase {
         assignerId: params.assignerId,
         points: params.points,
         version: params.version,
-        expectedStatusId: statusChanged ? existingCard.statusId : undefined,
+        expectedStatusId:
+          statusId !== undefined ? existingCard.statusId : undefined,
       }),
     );
   }

@@ -51,6 +51,7 @@ Data migrations live in `src/infrastructure/database/mongodb/migrations/` and ar
 npm run migrate -- --dry-run   # print the plan, write nothing
 npm run migrate                # apply pending migrations, then verify
 npm run migrate -- --verify    # only check data invariants
+npm run migrate -- --only 003-super-admin-permissions   # limit to one migration
 ```
 
 The runner reads `.env.<NODE_ENV>` (default `development`); environment variables override the file, e.g. `DATABASE_NAME=pm-tool-copy npm run migrate` to rehearse on a copy.
@@ -65,6 +66,8 @@ The runner reads `.env.<NODE_ENV>` (default `development`); environment variable
 It aborts before writing if any card would end up without a valid status (e.g. orphaned cards). Writes run in one transaction per project on a replica set; on standalone MongoDB they are not atomic, which is why the backup is written first. It is safe to re-run.
 
 **002-workflow-permissions** creates the workflow collections' indexes and the `workflow:*` permissions, granting each to roles that hold the matching `status:*` permission. It creates no workflows: projects stay unrestricted until one is created. Every write is an idempotent upsert.
+
+**003-super-admin-permissions** creates the `status:*` and `workflow:*` permissions (if missing) and grants all eight to the `super_admin` role, whatever other permissions it holds. Every write is an idempotent upsert; verification fails if the role or any grant is missing.
 
 To get transactions locally, run MongoDB as a single-node replica set (`mongod --replSet rs0`, then `rs.initiate()` once).
 
