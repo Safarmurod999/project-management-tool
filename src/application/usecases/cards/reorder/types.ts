@@ -7,7 +7,11 @@ export interface ReorderCardUsecaseParams {
   newIndex: number;
   /** Must be mapped to the target column; resolved automatically when omitted. */
   statusId?: string;
-  /** Rejects the move if the card left this status after it was read (used by status transitions). */
+  /**
+   * Rejects the move unless the card is in this status (used by status
+   * transitions). The status read at the start is re-checked at write time
+   * either way.
+   */
   expectedStatusId?: string;
 }
 

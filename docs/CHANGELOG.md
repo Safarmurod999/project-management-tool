@@ -9,9 +9,11 @@ All notable changes to this project will be documented in this file.
 - ✅ **Card transitions** - `POST /cards/:id/transition` applies a rule; the card's current status must match the rule's `fromStatusId` and the update runs in a transaction.
 - ✅ **Enforcement** - with a project workflow, card create/update/reorder only accept workflow statuses and allowed transitions (`409` otherwise). Projects without a workflow are unaffected.
 - ✅ **Permissions** - `workflow:create`, `workflow:get`, `workflow:edit`, `workflow:delete` (migration `002-workflow-permissions`).
+- ✅ **Super admin permissions** - migration `003-super-admin-permissions` grants all `status:*` and `workflow:*` permissions to `super_admin`; `npm run migrate -- --only <id>` runs a single migration.
 - ✅ **Realtime** - `workflow:created`, `workflow:updated`, `workflow:deleted` on `project:{projectId}`.
 - Deleting a status now also removes it from workflows.
 - `PUT /cards/:id` status changes run in a transaction and fail with `409` if the card's status changed concurrently.
+- `PATCH /cards/reorder` (and `PUT /cards/:id` when it writes a status) re-checks the status the move was validated from inside the write, also on standalone MongoDB, so concurrent moves cannot bypass workflow rules or revert each other (`409`).
 
 ### ⚠️ Breaking API changes
 - Cards: `status` (enum) is replaced by `statusId` in requests and responses (`POST/PUT /cards`, `PATCH /cards/reorder`, card payloads).

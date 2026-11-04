@@ -176,10 +176,7 @@ export class CardRepositoryImpl implements CardRepository {
       card.expectedStatusId &&
       existingCard.statusId.toString() !== card.expectedStatusId
     ) {
-      throw CardException.CurrentStatusMismatch(
-        card.id,
-        card.expectedStatusId,
-      );
+      throw CardException.CurrentStatusMismatch(card.id, card.expectedStatusId);
     }
 
     if (card.columnId) {
@@ -260,7 +257,7 @@ export class CardRepositoryImpl implements CardRepository {
     if (card.version) existingCard.version = card.version;
     existingCard.updatedAt = new Date();
 
-    await existingCard.save();
+    await this.saveWithExpectedStatus(existingCard, card.expectedStatusId);
 
     return CardMapper.toDomain(existingCard);
   }
@@ -323,7 +320,10 @@ export class CardRepositoryImpl implements CardRepository {
         existingCard.statusId = new Types.ObjectId(statusId);
       }
 
-      await this.saveSequentially(reorderedList);
+      await this.saveWithExpectedStatus(existingCard, params.expectedStatusId);
+      await this.saveSequentially(
+        reorderedList.filter((item) => item !== existingCard),
+      );
       return CardMapper.toDomain(existingCard);
     }
 
@@ -352,7 +352,10 @@ export class CardRepositoryImpl implements CardRepository {
       item.updatedAt = new Date();
     });
 
-    await this.saveSequentially([...sourceList, ...targetList]);
+    await this.saveWithExpectedStatus(existingCard, params.expectedStatusId);
+    await this.saveSequentially(
+      [...sourceList, ...targetList].filter((item) => item !== existingCard),
+    );
 
     return CardMapper.toDomain(existingCard);
   }
@@ -378,6 +381,35 @@ export class CardRepositoryImpl implements CardRepository {
 
     await this.cardModel.findByIdAndDelete(id).exec();
     return id;
+  }
+
+  // The expected status is also part of the save filter, so a status change by
+  // a concurrent request between the read and the write fails the save, with
+  // or without a transaction. Saved before the other cards of a move, so a
+  // refused move writes nothing.
+  private async saveWithExpectedStatus(
+    card: CardDocument,
+    expectedStatusId?: string,
+  ): Promise<void> {
+    if (expectedStatusId) {
+      card.$where = { statusId: new Types.ObjectId(expectedStatusId) };
+    }
+
+    try {
+      await card.save();
+    } catch (error) {
+      if (
+        expectedStatusId &&
+        error instanceof Error &&
+        error.name === 'DocumentNotFoundError'
+      ) {
+        throw CardException.CurrentStatusMismatch(
+          card._id.toString(),
+          expectedStatusId,
+        );
+      }
+      throw error;
+    }
   }
 
   // A MongoDB session does not support concurrent operations, so saves made
