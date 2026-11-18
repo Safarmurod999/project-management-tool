@@ -40,6 +40,7 @@ export class GetColumnStatusesPresenterImpl
         color: status.color,
         order: status.order,
         isDefault: status.isDefault,
+        isDone: status.isDone,
         version: status.version,
         createdAt: status.createdAt,
         updatedAt: status.updatedAt,

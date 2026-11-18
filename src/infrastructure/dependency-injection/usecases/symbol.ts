@@ -82,6 +82,9 @@ export const UsecaseSymbols = {
     ReorderCardUsecase: Symbol.for('ReorderCardUsecase'),
     TransitionCardUsecase: Symbol.for('TransitionCardUsecase'),
     DeleteCardUsecase: Symbol.for('DeleteCardUsecase'),
+    GetMyCardsUsecase: Symbol.for('GetMyCardsUsecase'),
+    GetMyCardStatsUsecase: Symbol.for('GetMyCardStatsUsecase'),
+    NotifyCardChangeUsecase: Symbol.for('NotifyCardChangeUsecase'),
   },
   Status: {
     CreateStatusUsecase: Symbol.for('CreateStatusUsecase'),
@@ -107,6 +110,14 @@ export const UsecaseSymbols = {
     ),
     DeleteWorkflowTransitionUsecase: Symbol.for(
       'DeleteWorkflowTransitionUsecase',
+    ),
+  },
+  Notification: {
+    SendNotificationUsecase: Symbol.for('SendNotificationUsecase'),
+    GetNotificationsUsecase: Symbol.for('GetNotificationsUsecase'),
+    MarkNotificationReadUsecase: Symbol.for('MarkNotificationReadUsecase'),
+    MarkAllNotificationsReadUsecase: Symbol.for(
+      'MarkAllNotificationsReadUsecase',
     ),
   },
 };

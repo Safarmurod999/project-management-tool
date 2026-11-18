@@ -14,6 +14,7 @@ export class StatusMapper {
       data.version,
       data.createdAt,
       data.updatedAt,
+      data.isDone ?? false,
     );
   }
 }

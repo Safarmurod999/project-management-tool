@@ -27,9 +27,10 @@ import {
 } from 'src/infrastructure/dependency-injection';
 import { UserModule } from '../users/user.module';
 import { RolesModule } from '../roles/roles.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
-  imports: [UserModule, RolesModule],
+  imports: [UserModule, RolesModule, NotificationsModule],
   controllers: [MembershipController],
   providers: [
     {

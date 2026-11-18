@@ -37,6 +37,7 @@ export class CreateStatusUsecaseImpl implements CreateStatusUsecase {
         color: data.color,
         order: data.order,
         isDefault: data.isDefault,
+        isDone: data.isDone,
       });
     });
 

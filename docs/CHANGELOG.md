@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### 🎉 Home dashboard
+- ✅ **My cards** - `GET /cards/my` lists the caller's assigned cards across projects with status, column, board, project and assigner; filters `projectId`, `statusId`, `title`, `done`; excludes archived boards/projects.
+- ✅ **Notifications** - `card_assigned`, `card_status_changed` and `membership_added` notifications (`GET /notifications`, `PATCH /notifications/:id/read`, `PATCH /notifications/read-all`), pushed as `notification:created` to `user:{userId}`.
+- ✅ **Done statuses** - statuses have `isDone` (default `false`; seeded `done` status is `true`). Run `npm run migrate` (migration `004-status-is-done`).
+- ✅ **Personal stats** - `GET /users/me/stats` returns assigned/done/open card counts, points and per-status counts.
+
 ### 🎉 Workflows
 - ✅ **Workflows** - project-scoped workflows (`/workflows` CRUD, `GET /workflows/default?projectId=`) defining allowed statuses and one-way transition rules; `bidirectional` creates both directions.
 - ✅ **Card transitions** - `POST /cards/:id/transition` applies a rule; the card's current status must match the rule's `fromStatusId` and the update runs in a transaction.

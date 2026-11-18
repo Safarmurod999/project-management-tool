@@ -12,4 +12,5 @@ export const FactorySymbols = {
   StatusFactory: Symbol.for('StatusFactory'),
   WorkflowFactory: Symbol.for('WorkflowFactory'),
   WorkflowTransitionFactory: Symbol.for('WorkflowTransitionFactory'),
+  NotificationFactory: Symbol.for('NotificationFactory'),
 };

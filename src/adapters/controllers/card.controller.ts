@@ -10,6 +10,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -18,6 +19,7 @@ import {
   DeleteCardUsecase,
   FindCardByIdUsecase,
   GetCardsUsecase,
+  GetMyCardsUsecase,
   ReorderCardUsecase,
   TransitionCardUsecase,
   UpdateCardUsecase,
@@ -30,9 +32,13 @@ import {
   DeleteCardPresenter,
   FindCardByIdPresenter,
   GetCardsPresenter,
+  GetMyCardsPresenter,
   UpdateCardPresenter,
 } from '../presenters';
-import { Response } from 'express';
+import { Request, Response } from 'express';
+import { CardException } from 'src/domain';
+import { sendError } from './error-response';
+import { parseBooleanQuery, parseNumberQuery } from './query-params';
 import { RolesPermissionsGuard } from 'src/infrastructure/middlewares/role-guard.middleware';
 import { Permissions, Roles } from 'src/infrastructure/decorators';
 
@@ -65,6 +71,15 @@ export class GetCardsQuery {
   columnId?: string;
   title?: string;
   statusId?: string;
+}
+
+export class GetMyCardsQuery {
+  page?: string;
+  limit?: string;
+  projectId?: string;
+  statusId?: string;
+  title?: string;
+  done?: string;
 }
 
 export class ReorderCardDto {
@@ -110,12 +125,20 @@ export class CardController {
     private readonly deleteCardUsecase: DeleteCardUsecase,
     @Inject(PresenterSymbols.Card.DeleteCardPresenter)
     private readonly deleteCardPresenter: DeleteCardPresenter,
+    @Inject(UsecaseSymbols.Card.GetMyCardsUsecase)
+    private readonly getMyCardsUsecase: GetMyCardsUsecase,
+    @Inject(PresenterSymbols.Card.GetMyCardsPresenter)
+    private readonly getMyCardsPresenter: GetMyCardsPresenter,
   ) {}
 
   @Post()
   @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
   @Permissions(PermissionCode.CARD_CREATE)
-  async create(@Res() res: Response, @Body() dto: CreateCardDto) {
+  async create(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Body() dto: CreateCardDto,
+  ) {
     try {
       const card = await this.createCardUsecase.execute({
         columnId: dto.columnId,
@@ -126,6 +149,7 @@ export class CardController {
         assigneeId: dto.assigneeId,
         assignerId: dto.assignerId,
         points: dto.points,
+        actorId: req.user?.id,
       });
 
       res.status(HttpStatus.CREATED).send({
@@ -171,6 +195,44 @@ export class CardController {
     }
   }
 
+  // Must stay above `@Get(':id')`, otherwise "my" is read as a card id.
+  @Get('my')
+  @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER, RoleCode.USER)
+  @Permissions(PermissionCode.CARD_GET)
+  async getMine(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query() query: GetMyCardsQuery,
+  ) {
+    try {
+      const done = parseBooleanQuery(query.done);
+      if (done === null) {
+        throw CardException.InvalidDoneFilter(query.done!);
+      }
+
+      const cards = await this.getMyCardsUsecase.execute({
+        // Always the caller; an assignee in the query is ignored.
+        userId: req.user!.id,
+        page: parseNumberQuery(query.page),
+        limit: parseNumberQuery(query.limit),
+        projectId: query.projectId,
+        statusId: query.statusId,
+        title: query.title,
+        done,
+      });
+
+      res.status(HttpStatus.OK).send({
+        status: HttpStatus.OK,
+        data: this.getMyCardsPresenter.present(cards.data),
+        totalCount: cards.totalCount,
+        page: cards.page,
+        limit: cards.limit,
+      });
+    } catch (error) {
+      sendError(res, error);
+    }
+  }
+
   @Get(':id')
   @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER, RoleCode.USER)
   @Permissions(PermissionCode.CARD_GET)
@@ -195,6 +257,7 @@ export class CardController {
   @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
   @Permissions(PermissionCode.CARD_EDIT)
   async update(
+    @Req() req: Request,
     @Res() res: Response,
     @Param('id') id: string,
     @Body() dto: UpdateCardDto,
@@ -211,6 +274,7 @@ export class CardController {
         assignerId: dto.assignerId,
         points: dto.points,
         version: dto.version,
+        actorId: req.user?.id,
       });
 
       res.status(HttpStatus.OK).send({
@@ -229,7 +293,11 @@ export class CardController {
   @Patch('reorder')
   @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
   @Permissions(PermissionCode.CARD_EDIT)
-  async reorder(@Res() res: Response, @Body() dto: ReorderCardDto) {
+  async reorder(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Body() dto: ReorderCardDto,
+  ) {
     try {
       const card = await this.reorderCardUsecase.execute({
         cardId: dto.cardId,
@@ -237,6 +305,7 @@ export class CardController {
         targetColumnId: dto.targetColumnId,
         newIndex: dto.newIndex,
         statusId: dto.statusId,
+        actorId: req.user?.id,
       });
 
       res.status(HttpStatus.OK).send({
@@ -256,6 +325,7 @@ export class CardController {
   @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
   @Permissions(PermissionCode.CARD_EDIT)
   async transition(
+    @Req() req: Request,
     @Res() res: Response,
     @Param('id') id: string,
     @Body() dto: TransitionCardDto,
@@ -265,6 +335,7 @@ export class CardController {
         cardId: id,
         transitionId: dto.transitionId,
         toStatusId: dto.toStatusId,
+        actorId: req.user?.id,
       });
 
       res.status(HttpStatus.OK).send({

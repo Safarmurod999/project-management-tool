@@ -12,3 +12,4 @@ export * from './workflow.mapper';
 export * from './workflow-status.mapper';
 export * from './workflow-transition.mapper';
 export * from './membership.mapper';
+export * from './notification.mapper';

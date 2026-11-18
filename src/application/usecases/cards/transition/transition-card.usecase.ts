@@ -82,6 +82,7 @@ export class TransitionCardUsecaseImpl implements TransitionCardUsecase {
       newIndex: sameColumn ? card.order : Number.MAX_SAFE_INTEGER,
       statusId: transition.toStatusId,
       expectedStatusId: transition.fromStatusId,
+      actorId: params.actorId,
     });
   }
 

@@ -6,6 +6,8 @@ export interface DefaultStatusDefinition {
   color: string;
   order: number;
   isDefault: boolean;
+  /** Cards in this status count as completed. */
+  isDone: boolean;
 }
 
 export interface DefaultColumnDefinition {
@@ -24,6 +26,7 @@ export const DEFAULT_STATUSES: DefaultStatusDefinition[] = [
     color: '#90A4AE',
     order: 0,
     isDefault: false,
+    isDone: false,
   },
   {
     code: CardStatus.TODO,
@@ -31,6 +34,7 @@ export const DEFAULT_STATUSES: DefaultStatusDefinition[] = [
     color: '#42A5F5',
     order: 1,
     isDefault: true,
+    isDone: false,
   },
   {
     code: CardStatus.IN_PROGRESS,
@@ -38,6 +42,7 @@ export const DEFAULT_STATUSES: DefaultStatusDefinition[] = [
     color: '#FFA726',
     order: 2,
     isDefault: false,
+    isDone: false,
   },
   {
     code: CardStatus.PENDING,
@@ -45,6 +50,7 @@ export const DEFAULT_STATUSES: DefaultStatusDefinition[] = [
     color: '#FFCA28',
     order: 3,
     isDefault: false,
+    isDone: false,
   },
   {
     code: CardStatus.TESTING,
@@ -52,6 +58,7 @@ export const DEFAULT_STATUSES: DefaultStatusDefinition[] = [
     color: '#AB47BC',
     order: 4,
     isDefault: false,
+    isDone: false,
   },
   {
     code: CardStatus.TO_REALIZE,
@@ -59,6 +66,7 @@ export const DEFAULT_STATUSES: DefaultStatusDefinition[] = [
     color: '#26C6DA',
     order: 5,
     isDefault: false,
+    isDone: false,
   },
   {
     code: CardStatus.REJECTED,
@@ -66,6 +74,7 @@ export const DEFAULT_STATUSES: DefaultStatusDefinition[] = [
     color: '#EF5350',
     order: 6,
     isDefault: false,
+    isDone: false,
   },
   {
     code: CardStatus.DONE,
@@ -73,6 +82,7 @@ export const DEFAULT_STATUSES: DefaultStatusDefinition[] = [
     color: '#66BB6A',
     order: 7,
     isDefault: false,
+    isDone: true,
   },
 ];
 

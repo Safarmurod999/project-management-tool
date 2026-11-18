@@ -14,6 +14,8 @@ import {
 import { TransactionManager } from 'src/application/services';
 import { RepositorySymbols } from 'src/infrastructure/dependency-injection/repositories/symbol';
 import { ServiceSymbols } from 'src/infrastructure/dependency-injection/services/symbol';
+import { UsecaseSymbols } from 'src/infrastructure/dependency-injection/usecases/symbol';
+import { NotifyCardChangeUsecase } from '../notify-change';
 import { CardStatusResolverDeps, resolveCardStatusId } from '../shared';
 import { UpdateCardUsecase, UpdateCardUsecaseParams } from './types';
 
@@ -37,6 +39,8 @@ export class UpdateCardUsecaseImpl implements UpdateCardUsecase {
     private readonly workflowTransitionRepository: WorkflowTransitionRepository,
     @Inject(ServiceSymbols.TransactionManager)
     private readonly transactionManager: TransactionManager,
+    @Inject(UsecaseSymbols.Card.NotifyCardChangeUsecase)
+    private readonly notifyCardChangeUsecase: NotifyCardChangeUsecase,
   ) {}
 
   async execute(params: UpdateCardUsecaseParams): Promise<Card> {
@@ -73,7 +77,7 @@ export class UpdateCardUsecaseImpl implements UpdateCardUsecase {
     // A written status was validated against the status read above; the write
     // runs in a transaction and is refused if the card left that status since,
     // so a stale request cannot overwrite a concurrent status change.
-    return await this.transactionManager.run(() =>
+    const card = await this.transactionManager.run(() =>
       this.cardRepository.update({
         id: params.id,
         columnId: params.columnId,
@@ -89,6 +93,15 @@ export class UpdateCardUsecaseImpl implements UpdateCardUsecase {
           statusId !== undefined ? existingCard.statusId : undefined,
       }),
     );
+
+    // Sent once the transaction has committed.
+    await this.notifyCardChangeUsecase.execute({
+      before: existingCard,
+      after: card,
+      actorId: params.actorId,
+    });
+
+    return card;
   }
 
   private get statusDeps(): CardStatusResolverDeps {

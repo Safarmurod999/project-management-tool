@@ -17,6 +17,7 @@ import {
   StatusesModule,
   WorkflowsModule,
   QueueModule,
+  NotificationsModule,
 } from './infrastructure/modules';
 
 @Module({
@@ -38,6 +39,7 @@ import {
     CardsModule,
     StatusesModule,
     WorkflowsModule,
+    NotificationsModule,
   ],
 })
 export class AppModule {}

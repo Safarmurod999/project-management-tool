@@ -14,3 +14,4 @@ export * from './workflows';
 export * from './workflow-statuses';
 export * from './workflow-transitions';
 export * from './otp';
+export * from './notifications';

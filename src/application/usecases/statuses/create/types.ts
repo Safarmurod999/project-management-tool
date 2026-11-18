@@ -7,6 +7,8 @@ export interface CreateStatusUsecaseParams {
   color?: string;
   order?: number;
   isDefault?: boolean;
+  /** Cards in this status count as completed. Default `false`. */
+  isDone?: boolean;
 }
 
 export interface CreateStatusUsecase {

@@ -175,15 +175,18 @@ describe('Card status changes under a project workflow', () => {
       } as unknown as WorkflowTransitionRepository,
     ] as const;
 
+    const notifier = { execute: jest.fn() };
     update = new UpdateCardUsecaseImpl(
       cardRepository,
       ...deps,
       transactionManager,
+      notifier,
     );
     reorder = new ReorderCardUsecaseImpl(
       cardRepository,
       ...deps,
       transactionManager,
+      notifier,
     );
   });
 

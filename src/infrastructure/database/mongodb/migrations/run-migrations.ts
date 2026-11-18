@@ -17,6 +17,10 @@ import {
   SUPER_ADMIN_PERMISSIONS_MIGRATION_ID,
   SuperAdminPermissionsMigration,
 } from './003-super-admin-permissions.migration';
+import {
+  STATUS_IS_DONE_MIGRATION_ID,
+  StatusIsDoneMigration,
+} from './004-status-is-done.migration';
 
 interface Migration {
   run(options: { dryRun: boolean }): Promise<object>;
@@ -70,6 +74,10 @@ async function main() {
     {
       id: SUPER_ADMIN_PERMISSIONS_MIGRATION_ID,
       migration: new SuperAdminPermissionsMigration(database, logger),
+    },
+    {
+      id: STATUS_IS_DONE_MIGRATION_ID,
+      migration: new StatusIsDoneMigration(database, logger),
     },
   ].filter((item) => !only || item.id === only);
 

@@ -40,6 +40,7 @@ export class CreateStatusDto {
   color?: string;
   order?: number;
   isDefault?: boolean;
+  isDone?: boolean;
 }
 
 export class UpdateStatusDto {
@@ -48,6 +49,7 @@ export class UpdateStatusDto {
   color?: string;
   order?: number;
   isDefault?: boolean;
+  isDone?: boolean;
   version?: number;
 }
 
@@ -97,6 +99,7 @@ export class StatusController {
         color: dto.color,
         order: dto.order,
         isDefault: dto.isDefault,
+        isDone: dto.isDone,
       });
 
       res.status(HttpStatus.CREATED).send({
@@ -178,6 +181,7 @@ export class StatusController {
         color: dto.color,
         order: dto.order,
         isDefault: dto.isDefault,
+        isDone: dto.isDone,
         version: dto.version,
       });
 

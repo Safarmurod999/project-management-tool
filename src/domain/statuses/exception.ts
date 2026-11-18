@@ -33,6 +33,10 @@ export class StatusException extends Error {
     return new StatusException('Status order is invalid.', 400);
   }
 
+  static InvalidIsDone(): StatusException {
+    return new StatusException('Status isDone must be a boolean.', 400);
+  }
+
   static InvalidProjectId(projectId: string): StatusException {
     return new StatusException(`Project with ID ${projectId} not found.`, 404);
   }

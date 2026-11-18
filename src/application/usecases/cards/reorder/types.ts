@@ -13,6 +13,8 @@ export interface ReorderCardUsecaseParams {
    * either way.
    */
   expectedStatusId?: string;
+  /** The user moving the card; not notified about their own action. */
+  actorId?: string;
 }
 
 export interface ReorderCardUsecase {

@@ -100,8 +100,16 @@ export class CardException extends Error {
   }
 
   static TransitionTargetRequired(): CardException {
+    return new CardException('Provide either transitionId or toStatusId.', 400);
+  }
+
+  static InvalidFilterId(field: string, value: string): CardException {
+    return new CardException(`${field} "${value}" is not a valid ID.`, 400);
+  }
+
+  static InvalidDoneFilter(value: string): CardException {
     return new CardException(
-      'Provide either transitionId or toStatusId.',
+      `done must be "true" or "false", got "${value}".`,
       400,
     );
   }

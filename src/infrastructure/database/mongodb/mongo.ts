@@ -16,6 +16,7 @@ import {
   WorkflowSchema,
   WorkflowStatusSchema,
   WorkflowTransitionSchema,
+  NotificationSchema,
 } from './schemas';
 import {
   UserDocument,
@@ -33,6 +34,7 @@ import {
   WorkflowDocument,
   WorkflowStatusDocument,
   WorkflowTransitionDocument,
+  NotificationDocument,
 } from './models';
 import { Database } from '../database';
 import { Inject, Injectable } from '@nestjs/common';
@@ -103,6 +105,10 @@ export class MongoDb implements Database {
     this._client.model<WorkflowTransitionDocument>(
       'WorkflowTransition',
       WorkflowTransitionSchema,
+    );
+    this._client.model<NotificationDocument>(
+      'Notification',
+      NotificationSchema,
     );
 
     console.log('[MongoDB] Connected.');
@@ -208,5 +214,11 @@ export class MongoDb implements Database {
     if (!this._client)
       throw GlobalException.DatabaseError('MongoDB not connected');
     return this._client.model<WorkflowTransitionDocument>('WorkflowTransition');
+  }
+
+  public notificationModel(): Model<NotificationDocument> {
+    if (!this._client)
+      throw GlobalException.DatabaseError('MongoDB not connected');
+    return this._client.model<NotificationDocument>('Notification');
   }
 }

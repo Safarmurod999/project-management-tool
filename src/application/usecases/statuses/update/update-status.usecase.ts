@@ -27,6 +27,7 @@ export class UpdateStatusUsecaseImpl implements UpdateStatusUsecase {
       code: params.code,
       color: params.color,
       order: params.order,
+      isDone: params.isDone,
     });
 
     const existingStatus = await this.statusRepository.findById(params.id);
@@ -46,6 +47,7 @@ export class UpdateStatusUsecaseImpl implements UpdateStatusUsecase {
         color: params.color,
         order: params.order,
         isDefault: params.isDefault,
+        isDone: params.isDone,
         version: params.version,
       });
     });

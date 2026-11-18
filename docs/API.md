@@ -460,6 +460,48 @@ Authorization: Bearer {accessToken}
 
 ---
 
+### 6. Get My Stats
+
+Card counts for the authenticated user's home dashboard. Counts only cards
+assigned to the user, with the same filtering as [`GET /cards/my`](#8-get-my-cards)
+(cards on archived boards and in archived projects are excluded).
+
+**Endpoint:** `GET /users/me/stats`
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`, `USER` (no permission needed)
+
+**Query Parameters:**
+- `projectId` (optional): only count cards of this project
+
+**Response:** `200 OK`
+```json
+{
+  "status": 200,
+  "data": {
+    "assignedCards": 12,
+    "doneCards": 5,
+    "openCards": 7,
+    "totalPoints": 34,
+    "donePoints": 13,
+    "byStatus": [
+      { "statusId": "60c72b2f9b1d8b001c8e4b72", "name": "In Progress", "color": "#228BE6", "count": 4 }
+    ]
+  }
+}
+```
+
+- A card is done when its status has `isDone: true`; `openCards = assignedCards - doneCards`.
+- `byStatus` is sorted by the status `order`. `name` and `color` are `null` for a deleted status.
+
+**Errors:** `400` `projectId` is not a valid ID
+
+---
+
 ## 🎭 Role Management
 
 ### 1. Get All Roles
@@ -1197,6 +1239,8 @@ Authorization: Bearer {accessToken}
 ### 1. Create Membership
 
 Assign a role to a user for a specific scope (team, project, or board).
+The added user receives a [`membership_added`](#-notifications-endpoints)
+notification, unless they added themselves.
 
 **Endpoint:** `POST /memberships`
 
@@ -1397,16 +1441,23 @@ mapped onto (see [Column Statuses](#6-get-column-statuses)).
 
 Every new project is seeded with these statuses (`todo` is the project default):
 
-| Code | Name | Default column on new boards |
-|------|------|------------------------------|
-| `planning` | Planning | To Do |
-| `todo` | To Do | To Do |
-| `in_progress` | In Progress | In Progress |
-| `pending` | Pending | In Progress |
-| `testing` | Testing | In Progress |
-| `to_realize` | To Realize | In Progress |
-| `rejected` | Rejected | Done |
-| `done` | Done | Done |
+| Code | Name | Default column on new boards | `isDone` |
+|------|------|------------------------------|----------|
+| `planning` | Planning | To Do | `false` |
+| `todo` | To Do | To Do | `false` |
+| `in_progress` | In Progress | In Progress | `false` |
+| `pending` | Pending | In Progress | `false` |
+| `testing` | Testing | In Progress | `false` |
+| `to_realize` | To Realize | In Progress | `false` |
+| `rejected` | Rejected | Done | `false` |
+| `done` | Done | Done | `true` |
+
+`isDone` marks statuses that mean "finished": cards in them count as done in
+[`GET /users/me/stats`](#6-get-my-stats) and [`GET /cards/my?done=`](#8-get-my-cards).
+A project may have several done statuses. Every status payload (statuses,
+column statuses, workflow details and `status:*` socket events) includes it.
+Existing statuses get it from migration `004-status-is-done` (`code: done` →
+`true`, all others → `false`).
 
 ### 1. Create Status
 
@@ -1423,13 +1474,15 @@ Every new project is seeded with these statuses (`todo` is the project default):
   "code": "code_review",
   "color": "#7E57C2",
   "order": 8,
-  "isDefault": false
+  "isDefault": false,
+  "isDone": false
 }
 ```
 
 - `code` (optional): lowercase letters, digits and `_`; derived from `name` when omitted. Unique per project.
 - `color` (optional): hex `#RRGGBB`, default `#9E9E9E`.
 - `isDefault` (optional): the status new cards get when none is given. Setting it clears the flag on the project's other statuses.
+- `isDone` (optional, boolean, default `false`): cards in this status count as completed.
 
 **Response:** `201 Created`
 ```json
@@ -1443,6 +1496,7 @@ Every new project is seeded with these statuses (`todo` is the project default):
     "color": "#7E57C2",
     "order": 8,
     "isDefault": false,
+    "isDone": false,
     "version": 1,
     "createdAt": "2026-11-02T10:00:00Z",
     "updatedAt": null
@@ -1450,7 +1504,7 @@ Every new project is seeded with these statuses (`todo` is the project default):
 }
 ```
 
-**Errors:** `404` project not found · `409` code already exists in the project · `400` invalid name/code/color/order
+**Errors:** `404` project not found · `409` code already exists in the project · `400` invalid name/code/color/order, or `isDone` is not a boolean
 
 ---
 
@@ -1495,6 +1549,7 @@ Returns statuses sorted by `order`, with `totalCount`, `page` and `limit`.
   "color": "#5E35B1",
   "order": 3,
   "isDefault": true,
+  "isDone": false,
   "version": 2
 }
 ```
@@ -1941,6 +1996,11 @@ project and be mapped to the card's column. When the project has a workflow,
 the status must also be part of it and status changes must follow its
 transitions (see [Workflows](#-workflows-endpoints)).
 
+Creating, updating, reordering and transitioning cards sends
+[notifications](#-notifications-endpoints) once the change is saved:
+`card_assigned` to a new assignee, and `card_status_changed` to the assignee
+when the status changes. Nobody is notified about their own action.
+
 ### 1. Create Card
 
 Create a new card inside a column.
@@ -2170,6 +2230,23 @@ Authorization: ******
 
 ---
 
+## 📡 Realtime Events
+
+Socket.IO connections authenticate with the access token (see
+[REALTIME.md](./REALTIME.md)). Each socket joins `user:{userId}` on connect;
+emit `project:join` with a project id to join `project:{projectId}`.
+
+| Event | Room | Payload |
+|-------|------|---------|
+| `notification:created` | `user:{userId}` | The [notification object](#-notifications-endpoints), sent to its recipient |
+| `board:created` | `project:{projectId}` | The new board |
+| `status:created` | `project:{projectId}` | The status (`id, projectId, name, code, color, order, isDefault, isDone, version, createdAt, updatedAt`) |
+| `status:updated` | `project:{projectId}` | Same as `status:created` |
+| `status:deleted` | `project:{projectId}` | `{ id, projectId }` |
+| `workflow:created` | `project:{projectId}` | The workflow with `statuses` and `transitions` |
+| `workflow:updated` | `project:{projectId}` | Same as `workflow:created` |
+| `workflow:deleted` | `project:{projectId}` | `{ id, projectId }` |
+
 ## ❗ Error Codes
 
 | Status Code | Description |
@@ -2301,6 +2378,180 @@ Change a card's status by applying a workflow transition.
 **Response:** `200 OK` with the updated card (same shape as Update Card).
 
 **Errors:** `400` neither `transitionId` nor `toStatusId` · `404` project has no workflow, or the transition belongs to another workflow · `409` no rule from the current status (`not allowed by its workflow`), the transition starts at another status, the target status is not mapped on the board, or the card changed concurrently
+
+---
+
+### 8. Get My Cards
+
+List the cards assigned to the authenticated user across all projects, with
+their status, column, board, project and assigner, for the home dashboard.
+
+**Endpoint:** `GET /cards/my`
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Required Roles:** `SUPER_ADMIN`, `ADMIN`, `MANAGER`, `USER`
+**Required Permissions:** `CARD_GET`
+
+**Query Parameters** (all optional):
+- `page`: Page number (default: 1)
+- `limit`: Items per page (default: 10, max: 100)
+- `projectId`: Only cards of this project
+- `statusId`: Only cards in this status
+- `title`: Partial, case-insensitive title match
+- `done`: `true` for cards in a status with `isDone: true`, `false` for all others
+
+**Behavior:**
+- The assignee is always the user of the access token; it cannot be passed as a parameter.
+- Cards on archived boards and in archived projects are excluded.
+- Sorted by `updatedAt` (or `createdAt` when there is none), newest first.
+- `status` is `null` if the card's status was deleted; `assigner` is `null` when the card has none.
+
+**Example:** `GET /cards/my?done=false&limit=20`
+
+**Response:** `200 OK`
+```json
+{
+  "status": 200,
+  "data": [
+    {
+      "id": "60c72b2f9b1d8b001c8e4b60",
+      "title": "Build dashboard widgets",
+      "description": null,
+      "order": 0,
+      "columnId": "60c72b2f9b1d8b001c8e4b5d",
+      "statusId": "60c72b2f9b1d8b001c8e4b72",
+      "assigneeId": "507f1f77bcf86cd799439011",
+      "assignerId": "507f1f77bcf86cd799439012",
+      "points": 5,
+      "version": 1,
+      "createdAt": "2026-07-17T10:00:00Z",
+      "updatedAt": null,
+      "status": { "id": "60c72b2f9b1d8b001c8e4b72", "name": "In Progress", "code": "in_progress", "color": "#228BE6", "isDone": false },
+      "column": { "id": "60c72b2f9b1d8b001c8e4b5d", "name": "Doing" },
+      "board": { "id": "60c72b2f9b1d8b001c8e4b5a", "name": "Sprint 1 Board" },
+      "project": { "id": "60c72b2f9b1d8b001c8e4b5b", "name": "New Website" },
+      "assigner": { "id": "507f1f77bcf86cd799439012", "name": "John Doe" }
+    }
+  ],
+  "totalCount": 1,
+  "page": 1,
+  "limit": 10
+}
+```
+
+**Errors:** `400` `projectId` or `statusId` is not a valid ID, or `done` is not `true`/`false`
+
+---
+
+## 🔔 Notifications Endpoints
+
+Notifications tell a user about changes made by **other** users. They are
+created after the triggering change has been saved; if creating one fails, the
+original request still succeeds.
+
+| type | Sent when | Recipient |
+|------|-----------|-----------|
+| `card_assigned` | A card is created or updated with a new `assigneeId` | The new assignee |
+| `card_status_changed` | A card's `statusId` changes (update, reorder or transition) | The assignee (skipped when the same request also assigned them, since they already get `card_assigned`) |
+| `membership_added` | `POST /memberships` | The added user |
+
+**Notification object:**
+```json
+{
+  "id": "60c72b2f9b1d8b001c8e4d01",
+  "userId": "507f1f77bcf86cd799439011",
+  "type": "card_status_changed",
+  "title": "Card status changed",
+  "message": "\"Build dashboard widgets\" moved from To Do to In Progress.",
+  "data": {
+    "cardId": "60c72b2f9b1d8b001c8e4b60",
+    "columnId": "60c72b2f9b1d8b001c8e4b5d",
+    "boardId": "60c72b2f9b1d8b001c8e4b5a",
+    "projectId": "60c72b2f9b1d8b001c8e4b5b",
+    "fromStatusId": "60c72b2f9b1d8b001c8e4b71",
+    "toStatusId": "60c72b2f9b1d8b001c8e4b72"
+  },
+  "readAt": null,
+  "createdAt": "2026-11-18T10:00:00Z"
+}
+```
+
+`data` holds related ids: card notifications have `cardId`, `columnId`,
+`boardId` and `projectId` (plus `fromStatusId`/`toStatusId` for status
+changes); `membership_added` has `membershipId`, `scopeType`, `scopeId` and
+`teamId`, `projectId` or `boardId` matching the scope.
+
+New notifications are also pushed over Socket.IO as
+[`notification:created`](#-realtime-events).
+
+All notification endpoints are available to every role
+(`SUPER_ADMIN`, `ADMIN`, `MANAGER`, `USER`) and need no permission. A user
+only ever sees their own notifications; another user's notification is a `404`.
+
+### 1. Get My Notifications
+
+**Endpoint:** `GET /notifications`
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Query Parameters** (all optional):
+- `page`: Page number (default: 1)
+- `limit`: Items per page (default: 10, max: 100)
+- `unread`: `true` to return only unread notifications
+
+**Response:** `200 OK`, newest first. `unreadCount` is the user's total
+number of unread notifications, independent of the `unread` filter.
+```json
+{
+  "status": 200,
+  "data": [ { "id": "60c72b2f9b1d8b001c8e4d01", "type": "card_assigned", "...": "notification object" } ],
+  "totalCount": 12,
+  "page": 1,
+  "limit": 10,
+  "unreadCount": 3
+}
+```
+
+**Errors:** `400` `unread` is not `true`/`false`
+
+---
+
+### 2. Mark Notification as Read
+
+**Endpoint:** `PATCH /notifications/:id/read`
+
+Sets `readAt`. Marking an already-read notification keeps its original `readAt`.
+
+**Response:** `200 OK`
+```json
+{
+  "status": 200,
+  "data": { "id": "60c72b2f9b1d8b001c8e4d01", "readAt": "2026-11-18T10:05:00Z", "...": "notification object" }
+}
+```
+
+**Errors:** `404` the notification does not exist or belongs to another user
+
+---
+
+### 3. Mark All Notifications as Read
+
+**Endpoint:** `PATCH /notifications/read-all`
+
+**Response:** `200 OK` with the number of notifications that were unread.
+```json
+{
+  "status": 200,
+  "data": { "updated": 3 }
+}
+```
 
 ---
 

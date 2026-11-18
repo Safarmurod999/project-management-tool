@@ -6,6 +6,8 @@ export interface TransitionCardUsecaseParams {
   transitionId?: string;
   /** Alternative to `transitionId`: the rule from the card's current status to this one. */
   toStatusId?: string;
+  /** The user moving the card; not notified about their own action. */
+  actorId?: string;
 }
 
 export interface TransitionCardUsecase {
