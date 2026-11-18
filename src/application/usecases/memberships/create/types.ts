@@ -7,6 +7,8 @@ export interface CreateMembershipUsecaseParams {
   scopeId: string;
   roleId: string;
   override?: boolean;
+  /** The user adding the member; not notified about their own action. */
+  actorId?: string;
 }
 
 export interface CreateMembershipUsecase {

@@ -13,8 +13,15 @@ describe('StatusFactoryImpl', () => {
       color: '#9E9E9E',
       order: 0,
       isDefault: false,
+      isDone: false,
       version: 1,
     });
+  });
+
+  it('accepts a done status', () => {
+    expect(
+      factory.create({ projectId: 'p1', name: 'Shipped', isDone: true }),
+    ).toMatchObject({ isDone: true });
   });
 
   it.each([
@@ -31,5 +38,8 @@ describe('StatusFactoryImpl', () => {
   it('validates only provided fields on update', () => {
     expect(() => factory.validate({})).not.toThrow();
     expect(() => factory.validate({ color: '#12345' })).toThrow(/color/i);
+    expect(() =>
+      factory.validate({ isDone: 'yes' as unknown as boolean }),
+    ).toThrow(/isDone/);
   });
 });

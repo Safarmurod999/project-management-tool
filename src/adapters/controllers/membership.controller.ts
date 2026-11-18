@@ -9,6 +9,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -19,7 +20,7 @@ import {
   GetMembershipsUsecase,
   UpdateMembershipUsecase,
 } from 'src/application';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { RoleCode, ScopeType } from 'src/infrastructure/common/enum';
 import { Roles } from 'src/infrastructure/decorators';
 import { PresenterSymbols } from 'src/infrastructure/dependency-injection/presenters/symbol';
@@ -77,13 +78,18 @@ export class MembershipController {
 
   @Post()
   @Roles(RoleCode.SUPER_ADMIN, RoleCode.ADMIN, RoleCode.MANAGER)
-  async create(@Res() res: Response, @Body() dto: CreateMembershipDto) {
+  async create(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Body() dto: CreateMembershipDto,
+  ) {
     try {
       const membership = await this.createMembershipUsecase.execute({
         userId: dto.userId,
         scopeType: dto.scopeType,
         scopeId: dto.scopeId,
         roleId: dto.roleId,
+        actorId: req.user?.id,
       });
 
       res.status(HttpStatus.CREATED).send({

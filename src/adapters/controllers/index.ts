@@ -14,3 +14,5 @@ export * from './column.controller';
 export * from './card.controller';
 export * from './status.controller';
 export * from './workflow.controller';
+export * from './notification.controller';
+export * from './user-stats.controller';

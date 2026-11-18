@@ -11,6 +11,8 @@ import {
   WorkflowTransitionRepository,
 } from 'src/domain';
 import { RepositorySymbols } from 'src/infrastructure/dependency-injection/repositories/symbol';
+import { UsecaseSymbols } from 'src/infrastructure/dependency-injection/usecases/symbol';
+import { NotifyCardChangeUsecase } from '../notify-change';
 import { CardStatusResolverDeps, resolveCardStatusId } from '../shared';
 import { CreateCardUsecase, CreateCardUsecaseParams } from './types';
 
@@ -32,6 +34,8 @@ export class CreateCardUsecaseImpl implements CreateCardUsecase {
     private readonly workflowStatusRepository: WorkflowStatusRepository,
     @Inject(RepositorySymbols.WorkflowTransitionRepository)
     private readonly workflowTransitionRepository: WorkflowTransitionRepository,
+    @Inject(UsecaseSymbols.Card.NotifyCardChangeUsecase)
+    private readonly notifyCardChangeUsecase: NotifyCardChangeUsecase,
   ) {}
 
   async execute(params: CreateCardUsecaseParams): Promise<Card> {
@@ -40,7 +44,7 @@ export class CreateCardUsecaseImpl implements CreateCardUsecase {
       requestedStatusId: params.statusId,
     });
 
-    return await this.cardRepository.create({
+    const card = await this.cardRepository.create({
       columnId: params.columnId,
       title: params.title,
       description: params.description ?? null,
@@ -50,6 +54,14 @@ export class CreateCardUsecaseImpl implements CreateCardUsecase {
       assignerId: params.assignerId ?? null,
       points: params.points ?? 0,
     });
+
+    await this.notifyCardChangeUsecase.execute({
+      before: null,
+      after: card,
+      actorId: params.actorId,
+    });
+
+    return card;
   }
 
   private get statusDeps(): CardStatusResolverDeps {

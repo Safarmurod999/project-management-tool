@@ -20,6 +20,8 @@ export const CardSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
       default: null,
+      // GET /cards/my and GET /users/me/stats start from the assignee.
+      index: true,
     },
     assignerId: {
       type: Schema.Types.ObjectId,

@@ -10,6 +10,7 @@ export class Status {
     private readonly _version: number,
     private readonly _createdAt: Date,
     private readonly _updatedAt: Date | null = null,
+    private readonly _isDone: boolean = false,
   ) {}
 
   public get id(): string {
@@ -40,6 +41,11 @@ export class Status {
     return this._isDefault;
   }
 
+  /** Cards in a done status count as completed. */
+  public get isDone(): boolean {
+    return this._isDone;
+  }
+
   public get version(): number {
     return this._version;
   }
@@ -62,6 +68,7 @@ export class Status {
       color: this.color,
       order: this.order,
       isDefault: this.isDefault,
+      isDone: this.isDone,
       version: this.version,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,

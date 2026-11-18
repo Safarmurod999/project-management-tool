@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
 import {
   CardController,
+  UserStatsController,
+  GetMyCardsPresenterImpl,
+  GetMyCardStatsPresenterImpl,
   CreateCardPresenterImpl,
   FindCardByIdPresenterImpl,
   GetCardsPresenterImpl,
@@ -15,6 +18,9 @@ import {
   ReorderCardUsecaseImpl,
   TransitionCardUsecaseImpl,
   DeleteCardUsecaseImpl,
+  GetMyCardsUsecaseImpl,
+  GetMyCardStatsUsecaseImpl,
+  NotifyCardChangeUsecaseImpl,
 } from 'src/application';
 import { CardFactoryImpl, CardRepositoryImpl } from 'src/domain';
 import {
@@ -27,10 +33,17 @@ import { StatusesModule } from '../statuses/statuses.module';
 import { ColumnsModule } from '../columns/columns.module';
 import { BoardsModule } from '../boards/boards.module';
 import { WorkflowsModule } from '../workflows/workflows.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
-  imports: [StatusesModule, ColumnsModule, BoardsModule, WorkflowsModule],
-  controllers: [CardController],
+  imports: [
+    StatusesModule,
+    ColumnsModule,
+    BoardsModule,
+    WorkflowsModule,
+    NotificationsModule,
+  ],
+  controllers: [CardController, UserStatsController],
   providers: [
     {
       provide: FactorySymbols.CardFactory,
@@ -67,6 +80,26 @@ import { WorkflowsModule } from '../workflows/workflows.module';
     {
       provide: UsecaseSymbols.Card.DeleteCardUsecase,
       useClass: DeleteCardUsecaseImpl,
+    },
+    {
+      provide: UsecaseSymbols.Card.GetMyCardsUsecase,
+      useClass: GetMyCardsUsecaseImpl,
+    },
+    {
+      provide: UsecaseSymbols.Card.GetMyCardStatsUsecase,
+      useClass: GetMyCardStatsUsecaseImpl,
+    },
+    {
+      provide: UsecaseSymbols.Card.NotifyCardChangeUsecase,
+      useClass: NotifyCardChangeUsecaseImpl,
+    },
+    {
+      provide: PresenterSymbols.Card.GetMyCardsPresenter,
+      useClass: GetMyCardsPresenterImpl,
+    },
+    {
+      provide: PresenterSymbols.Card.GetMyCardStatsPresenter,
+      useClass: GetMyCardStatsPresenterImpl,
     },
     {
       provide: PresenterSymbols.Card.CreateCardPresenter,

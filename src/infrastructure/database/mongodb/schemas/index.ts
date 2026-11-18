@@ -13,3 +13,4 @@ export * from './column-status.schema';
 export * from './workflow.schema';
 export * from './workflow-status.schema';
 export * from './workflow-transition.schema';
+export * from './notification.schema';

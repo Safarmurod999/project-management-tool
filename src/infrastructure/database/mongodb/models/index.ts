@@ -13,3 +13,4 @@ export * from './column-status.model';
 export * from './workflow.model';
 export * from './workflow-status.model';
 export * from './workflow-transition.model';
+export * from './notification.model';

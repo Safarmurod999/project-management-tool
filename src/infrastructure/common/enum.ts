@@ -128,6 +128,12 @@ export enum CardStatus {
   TO_REALIZE = 'to_realize',
 }
 
+export enum NotificationType {
+  CARD_ASSIGNED = 'card_assigned',
+  CARD_STATUS_CHANGED = 'card_status_changed',
+  MEMBERSHIP_ADDED = 'membership_added',
+}
+
 export enum ScopeType {
   TEAM = 'team',
   PROJECT = 'project',

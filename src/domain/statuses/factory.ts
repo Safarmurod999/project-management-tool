@@ -9,6 +9,7 @@ export interface StatusStruct {
   color: string;
   order: number;
   isDefault: boolean;
+  isDone: boolean;
   version: number;
   createdAt: Date;
   updatedAt: Date | null;
@@ -24,11 +25,13 @@ export type StatusFactoryParams = Omit<
   | 'color'
   | 'order'
   | 'isDefault'
+  | 'isDone'
 > & {
   code?: string;
   color?: string;
   order?: number;
   isDefault?: boolean;
+  isDone?: boolean;
 };
 
 export const STATUS_CODE_PATTERN = /^[a-z0-9_]+$/;
@@ -36,7 +39,7 @@ export const STATUS_COLOR_PATTERN = /^#[0-9a-fA-F]{6}$/;
 export const DEFAULT_STATUS_COLOR = '#9E9E9E';
 
 export type StatusValidationParams = Partial<
-  Pick<StatusStruct, 'name' | 'code' | 'color' | 'order'>
+  Pick<StatusStruct, 'name' | 'code' | 'color' | 'order' | 'isDone'>
 >;
 
 export interface StatusFactory {
@@ -56,7 +59,7 @@ export class StatusFactoryImpl implements StatusFactory {
     const color = data.color ?? DEFAULT_STATUS_COLOR;
     const order = data.order ?? 0;
 
-    this.validate({ code, color, order });
+    this.validate({ code, color, order, isDone: data.isDone });
 
     return {
       projectId: data.projectId,
@@ -65,6 +68,7 @@ export class StatusFactoryImpl implements StatusFactory {
       color,
       order,
       isDefault: data.isDefault ?? false,
+      isDone: data.isDone ?? false,
       id: '',
       version: 1,
       createdAt: new Date(),
@@ -87,6 +91,10 @@ export class StatusFactoryImpl implements StatusFactory {
 
     if (data.order !== undefined && data.order < 0) {
       throw StatusException.InvalidOrder();
+    }
+
+    if (data.isDone !== undefined && typeof data.isDone !== 'boolean') {
+      throw StatusException.InvalidIsDone();
     }
   }
 

@@ -24,6 +24,7 @@ describe('ReorderCardUsecaseImpl (card transitions)', () => {
   let cardRepository: jest.Mocked<CardRepository>;
   let transactionManager: jest.Mocked<TransactionManager>;
   let usecase: ReorderCardUsecaseImpl;
+  let notifier: { execute: jest.Mock };
 
   beforeEach(() => {
     const statuses: Record<string, Status> = {
@@ -57,6 +58,7 @@ describe('ReorderCardUsecaseImpl (card transitions)', () => {
       run: jest.fn((work) => work()),
     } as unknown as jest.Mocked<TransactionManager>;
 
+    notifier = { execute: jest.fn() };
     usecase = new ReorderCardUsecaseImpl(
       cardRepository,
       {
@@ -88,6 +90,7 @@ describe('ReorderCardUsecaseImpl (card transitions)', () => {
       {} as WorkflowStatusRepository,
       {} as WorkflowTransitionRepository,
       transactionManager,
+      notifier,
     );
   });
 
@@ -122,6 +125,31 @@ describe('ReorderCardUsecaseImpl (card transitions)', () => {
   it('rejects a status that is not mapped to the target column', async () => {
     await expect(move('todo')).rejects.toMatchObject({ statusCode: 400 });
     expect(cardRepository.reorder).not.toHaveBeenCalled();
+  });
+
+  it('notifies after the move is saved, with the card before and after', async () => {
+    const before = await cardRepository.findById('card-1');
+    const moved = await usecase.execute({
+      cardId: 'card-1',
+      sourceColumnId: 'col-todo',
+      targetColumnId: 'col-progress',
+      newIndex: 0,
+      actorId: 'manager',
+    });
+
+    expect(notifier.execute).toHaveBeenCalledWith({
+      before,
+      after: moved,
+      actorId: 'manager',
+    });
+    expect(notifier.execute.mock.invocationCallOrder[0]).toBeGreaterThan(
+      transactionManager.run.mock.invocationCallOrder[0],
+    );
+  });
+
+  it('does not notify when the move fails', async () => {
+    await expect(move('todo')).rejects.toMatchObject({ statusCode: 400 });
+    expect(notifier.execute).not.toHaveBeenCalled();
   });
 
   it('rejects a negative index before touching the database', async () => {

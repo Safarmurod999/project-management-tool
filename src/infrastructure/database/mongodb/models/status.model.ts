@@ -8,6 +8,7 @@ export interface StatusDocument extends Document {
   color: string;
   order: number;
   isDefault: boolean;
+  isDone: boolean;
   version: number;
   createdAt: Date;
   updatedAt: Date | null;

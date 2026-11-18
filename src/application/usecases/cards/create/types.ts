@@ -10,6 +10,8 @@ export interface CreateCardUsecaseParams {
   assigneeId?: string | null;
   assignerId?: string | null;
   points?: number;
+  /** The user creating the card; not notified about their own action. */
+  actorId?: string;
 }
 
 export interface CreateCardUsecase {

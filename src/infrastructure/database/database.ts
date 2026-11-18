@@ -15,6 +15,7 @@ import {
   WorkflowDocument,
   WorkflowStatusDocument,
   WorkflowTransitionDocument,
+  NotificationDocument,
 } from './mongodb/models';
 
 export interface Database {
@@ -37,4 +38,5 @@ export interface Database {
   workflowModel(): Model<WorkflowDocument>;
   workflowStatusModel(): Model<WorkflowStatusDocument>;
   workflowTransitionModel(): Model<WorkflowTransitionDocument>;
+  notificationModel(): Model<NotificationDocument>;
 }

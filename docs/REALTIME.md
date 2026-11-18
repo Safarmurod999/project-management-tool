@@ -37,10 +37,14 @@ The gateway validates the JWT using `ACCESS_SECRET` and joins the user room `use
 - `pong`
   - payload: `{ serverTime: string, clientTime?: string }`
 
+Emitted to `user:{userId}` (every socket joins its own user room on connect):
+
+- `notification:created` — `{ id, userId, type, title, message, data, readAt, createdAt }`; `type` is `card_assigned`, `card_status_changed` or `membership_added` (see `docs/API.md` → Notifications)
+
 Emitted to `project:{projectId}`:
 
 - `board:created` — the new board. Its default columns (To Do / In Progress / Done) and status mappings already exist when this fires.
-- `status:created` — `{ id, projectId, name, code, color, order, isDefault, version, createdAt, updatedAt }`
+- `status:created` — `{ id, projectId, name, code, color, order, isDefault, isDone, version, createdAt, updatedAt }`
 - `status:updated` — same payload as `status:created`
 - `status:deleted` — `{ id, projectId }`
 - `workflow:created` — the workflow with `statuses` and `transitions` (same shape as `GET /workflows/:id`)

@@ -1,9 +1,14 @@
 import { Inject } from '@nestjs/common';
-import { Model, Types } from 'mongoose';
+import { isValidObjectId, Model, Types } from 'mongoose';
 import { Database } from 'src/infrastructure/database/database';
 import { DatabaseSymbols } from 'src/infrastructure/dependency-injection/databases/symbol';
 import { CardDocument } from 'src/infrastructure/database/mongodb/models';
 import { CardMapper } from 'src/infrastructure/database/mongodb/mappers';
+import {
+  AssignedCardsCollections,
+  buildAssignedCardsListPipeline,
+  buildAssignedCardsStatsPipeline,
+} from 'src/infrastructure/database/mongodb/pipelines';
 import { Card } from './entity';
 import { CardStruct } from './factory';
 import { CardException } from './exception';
@@ -43,6 +48,64 @@ export interface CardReorderParams {
   expectedStatusId?: string;
 }
 
+export interface AssignedCardQuery {
+  /** The user the cards are assigned to. */
+  assigneeId: string;
+  page: number;
+  limit: number;
+  projectId?: string;
+  statusId?: string;
+  /** Case-insensitive partial match. */
+  title?: string;
+  /** true: only cards in a done status; false: only cards that are not. */
+  done?: boolean;
+}
+
+export interface AssignedCardDetails {
+  card: Card;
+  /** null when the card's status no longer exists. */
+  status: {
+    id: string;
+    name: string;
+    code: string;
+    color: string;
+    isDone: boolean;
+  } | null;
+  column: { id: string; name: string };
+  board: { id: string; name: string };
+  project: { id: string; name: string };
+  /** null when the card has no assigner or the user no longer exists. */
+  assigner: { id: string; name: string } | null;
+}
+
+export interface AssignedCardGetResponse {
+  data: AssignedCardDetails[];
+  page: number;
+  limit: number;
+  totalCount: number;
+}
+
+export interface AssignedCardStatsQuery {
+  assigneeId: string;
+  projectId?: string;
+}
+
+export interface AssignedCardStatusCount {
+  statusId: string;
+  name: string | null;
+  color: string | null;
+  count: number;
+}
+
+export interface AssignedCardStats {
+  assignedCards: number;
+  doneCards: number;
+  openCards: number;
+  totalPoints: number;
+  donePoints: number;
+  byStatus: AssignedCardStatusCount[];
+}
+
 export interface CardRepository {
   create(card: CardCreateParams): Promise<Card>;
   find(params: CardGetQuery): Promise<CardGetResponse>;
@@ -52,6 +115,30 @@ export interface CardRepository {
   /** Counts cards using a status, optionally limited to one column. */
   countByStatusId(statusId: string, columnId?: string): Promise<number>;
   delete(id: string): Promise<string>;
+  /**
+   * Cards assigned to a user across projects, with their status, column,
+   * board, project and assigner. Cards on archived boards or in archived
+   * projects are excluded. Newest activity first.
+   */
+  findAssignedTo(query: AssignedCardQuery): Promise<AssignedCardGetResponse>;
+  /** Counts and points of the cards {@link findAssignedTo} would return. */
+  getAssignedStats(query: AssignedCardStatsQuery): Promise<AssignedCardStats>;
+}
+
+/** A row of the assigned-cards aggregation: a card plus its joined documents. */
+interface AssignedCardRow {
+  _id: Types.ObjectId;
+  status?: {
+    _id: Types.ObjectId;
+    name: string;
+    code: string;
+    color: string;
+    isDone?: boolean;
+  };
+  column: { _id: Types.ObjectId; name: string };
+  board: { _id: Types.ObjectId; name: string };
+  project: { _id: Types.ObjectId; name: string };
+  assigner?: { _id: Types.ObjectId; name: string };
 }
 
 export class CardRepositoryImpl implements CardRepository {
@@ -381,6 +468,110 @@ export class CardRepositoryImpl implements CardRepository {
 
     await this.cardModel.findByIdAndDelete(id).exec();
     return id;
+  }
+
+  async findAssignedTo(
+    query: AssignedCardQuery,
+  ): Promise<AssignedCardGetResponse> {
+    this.assertObjectIds({
+      projectId: query.projectId,
+      statusId: query.statusId,
+    });
+
+    const [result] = await this.cardModel
+      .aggregate<{
+        data: AssignedCardRow[];
+        total: Array<{ count: number }>;
+      }>(buildAssignedCardsListPipeline(query, this.assignedCardsCollections))
+      .exec();
+
+    return {
+      data: (result?.data ?? []).map((row) => this.toAssignedCard(row)),
+      page: query.page,
+      limit: query.limit,
+      totalCount: result?.total[0]?.count ?? 0,
+    };
+  }
+
+  async getAssignedStats(
+    query: AssignedCardStatsQuery,
+  ): Promise<AssignedCardStats> {
+    this.assertObjectIds({ projectId: query.projectId });
+
+    const [result] = await this.cardModel
+      .aggregate<{
+        totals: Array<{
+          assignedCards: number;
+          doneCards: number;
+          totalPoints: number;
+          donePoints: number;
+        }>;
+        byStatus: Array<{
+          _id: Types.ObjectId;
+          name?: string;
+          color?: string;
+          count: number;
+        }>;
+      }>(buildAssignedCardsStatsPipeline(query, this.assignedCardsCollections))
+      .exec();
+
+    const totals = result?.totals[0];
+    const assignedCards = totals?.assignedCards ?? 0;
+    const doneCards = totals?.doneCards ?? 0;
+
+    return {
+      assignedCards,
+      doneCards,
+      openCards: assignedCards - doneCards,
+      totalPoints: totals?.totalPoints ?? 0,
+      donePoints: totals?.donePoints ?? 0,
+      byStatus: (result?.byStatus ?? []).map((item) => ({
+        statusId: item._id.toString(),
+        name: item.name ?? null,
+        color: item.color ?? null,
+        count: item.count,
+      })),
+    };
+  }
+
+  private toAssignedCard(row: AssignedCardRow): AssignedCardDetails {
+    return {
+      card: CardMapper.toDomain(row as unknown as CardDocument),
+      status: row.status
+        ? {
+            id: row.status._id.toString(),
+            name: row.status.name,
+            code: row.status.code,
+            color: row.status.color,
+            isDone: row.status.isDone ?? false,
+          }
+        : null,
+      column: { id: row.column._id.toString(), name: row.column.name },
+      board: { id: row.board._id.toString(), name: row.board.name },
+      project: { id: row.project._id.toString(), name: row.project.name },
+      assigner: row.assigner
+        ? { id: row.assigner._id.toString(), name: row.assigner.name }
+        : null,
+    };
+  }
+
+  /** Malformed ids are a client error, not a database error. */
+  private assertObjectIds(ids: Record<string, string | undefined>): void {
+    for (const [field, value] of Object.entries(ids)) {
+      if (value !== undefined && !isValidObjectId(value)) {
+        throw CardException.InvalidFilterId(field, value);
+      }
+    }
+  }
+
+  private get assignedCardsCollections(): AssignedCardsCollections {
+    return {
+      columns: this.database.columnModel().collection.collectionName,
+      boards: this.database.boardModel().collection.collectionName,
+      projects: this.database.projectModel().collection.collectionName,
+      statuses: this.database.statusModel().collection.collectionName,
+      users: this.database.userModel().collection.collectionName,
+    };
   }
 
   // The expected status is also part of the save filter, so a status change by

@@ -190,6 +190,7 @@ export class StatusRepositoryImpl implements StatusRepository {
     if (status.order !== undefined) existingStatus.order = status.order;
     if (status.isDefault !== undefined)
       existingStatus.isDefault = status.isDefault;
+    if (status.isDone !== undefined) existingStatus.isDone = status.isDone;
     if (status.version) existingStatus.version = status.version;
     existingStatus.updatedAt = new Date();
 

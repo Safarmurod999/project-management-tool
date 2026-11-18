@@ -11,6 +11,8 @@ export interface UpdateCardUsecaseParams {
   assignerId?: string | null;
   points?: number;
   version?: number;
+  /** The user updating the card; not notified about their own action. */
+  actorId?: string;
 }
 
 export interface UpdateCardUsecase {

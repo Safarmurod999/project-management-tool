@@ -74,6 +74,8 @@ export const PresenterSymbols = {
     GetCardsPresenter: Symbol('GetCardsPresenter'),
     UpdateCardPresenter: Symbol('UpdateCardPresenter'),
     DeleteCardPresenter: Symbol('DeleteCardPresenter'),
+    GetMyCardsPresenter: Symbol('GetMyCardsPresenter'),
+    GetMyCardStatsPresenter: Symbol('GetMyCardStatsPresenter'),
   },
   Status: {
     CreateStatusPresenter: Symbol('CreateStatusPresenter'),
@@ -86,5 +88,9 @@ export const PresenterSymbols = {
     GetWorkflowsPresenter: Symbol('GetWorkflowsPresenter'),
     WorkflowDetailsPresenter: Symbol('WorkflowDetailsPresenter'),
     DeleteWorkflowPresenter: Symbol('DeleteWorkflowPresenter'),
+  },
+  Notification: {
+    NotificationPresenter: Symbol('NotificationPresenter'),
+    GetNotificationsPresenter: Symbol('GetNotificationsPresenter'),
   },
 };

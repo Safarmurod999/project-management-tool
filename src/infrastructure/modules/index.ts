@@ -15,3 +15,4 @@ export * from './cards/cards.module';
 export * from './statuses/statuses.module';
 export * from './workflows/workflows.module';
 export * from './queue/queue.module';
+export * from './notifications/notifications.module';

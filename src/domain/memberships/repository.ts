@@ -53,6 +53,8 @@ export interface MembershipRepository {
   findById(id: string): Promise<Membership>;
   update(data: MembershipUpdateParams & { id: string }): Promise<Membership>;
   delete(id: string): Promise<string>;
+  /** Name of the team, project or board a membership points to; null if it is gone. */
+  findScopeName(scopeType: ScopeType, scopeId: string): Promise<string | null>;
 }
 
 export class MembershipRepositoryImpl implements MembershipRepository {
@@ -183,6 +185,25 @@ export class MembershipRepositoryImpl implements MembershipRepository {
 
   private get membershipModel(): Model<MembershipDocument> {
     return this.database.membershipModel();
+  }
+
+  async findScopeName(
+    scopeType: ScopeType,
+    scopeId: string,
+  ): Promise<string | null> {
+    const models = {
+      [ScopeType.TEAM]: () => this.database.teamModel(),
+      [ScopeType.PROJECT]: () => this.database.projectModel(),
+      [ScopeType.BOARD]: () => this.database.boardModel(),
+    } as const;
+    const model = models[scopeType]?.() as Model<{ name: string }> | undefined;
+
+    if (!model) {
+      return null;
+    }
+
+    const scope = await model.findById(scopeId).select('name').lean().exec();
+    return scope?.name ?? null;
   }
 
   private buildFilter(

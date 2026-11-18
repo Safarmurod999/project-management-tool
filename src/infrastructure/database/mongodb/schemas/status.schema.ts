@@ -13,6 +13,7 @@ export const StatusSchema = new Schema(
     color: { type: String, required: true },
     order: { type: Number, required: true, default: 0 },
     isDefault: { type: Boolean, required: true, default: false },
+    isDone: { type: Boolean, required: true, default: false },
     version: { type: Number, required: true, default: 1 },
   },
   { timestamps: true },

@@ -7,6 +7,7 @@ export interface UpdateStatusUsecaseParams {
   color?: string;
   order?: number;
   isDefault?: boolean;
+  isDone?: boolean;
   version?: number;
 }
 

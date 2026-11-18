@@ -15,4 +15,5 @@ export const RepositorySymbols = {
   WorkflowRepository: Symbol.for('WorkflowRepository'),
   WorkflowStatusRepository: Symbol.for('WorkflowStatusRepository'),
   WorkflowTransitionRepository: Symbol.for('WorkflowTransitionRepository'),
+  NotificationRepository: Symbol.for('NotificationRepository'),
 };
